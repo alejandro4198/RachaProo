@@ -18,6 +18,8 @@ import com.example.rachapro.data.local.entity.ReminderEntity
 import com.example.rachapro.data.local.dao.ReminderDao
 import com.example.rachapro.data.local.entity.PomodoroSessionEntity
 import com.example.rachapro.data.local.dao.PomodoroSessionDao
+import com.example.rachapro.data.local.entity.AchievementEntity
+import com.example.rachapro.data.local.dao.AchievementDao
 
 
 @Database(
@@ -28,8 +30,9 @@ import com.example.rachapro.data.local.dao.PomodoroSessionDao
         SubtaskEntity::class,
         ReminderEntity::class,
         PomodoroSessionEntity::class,
+        AchievementEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 
@@ -47,7 +50,45 @@ abstract class RachaProDatabase : RoomDatabase() {
 
     abstract fun pomodoroSessionDao(): PomodoroSessionDao
 
+    abstract fun achievementDao(): AchievementDao
+
     companion object {
+
+        val MIGRATION_5_6 =
+            object : Migration(5, 6) {
+
+                override fun migrate(
+                    db: SupportSQLiteDatabase
+                ) {
+
+                    db.execSQL(
+                        """
+                CREATE TABLE IF NOT EXISTS `achievements` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `userId` INTEGER NOT NULL,
+                    `type` TEXT NOT NULL,
+                    `unlockedAt` INTEGER NOT NULL
+                )
+                """.trimIndent()
+                    )
+
+                    db.execSQL(
+                        """
+                CREATE INDEX IF NOT EXISTS
+                `index_achievements_userId`
+                ON `achievements` (`userId`)
+                """.trimIndent()
+                    )
+
+                    db.execSQL(
+                        """
+                CREATE UNIQUE INDEX IF NOT EXISTS
+                `index_achievements_userId_type`
+                ON `achievements` (`userId`, `type`)
+                """.trimIndent()
+                    )
+                }
+            }
 
         val MIGRATION_4_5 =
             object : Migration(
@@ -363,6 +404,7 @@ abstract class RachaProDatabase : RoomDatabase() {
                             MIGRATION_2_3,
                             MIGRATION_3_4,
                             MIGRATION_4_5,
+                            MIGRATION_5_6,
                         )
                         .build()
 

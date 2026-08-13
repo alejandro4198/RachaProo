@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.example.rachapro.data.repository.PomodoroRepository
+import com.example.rachapro.domain.StreakCalculator
 
 
 class MainViewModel(
@@ -110,9 +111,28 @@ class MainViewModel(
                         pomodoroRepository
                             .observeCompletedFocusDays(
                                 userId = userId
+                            ),
+
+                        pomodoroRepository
+                            .observeCompletedFocusCountBetween(
+                                userId = userId,
+                                startEpochDay = todayEpochDay,
+                                endEpochDay = todayEpochDay
+                            ),
+
+                        pomodoroRepository
+                            .observeCompletedFocusSecondsBetween(
+                                userId = userId,
+                                startEpochDay = todayEpochDay,
+                                endEpochDay = todayEpochDay
                             )
 
-                    ) { activities, activityDays, pomodoroDays ->
+                    ) {
+                            activities,
+                            activityDays,
+                            pomodoroDays,
+                            todayPomodoros,
+                            todayFocusSeconds ->
 
                         val totalActivitiesToday =
                             activities.size
@@ -129,7 +149,7 @@ class MainViewModel(
                                 .sorted()
 
                         val streakResult =
-                            calculateStreaks(
+                            StreakCalculator.calculate(
                                 completedDays = validStreakDays,
                                 todayEpochDay = todayEpochDay
                             )
@@ -153,7 +173,13 @@ class MainViewModel(
                                 streakResult.current,
 
                             bestStreakDays =
-                                streakResult.best
+                                streakResult.best,
+
+                            todayCompletedPomodoros =
+                                todayPomodoros,
+
+                            todayFocusSeconds =
+                                todayFocusSeconds
                         )
 
                     }.collect { state ->
@@ -168,109 +194,6 @@ class MainViewModel(
                         MainUiState.Error
                 }
             }
-    }
-
-    private fun calculateStreaks(
-        completedDays: List<Long>,
-        todayEpochDay: Long
-    ): StreakResult {
-
-
-        val validDays =
-            completedDays
-                .filter { day ->
-                    day <= todayEpochDay
-                }
-                .distinct()
-                .sorted()
-
-        if (validDays.isEmpty()) {
-
-            return StreakResult(
-                current = 0,
-                best = 0
-            )
-        }
-
-        var bestStreak = 1
-        var runningStreak = 1
-
-        for (
-        index in 1 until validDays.size
-        ) {
-
-            val previousDay =
-                validDays[index - 1]
-
-            val currentDay =
-                validDays[index]
-
-            if (
-                currentDay ==
-                previousDay + 1
-            ) {
-
-                runningStreak++
-
-            } else {
-
-                runningStreak = 1
-            }
-
-            if (
-                runningStreak >
-                bestStreak
-            ) {
-
-                bestStreak =
-                    runningStreak
-            }
-        }
-
-        val validDaysSet =
-            validDays.toSet()
-
-        val streakEndDay =
-            when {
-
-                todayEpochDay in validDaysSet -> {
-
-                    todayEpochDay
-                }
-
-                todayEpochDay - 1
-                        in validDaysSet -> {
-
-                    todayEpochDay - 1
-                }
-
-                else -> {
-
-                    return StreakResult(
-                        current = 0,
-                        best = bestStreak
-                    )
-                }
-            }
-
-        var currentStreak = 0
-
-        var dayToCheck =
-            streakEndDay
-
-        while (
-            dayToCheck in validDaysSet
-        ) {
-
-            currentStreak++
-
-            dayToCheck--
-        }
-
-        return StreakResult(
-            current = currentStreak,
-            best = bestStreak
-        )
     }
 
     companion object {
@@ -295,11 +218,6 @@ class MainViewModel(
     }
 }
 
-private data class StreakResult(
-    val current: Int,
-    val best: Int
-)
-
 sealed interface MainUiState {
 
     data object Loading :
@@ -319,7 +237,11 @@ sealed interface MainUiState {
 
         val currentStreakDays: Int,
 
-        val bestStreakDays: Int
+        val bestStreakDays: Int,
+
+        val todayCompletedPomodoros: Int,
+
+        val todayFocusSeconds: Long
     ) : MainUiState
 
     data object NoActiveSession :

@@ -10,6 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -33,6 +38,9 @@ import com.example.rachapro.activities.SubtasksViewModel
 import com.example.rachapro.activities.ReminderViewModel
 import com.example.rachapro.pomodoro.PomodoroViewModel
 import com.example.rachapro.progress.ProgressViewModel
+import com.example.rachapro.profile.ProfileViewModel
+import com.example.rachapro.notifications.NotificationPermission
+import androidx.compose.ui.platform.LocalContext
 
 
 object Routes {
@@ -296,7 +304,21 @@ fun RachaProNavHost() {
          * ---------------------------------------------------------
          */
 
-        composable(Routes.HOME) {
+        composable(
+            route = Routes.HOME,
+            enterTransition = {
+                fadeIn(tween(350)) + slideInHorizontally(
+                    initialOffsetX = { it / 4 },
+                    animationSpec = tween(350)
+                )
+            },
+            exitTransition = {
+                fadeOut(tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it / 4 },
+                    animationSpec = tween(250)
+                )
+            }
+        ) {
 
             val mainViewModel: MainViewModel =
                 viewModel(
@@ -341,6 +363,26 @@ fun RachaProNavHost() {
             val progressUiState by
             progressViewModel.uiState
                 .collectAsStateWithLifecycle()
+
+            val profileViewModel: ProfileViewModel =
+                viewModel(
+                    factory = ProfileViewModel.Factory
+                )
+
+            val profileUiState by
+            profileViewModel.uiState
+                .collectAsStateWithLifecycle()
+
+            val profileSaveState by
+            profileViewModel.saveState
+                .collectAsStateWithLifecycle()
+
+            val context = LocalContext.current
+
+            val notificationsPermissionGranted =
+                NotificationPermission.isGranted(
+                    context = context
+                )
 
             LaunchedEffect(authUiState) {
 
@@ -471,6 +513,10 @@ fun RachaProNavHost() {
                     pomodoroViewModel.cancel()
                 },
 
+                onDismissPomodoroCompleted = {
+                    pomodoroViewModel.dismissCompleted()
+                },
+
                 progressUiState =
                     progressUiState,
 
@@ -485,10 +531,74 @@ fun RachaProNavHost() {
                     )
                 },
 
+                profileUiState = profileUiState,
+
+                profileSaveState = profileSaveState,
+
+                notificationsPermissionGranted =
+                    notificationsPermissionGranted,
+
+                onRetryProfile = {
+                    profileViewModel.retry()
+                },
+
+                onPomodoroDraftChange = {
+                        focusMinutes,
+                        shortBreakMinutes,
+                        longBreakMinutes ->
+
+                    profileViewModel.updatePomodoroDraft(
+                        focusMinutes = focusMinutes,
+                        shortBreakMinutes = shortBreakMinutes,
+                        longBreakMinutes = longBreakMinutes
+                    )
+                },
+
+                onNotificationsEnabledChange = { enabled ->
+
+                    profileViewModel.updateNotificationsEnabled(
+                        enabled = enabled
+                    )
+                },
+
+                onSaveProfilePreferences = {
+                    profileViewModel.savePreferences()
+                },
+
+                onProfileDraftChange = { name, semester ->
+                    profileViewModel.updateProfileDraft(
+                        fullName = name,
+                        semester = semester
+                    )
+                },
+
+                onSaveProfile = {
+                    profileViewModel.saveProfile()
+                    mainViewModel.retry()
+                },
+
+                onResetProfileSaveState = {
+                    profileViewModel.resetSaveState()
+                },
+
             )
         }
 
-        composable(Routes.NEW_ACTIVITY) { backStackEntry ->
+        composable(
+            route = Routes.NEW_ACTIVITY,
+            enterTransition = {
+                fadeIn(tween(350)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(350)
+                )
+            },
+            popExitTransition = {
+                fadeOut(tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                )
+            }
+        ) { backStackEntry ->
 
             val homeBackStackEntry =
                 remember(backStackEntry) {
@@ -584,7 +694,20 @@ fun RachaProNavHost() {
                     type =
                         NavType.LongType
                 }
-            )
+            ),
+
+            enterTransition = {
+                fadeIn(tween(350)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(350)
+                )
+            },
+            popExitTransition = {
+                fadeOut(tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
+                )
+            }
         ) { backStackEntry ->
 
             val activityId =

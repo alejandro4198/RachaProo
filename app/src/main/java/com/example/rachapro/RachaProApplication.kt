@@ -11,6 +11,7 @@ import com.example.rachapro.data.repository.ReminderRepository
 import com.example.rachapro.notifications.NotificationChannels
 import com.example.rachapro.notifications.ReminderScheduler
 import com.example.rachapro.data.repository.PomodoroRepository
+import com.example.rachapro.data.repository.AchievementRepository
 import com.example.rachapro.data.local.UserPreferencesManager
 
 class RachaProApplication : Application() {
@@ -97,6 +98,12 @@ class RachaProApplication : Application() {
     val userPreferencesManager by lazy {
         UserPreferencesManager(
             context = applicationContext
+        )
+    }
+
+    val achievementRepository by lazy {
+        AchievementRepository(
+            achievementDao = database.achievementDao()
         )
     }
 

@@ -104,6 +104,48 @@ class UserRepository(
             LoginResult.InvalidCredentials
         }
     }
+
+    suspend fun updateProfile(
+        userId: Long,
+        fullName: String,
+        semester: Int
+    ): UpdateProfileResult {
+
+        val normalizedName = fullName.trim()
+
+        if (normalizedName.isBlank()) {
+            return UpdateProfileResult.InvalidData(
+                "El nombre no puede estar vacío."
+            )
+        }
+
+        if (semester !in 1..10) {
+            return UpdateProfileResult.InvalidData(
+                "Selecciona un semestre válido."
+            )
+        }
+
+        val user =
+            userDao.getUserById(userId = userId)
+                ?: return UpdateProfileResult.NotFound
+
+        return try {
+
+            userDao.updateUser(
+                user.copy(
+                    fullName = normalizedName,
+                    semester = semester,
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
+
+            UpdateProfileResult.Success
+
+        } catch (_: Exception) {
+
+            UpdateProfileResult.Error
+        }
+    }
 }
 
 sealed interface RegisterResult {
@@ -127,4 +169,17 @@ sealed interface LoginResult {
 
     data object InvalidCredentials :
         LoginResult
+}
+
+sealed interface UpdateProfileResult {
+
+    data object Success : UpdateProfileResult
+
+    data object NotFound : UpdateProfileResult
+
+    data class InvalidData(
+        val message: String
+    ) : UpdateProfileResult
+
+    data object Error : UpdateProfileResult
 }

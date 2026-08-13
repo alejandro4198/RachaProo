@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.example.rachapro.data.repository.ReminderRepository
 import com.example.rachapro.notifications.ReminderScheduler
+import com.example.rachapro.domain.RegistrationValidator
 import kotlinx.coroutines.flow.first
 
 
@@ -48,7 +49,7 @@ class AuthViewModel(
         }
 
         val validationError =
-            validateRegistration(
+            RegistrationValidator.validate(
                 fullName = fullName,
                 email = email,
                 password = password,
@@ -303,57 +304,6 @@ class AuthViewModel(
 
         _uiState.value =
             AuthUiState.Idle
-    }
-
-    private fun validateRegistration(
-        fullName: String,
-        email: String,
-        password: String,
-        confirmPassword: String,
-        semester: Int?,
-        acceptedPrivacyPolicy: Boolean
-    ): String? {
-
-        if (fullName.isBlank()) {
-            return "El nombre completo es obligatorio."
-        }
-
-        if (!isEmailValid(email)) {
-            return "Ingresa un correo electrónico válido."
-        }
-
-        if (password.length < 8) {
-            return "La contraseña debe tener mínimo 8 caracteres."
-        }
-
-        if (password != confirmPassword) {
-            return "Las contraseñas no coinciden."
-        }
-
-        if (semester == null || semester !in 1..10) {
-            return "Selecciona un semestre válido."
-        }
-
-        if (!acceptedPrivacyPolicy) {
-            return "Debes aceptar la política de privacidad."
-        }
-
-        return null
-    }
-
-    private fun isEmailValid(
-        email: String
-    ): Boolean {
-
-        val emailRegex =
-            Regex(
-                pattern =
-                    "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-            )
-
-        return emailRegex.matches(
-            email.trim()
-        )
     }
 
     companion object {

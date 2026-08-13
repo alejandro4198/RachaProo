@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import com.example.rachapro.domain.StreakCalculator
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProgressViewModel(
@@ -339,7 +340,7 @@ class ProgressViewModel(
                                 .toEpochDay()
 
                         val streaks =
-                            calculateStreaks(
+                            StreakCalculator.calculate(
                                 completedDays = validDays,
                                 todayEpochDay = todayEpochDay
                             )
@@ -379,87 +380,6 @@ class ProgressViewModel(
                         ProgressUiState.Error
                 }
             }
-    }
-
-    private fun calculateStreaks(
-        completedDays: List<Long>,
-        todayEpochDay: Long
-    ): StreakResult {
-
-        val validDays =
-            completedDays
-                .filter {
-                    it <= todayEpochDay
-                }
-                .distinct()
-                .sorted()
-
-        if (validDays.isEmpty()) {
-
-            return StreakResult(
-                current = 0,
-                best = 0
-            )
-        }
-
-        var bestStreak = 1
-        var runningStreak = 1
-
-        for (index in 1 until validDays.size) {
-
-            if (
-                validDays[index] ==
-                validDays[index - 1] + 1
-            ) {
-
-                runningStreak++
-
-            } else {
-
-                runningStreak = 1
-            }
-
-            bestStreak =
-                maxOf(
-                    bestStreak,
-                    runningStreak
-                )
-        }
-
-        val validDaysSet =
-            validDays.toSet()
-
-        val streakEndDay =
-            when {
-
-                todayEpochDay in validDaysSet ->
-                    todayEpochDay
-
-                todayEpochDay - 1 in validDaysSet ->
-                    todayEpochDay - 1
-
-                else ->
-                    return StreakResult(
-                        current = 0,
-                        best = bestStreak
-                    )
-            }
-
-        var currentStreak = 0
-        var dayToCheck = streakEndDay
-
-        while (
-            dayToCheck in validDaysSet
-        ) {
-
-            currentStreak++
-            dayToCheck--
-        }
-
-        return StreakResult(
-            current = currentStreak,
-            best = bestStreak
-        )
     }
 
     companion object {
@@ -529,9 +449,4 @@ private data class PeriodStats(
     val completedActivities: Int,
     val completedPomodoros: Int,
     val focusSeconds: Long
-)
-
-private data class StreakResult(
-    val current: Int,
-    val best: Int
 )

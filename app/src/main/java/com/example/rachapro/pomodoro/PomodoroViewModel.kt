@@ -17,6 +17,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.example.rachapro.data.local.PomodoroPreferences
+import com.example.rachapro.data.local.UserPreferencesManager
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.example.rachapro.data.local.entity.PomodoroSessionType
@@ -26,7 +29,8 @@ import com.example.rachapro.data.repository.PomodoroStartResult
 
 class PomodoroViewModel(
     private val pomodoroRepository: PomodoroRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val userPreferencesManager: UserPreferencesManager
 ) : ViewModel() {
 
     private val _uiState =
@@ -50,6 +54,9 @@ class PomodoroViewModel(
     private var currentUserId: Long? = null
 
     private var completingSessionId: Long? = null
+
+    private var pomodoroPreferences =
+        PomodoroPreferences()
 
     init {
         loadPomodoro()
@@ -78,55 +85,78 @@ class PomodoroViewModel(
             currentUserId =
                 userId
 
-            pomodoroRepository
-                .observeActiveSession(
-                    userId = userId
-                )
-                .collect { activeSession ->
+            combine(
+                userPreferencesManager
+                    .observePomodoroPreferences(
+                        userId = userId
+                    ),
 
-                    if (activeSession == null) {
+                pomodoroRepository
+                    .observeActiveSession(
+                        userId = userId
+                    )
+            ) { preferences, activeSession ->
 
-                        timerJob?.cancel()
+                pomodoroPreferences = preferences
 
-                        _uiState.value =
-                            PomodoroUiState.Idle
+                if (activeSession == null) {
 
-                    } else {
+                    timerJob?.cancel()
 
-                        startTimer(
-                            session = activeSession
-                        )
-                    }
+                    PomodoroUiState.Idle(
+                        preferences = preferences
+                    )
+
+                } else {
+
+                    startTimer(
+                        session = activeSession,
+                        preferences = preferences
+                    )
+
+                    null
                 }
+
+            }.collect { idleState ->
+
+                if (idleState != null) {
+
+                    val current = _uiState.value
+
+                    if (
+                        current is PomodoroUiState.Completed ||
+                        current is PomodoroUiState.Error
+                    ) {
+                        return@collect
+                    }
+
+                    _uiState.value = idleState
+                }
+            }
         }
     }
 
     fun startFocus(
-        activityId: Long? = null,
-        durationMinutes: Int = 25
+        activityId: Long? = null
     ) {
         startSession(
             type = PomodoroSessionType.FOCUS,
-            durationMinutes = durationMinutes,
+            durationMinutes = pomodoroPreferences.focusMinutes,
             activityId = activityId
         )
     }
 
-    fun startShortBreak(
-        durationMinutes: Int = 5
-    ) {
+    fun startShortBreak() {
         startSession(
             type = PomodoroSessionType.SHORT_BREAK,
-            durationMinutes = durationMinutes
+            durationMinutes = pomodoroPreferences.shortBreakMinutes
         )
     }
 
-    fun startLongBreak(
-        durationMinutes: Int = 15
-    ) {
+    fun startLongBreak() {
         startSession(
             type = PomodoroSessionType.LONG_BREAK,
-            durationMinutes = durationMinutes
+            durationMinutes = pomodoroPreferences.longBreakMinutes
         )
     }
 
@@ -379,8 +409,17 @@ class PomodoroViewModel(
             PomodoroActionState.Idle
     }
 
+    fun dismissCompleted() {
+
+        _uiState.value =
+            PomodoroUiState.Idle(
+                preferences = pomodoroPreferences
+            )
+    }
+
     private fun startTimer(
-        session: PomodoroSessionEntity
+        session: PomodoroSessionEntity,
+        preferences: PomodoroPreferences
     ) {
 
         timerJob?.cancel()
@@ -400,7 +439,8 @@ class PomodoroViewModel(
                         PomodoroUiState.Active(
                             session = session,
                             remainingMillis =
-                                remainingMillis
+                                remainingMillis,
+                            preferences = preferences
                         )
 
                     if (
@@ -489,7 +529,8 @@ class PomodoroViewModel(
                     PomodoroUiState.Completed(
                         sessionId = session.id,
                         recommendedType = recommendedType,
-                        completedFocusCount = completedFocusCount
+                        completedFocusCount = completedFocusCount,
+                        preferences = pomodoroPreferences
                     )
             }
 
@@ -537,7 +578,10 @@ class PomodoroViewModel(
                             application.pomodoroRepository,
 
                         sessionManager =
-                            application.sessionManager
+                            application.sessionManager,
+
+                        userPreferencesManager =
+                            application.userPreferencesManager
                     )
                 }
             }
@@ -549,21 +593,27 @@ sealed interface PomodoroUiState {
     data object Loading :
         PomodoroUiState
 
-    data object Idle :
-        PomodoroUiState
+    data class Idle(
+        val preferences: PomodoroPreferences =
+            PomodoroPreferences()
+    ) : PomodoroUiState
 
     data object NoActiveSession :
         PomodoroUiState
 
     data class Active(
         val session: PomodoroSessionEntity,
-        val remainingMillis: Long
+        val remainingMillis: Long,
+        val preferences: PomodoroPreferences =
+            PomodoroPreferences()
     ) : PomodoroUiState
 
     data class Completed(
         val sessionId: Long,
         val recommendedType: String? = null,
-        val completedFocusCount: Int? = null
+        val completedFocusCount: Int? = null,
+        val preferences: PomodoroPreferences =
+            PomodoroPreferences()
     ) : PomodoroUiState
 
     data class Error(

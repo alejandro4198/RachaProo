@@ -28,6 +28,10 @@ import com.example.rachapro.data.local.entity.ActivityPriority
 import com.example.rachapro.data.local.entity.ActivityStatus
 import com.example.rachapro.data.local.entity.CategoryEntity
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Scaffold
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -41,6 +45,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.OutlinedTextField
+import com.example.rachapro.calendar.CalendarActivitiesContent
+import com.example.rachapro.ui.components.RachaGradientHeader
+import com.example.rachapro.ui.theme.RachaIndigo
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.MaterialTheme
+import com.example.rachapro.ui.components.RachaStatusBadge
+import com.example.rachapro.ui.components.StatusBadgeType
+
+
+enum class ActivitiesViewMode {
+    LIST,
+    CALENDAR
+}
 
 
 
@@ -102,12 +119,14 @@ fun ActivitiesScreen(
                 floatingActionButton = {
 
                     FloatingActionButton(
-                        onClick = onNewActivity
+                        onClick = onNewActivity,
+                        containerColor = RachaIndigo,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
                     ) {
-
-                        Text(
-                            text = "+",
-                            fontSize = 24.sp
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Nueva actividad"
                         )
                     }
                 }
@@ -117,6 +136,9 @@ fun ActivitiesScreen(
                     categories = uiState.categories,
 
                     activities =
+                        uiState.activities,
+
+                    filteredActivities =
                         uiState.filteredActivities,
 
                     selectedFilter =
@@ -171,6 +193,7 @@ fun ActivitiesScreen(
 private fun ActivitiesSuccessContent(
     categories: List<CategoryEntity>,
     activities: List<ActivityEntity>,
+    filteredActivities: List<ActivityEntity>,
     selectedFilter: ActivityFilter,
     searchQuery: String,
     actionState: ActivityActionState,
@@ -182,8 +205,81 @@ private fun ActivitiesSuccessContent(
     modifier: Modifier = Modifier
 ) {
 
+    var viewMode by rememberSaveable {
+        mutableStateOf(ActivitiesViewMode.LIST)
+    }
+
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            FilterChip(
+                selected = viewMode == ActivitiesViewMode.LIST,
+                onClick = { viewMode = ActivitiesViewMode.LIST },
+                label = { Text("Lista") },
+                modifier = Modifier.weight(1f)
+            )
+
+            FilterChip(
+                selected = viewMode == ActivitiesViewMode.CALENDAR,
+                onClick = { viewMode = ActivitiesViewMode.CALENDAR },
+                label = { Text("Calendario") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        when (viewMode) {
+
+            ActivitiesViewMode.LIST -> {
+
+                ActivitiesListContent(
+                    categories = categories,
+                    activities = filteredActivities,
+                    selectedFilter = selectedFilter,
+                    searchQuery = searchQuery,
+                    actionState = actionState,
+                    onFilterSelected = onFilterSelected,
+                    onSearchQueryChange = onSearchQueryChange,
+                    onEditActivity = onEditActivity,
+                    onCompleteActivity = onCompleteActivity,
+                    onDeleteActivity = onDeleteActivity
+                )
+            }
+
+            ActivitiesViewMode.CALENDAR -> {
+
+                CalendarActivitiesContent(
+                    activities = activities,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActivitiesListContent(
+    categories: List<CategoryEntity>,
+    activities: List<ActivityEntity>,
+    selectedFilter: ActivityFilter,
+    searchQuery: String,
+    actionState: ActivityActionState,
+    onFilterSelected: (ActivityFilter) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onEditActivity: (Long) -> Unit,
+    onCompleteActivity: (Long) -> Unit,
+    onDeleteActivity: (Long) -> Unit,
+) {
+
     LazyColumn(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -191,21 +287,33 @@ private fun ActivitiesSuccessContent(
 
         item {
 
-            Spacer(
-                modifier = Modifier.height(12.dp)
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Buscar actividades") },
+                placeholder = { Text("Título o descripción") },
+                singleLine = true,
+                shape = MaterialTheme.shapes.medium
             )
+        }
 
-            Text(
-                text = "Actividades",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
+        item {
 
-            Text(
-                text = "Organiza tus tareas y mantén tu progreso.",
-                modifier = Modifier.padding(top = 4.dp),
-                fontSize = 15.sp
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        item {
+
+            RachaGradientHeader(
+                title = "Actividades",
+                subtitle = "Organiza tus tareas y mantén tu progreso."
             )
+        }
+
+        item {
+
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
         item {
@@ -533,42 +641,7 @@ private fun ActivitiesSuccessContent(
 
         item {
 
-            OutlinedTextField(
-                value = searchQuery,
-
-                onValueChange = { newQuery ->
-
-                    onSearchQueryChange(
-                        newQuery
-                    )
-                },
-
-                modifier =
-                    Modifier.fillMaxWidth(),
-
-                label = {
-
-                    Text(
-                        text = "Buscar actividades"
-                    )
-                },
-
-                placeholder = {
-
-                    Text(
-                        text = "Título o descripción"
-                    )
-                },
-
-                singleLine = true
-            )
-        }
-
-        item {
-
-            Spacer(
-                modifier = Modifier.height(24.dp)
-            )
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
@@ -758,138 +831,89 @@ private fun ActivityCard(
             modifier = Modifier.padding(16.dp)
         ) {
 
-            Text(
-                text = activity.title,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            if (activity.description.isNotBlank()) {
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = activity.description,
-                    modifier = Modifier.padding(top = 4.dp)
+                    text = activity.title,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+
+                RachaStatusBadge(
+                    text = statusLabel(activity.status),
+                    type = when (activity.status) {
+                        ActivityStatus.COMPLETED -> StatusBadgeType.Success
+                        ActivityStatus.OVERDUE -> StatusBadgeType.Warning
+                        else -> StatusBadgeType.Pending
+                    }
                 )
             }
 
-            Spacer(
-                modifier = Modifier.height(12.dp)
-            )
+            if (activity.description.isNotBlank()) {
+                Text(
+                    text = activity.description,
+                    modifier = Modifier.padding(top = 6.dp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text =
-                    if (dueTime != null) {
-                        "📅 $dueDate   🕒 $dueTime"
-                    } else {
-                        "📅 $dueDate"
-                    },
+                text = if (dueTime != null) "📅 $dueDate   🕒 $dueTime" else "📅 $dueDate",
                 fontSize = 14.sp
             )
 
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement =
-                    Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
-                Text(
-                    text =
-                        "${category?.icon ?: "•"} " +
-                                (category?.name ?: "Sin categoría")
-                )
-
-                Text(
-                    text =
-                        priorityLabel(
-                            activity.priority
-                        )
-                )
+                Text(text = "${category?.icon ?: "•"} ${category?.name ?: "Sin categoría"}")
+                Text(text = priorityLabel(activity.priority))
             }
 
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-
-            OutlinedButton(
-                onClick = {
-                    showDeleteDialog = true
-                },
-
-                modifier = Modifier.fillMaxWidth(),
-
-                enabled =
-                    actionState !is ActivityActionState.Deleting &&
-                            actionState !is ActivityActionState.Completing
-            ) {
-
-                Text(
-                    text =
-                        if (isDeleting) {
-                            "Eliminando..."
-                        } else {
-                            "Eliminar"
-                        }
-                )
-            }
-
-            Text(
-                text =
-                    statusLabel(
-                        activity.status
-                    ),
-                fontWeight = FontWeight.Medium
-            )
+            Spacer(modifier = Modifier.height(14.dp))
 
             if (!isCompleted) {
-
-                Spacer(
-                    modifier = Modifier.height(12.dp)
-                )
-
                 OutlinedButton(
                     onClick = onEdit,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled =
-                        actionState !is ActivityActionState.Completing &&
-                                actionState !is ActivityActionState.Deleting &&
-                                actionState !is ActivityActionState.Updating
+                    enabled = actionState !is ActivityActionState.Completing &&
+                            actionState !is ActivityActionState.Deleting &&
+                            actionState !is ActivityActionState.Updating
                 ) {
-
-                    Text(
-                        text = "Editar"
-                    )
+                    Text(text = "Editar")
                 }
-            }
 
-            if (!isCompleted) {
-
-                Spacer(
-                    modifier = Modifier.height(12.dp)
-                )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
                     onClick = onComplete,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled =
-                        actionState
-                                !is ActivityActionState.Completing
+                    enabled = actionState !is ActivityActionState.Completing
                 ) {
-
                     Text(
-                        text =
-                            if (isCompleting) {
-                                "Completando..."
-                            } else {
-                                "✓ Marcar como completada"
-                            }
+                        text = if (isCompleting) "Completando..." else "✓ Marcar como completada"
                     )
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
+            OutlinedButton(
+                onClick = { showDeleteDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = actionState !is ActivityActionState.Deleting &&
+                        actionState !is ActivityActionState.Completing
+            ) {
+                Text(text = if (isDeleting) "Eliminando..." else "Eliminar")
+            }
         }
     }
 }
