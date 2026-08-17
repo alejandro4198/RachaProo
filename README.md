@@ -10,7 +10,7 @@
 | Semana actual | Semana 4                                                                                                                                                     |
 | Sistema base | Implementación funcional actual de RachaPro para Android, previa a cualquier cambio arquitectónico derivado de los experimentos de Arquitectura de Software. |
 | Repositorio | https://github.com/alejandro4198/RachaProo.git                                                                                                               |
-| Versión / commit evaluado | PENDIENTE DE FIJAR COMO LÍNEA BASE. HEAD actual: `0f13f0d01ca9e0f261632882f8a927a4fbdc8bb5`. Existen cambios locales sin commit.                             |
+| Versión / commit evaluado | Línea base previa al experimento: `3b088858061edc47f6cd018a4130a38c2afb0f73` |
 
 
 ## 2. Navegación de evidencias
