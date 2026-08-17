@@ -10,11 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ReminderDao {
 
-    /*
-     * ---------------------------------------------------------
-     * CREAR
-     * ---------------------------------------------------------
-     */
 
     @Insert(
         onConflict = OnConflictStrategy.ABORT
@@ -23,11 +18,6 @@ interface ReminderDao {
         reminder: ReminderEntity
     ): Long
 
-    /*
-     * ---------------------------------------------------------
-     * OBSERVAR RECORDATORIOS DEL USUARIO
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -43,11 +33,6 @@ interface ReminderDao {
         userId: Long
     ): Flow<List<ReminderEntity>>
 
-    /*
-     * ---------------------------------------------------------
-     * OBSERVAR RECORDATORIOS DE UNA ACTIVIDAD
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -65,12 +50,6 @@ interface ReminderDao {
         activityId: Long
     ): Flow<List<ReminderEntity>>
 
-    /*
-     * ---------------------------------------------------------
-     * OBTENER POR ID
-     * ---------------------------------------------------------
-     */
-
     @Query(
         """
         SELECT *
@@ -85,11 +64,6 @@ interface ReminderDao {
         userId: Long
     ): ReminderEntity?
 
-    /*
-     * ---------------------------------------------------------
-     * OBTENER RECORDATORIOS PROGRAMADOS
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -106,11 +80,6 @@ interface ReminderDao {
         userId: Long
     ): List<ReminderEntity>
 
-    /*
-     * ---------------------------------------------------------
-     * CANCELAR
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -129,11 +98,6 @@ interface ReminderDao {
         updatedAt: Long
     ): Int
 
-    /*
-     * ---------------------------------------------------------
-     * MARCAR COMO ENTREGADO
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """

@@ -92,12 +92,6 @@ fun RachaProNavHost() {
         startDestination = Routes.APP_START
     ) {
 
-        /*
-         * ---------------------------------------------------------
-         * ARRANQUE DE LA APLICACIÓN
-         * ---------------------------------------------------------
-         */
-
         composable(Routes.APP_START) {
 
             LaunchedEffect(appStartState) {
@@ -105,7 +99,6 @@ fun RachaProNavHost() {
                 when (appStartState) {
 
                     AppStartState.Loading -> {
-                        // Esperamos a que DataStore termine de leer.
                     }
 
                     AppStartState.NeedsOnboarding -> {
@@ -149,11 +142,6 @@ fun RachaProNavHost() {
             AppLoadingScreen()
         }
 
-        /*
-         * ---------------------------------------------------------
-         * BIENVENIDA
-         * ---------------------------------------------------------
-         */
 
         composable(Routes.WELCOME) {
 
@@ -167,11 +155,6 @@ fun RachaProNavHost() {
             )
         }
 
-        /*
-         * ---------------------------------------------------------
-         * ONBOARDING
-         * ---------------------------------------------------------
-         */
 
         composable(Routes.ONBOARDING) {
 
@@ -186,12 +169,6 @@ fun RachaProNavHost() {
                 }
             )
         }
-
-        /*
-         * ---------------------------------------------------------
-         * REGISTRO
-         * ---------------------------------------------------------
-         */
 
         composable(Routes.REGISTER) {
 
@@ -297,12 +274,6 @@ fun RachaProNavHost() {
                 }
             )
         }
-
-        /*
-         * ---------------------------------------------------------
-         * INICIO
-         * ---------------------------------------------------------
-         */
 
         composable(
             route = Routes.HOME,
@@ -717,10 +688,6 @@ fun RachaProNavHost() {
                         "activityId"
                     )
 
-            /*
-             * Compartimos el mismo ActivitiesViewModel
-             * perteneciente a HOME.
-             */
 
             val homeBackStackEntry =
                 remember(

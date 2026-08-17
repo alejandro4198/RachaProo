@@ -38,10 +38,6 @@ class ReminderReceiver :
                 -1L
             )
 
-        /*
-         * Si el Intent llegó incompleto,
-         * no hacemos nada.
-         */
         if (
             reminderId <= 0L ||
             userId <= 0L
@@ -62,15 +58,6 @@ class ReminderReceiver :
                     context.applicationContext
                             as RachaProApplication
 
-                /*
-                 * =========================================================
-                 * VALIDAR SESIÓN ACTIVA
-                 * =========================================================
-                 *
-                 * Un recordatorio solo puede mostrarse si
-                 * pertenece al usuario que está autenticado
-                 * actualmente.
-                 */
                 val session =
                     application
                         .sessionManager
@@ -87,9 +74,6 @@ class ReminderReceiver :
                     return@launch
                 }
 
-                /*
-                 * Ahora sí consultamos el recordatorio.
-                 */
                 val reminder =
                     application
                         .reminderRepository
@@ -101,10 +85,6 @@ class ReminderReceiver :
                                 activeUserId
                         )
 
-                /*
-                 * Puede haber sido cancelado,
-                 * eliminado lógicamente o no existir.
-                 */
                 if (
                     reminder == null ||
                     reminder.status !=
@@ -126,10 +106,6 @@ class ReminderReceiver :
                     return@launch
                 }
 
-                /*
-                 * Al tocar la notificación
-                 * abriremos RachaPro.
-                 */
                 val openAppIntent =
                     Intent(
                         context,
@@ -200,20 +176,9 @@ class ReminderReceiver :
 
                 } catch (_: SecurityException) {
 
-                    /*
-                     * Protección adicional.
-                     *
-                     * El permiso podría cambiar entre
-                     * la comprobación y esta llamada.
-                     */
                     return@launch
                 }
 
-                /*
-                 * Solo marcamos DELIVERED
-                 * después de publicar
-                 * la notificación.
-                 */
                 application
                     .reminderRepository
                     .markReminderDelivered(
@@ -241,10 +206,6 @@ class ReminderReceiver :
     }
 }
 
-/*
- * NotificationManager utiliza Int
- * para identificar notificaciones.
- */
 private fun Long.toNotificationRequestCode():
         Int {
 

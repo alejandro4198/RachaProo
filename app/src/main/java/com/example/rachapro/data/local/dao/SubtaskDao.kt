@@ -10,11 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubtaskDao {
 
-    /*
-     * ---------------------------------------------------------
-     * CREAR SUBTAREA
-     * ---------------------------------------------------------
-     */
 
     @Insert(
         onConflict = OnConflictStrategy.ABORT
@@ -23,11 +18,6 @@ interface SubtaskDao {
         subtask: SubtaskEntity
     ): Long
 
-    /*
-     * ---------------------------------------------------------
-     * OBSERVAR SUBTAREAS DE UNA ACTIVIDAD
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -44,12 +34,6 @@ interface SubtaskDao {
         activityId: Long
     ): Flow<List<SubtaskEntity>>
 
-    /*
-     * ---------------------------------------------------------
-     * OBTENER UNA SUBTAREA
-     * ---------------------------------------------------------
-     */
-
     @Query(
         """
         SELECT *
@@ -64,11 +48,6 @@ interface SubtaskDao {
         activityId: Long
     ): SubtaskEntity?
 
-    /*
-     * ---------------------------------------------------------
-     * EDITAR TÍTULO
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -87,11 +66,6 @@ interface SubtaskDao {
         updatedAt: Long
     ): Int
 
-    /*
-     * ---------------------------------------------------------
-     * COMPLETAR / DESMARCAR
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """
@@ -112,11 +86,6 @@ interface SubtaskDao {
         updatedAt: Long
     ): Int
 
-    /*
-     * ---------------------------------------------------------
-     * ELIMINAR SUBTAREA
-     * ---------------------------------------------------------
-     */
 
     @Query(
         """

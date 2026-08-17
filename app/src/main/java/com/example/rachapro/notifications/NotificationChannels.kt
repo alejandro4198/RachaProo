@@ -7,13 +7,6 @@ import android.os.Build
 
 object NotificationChannels {
 
-    /*
-     * ID interno y estable del canal.
-     *
-     * Este valor NO debe cambiar después,
-     * porque Android identifica el canal
-     * mediante este String.
-     */
     const val REMINDERS_CHANNEL_ID =
         "racha_pro_reminders"
 
@@ -27,10 +20,6 @@ object NotificationChannels {
         context: Context
     ) {
 
-        /*
-         * Los NotificationChannel existen
-         * desde Android 8.0 / API 26.
-         */
         if (
             Build.VERSION.SDK_INT >=
             Build.VERSION_CODES.O

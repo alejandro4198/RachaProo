@@ -10,12 +10,6 @@ class SubtaskRepository(
     private val activityDao: ActivityDao
 ) {
 
-    /*
-     * ---------------------------------------------------------
-     * OBSERVAR SUBTAREAS
-     * ---------------------------------------------------------
-     */
-
     suspend fun observeSubtasks(
         userId: Long,
         activityId: Long
@@ -46,11 +40,6 @@ class SubtaskRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CREAR SUBTAREA
-     * ---------------------------------------------------------
-     */
 
     suspend fun createSubtask(
         userId: Long,
@@ -106,11 +95,6 @@ class SubtaskRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * EDITAR SUBTAREA
-     * ---------------------------------------------------------
-     */
 
     suspend fun updateSubtaskTitle(
         userId: Long,
@@ -158,11 +142,6 @@ class SubtaskRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * COMPLETAR / DESMARCAR SUBTAREA
-     * ---------------------------------------------------------
-     */
 
     suspend fun setSubtaskCompleted(
         userId: Long,
@@ -212,11 +191,6 @@ class SubtaskRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * ELIMINAR SUBTAREA
-     * ---------------------------------------------------------
-     */
 
     suspend fun deleteSubtask(
         userId: Long,
@@ -252,11 +226,6 @@ class SubtaskRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * VALIDAR PROPIEDAD DE LA ACTIVIDAD
-     * ---------------------------------------------------------
-     */
 
     private suspend fun userOwnsActivity(
         userId: Long,
@@ -273,11 +242,6 @@ class SubtaskRepository(
                 !activity.isDeleted
     }
 
-    /*
-     * ---------------------------------------------------------
-     * RESULTADO DE UPDATE / DELETE
-     * ---------------------------------------------------------
-     */
 
     private fun resultFromRowsAffected(
         rowsAffected: Int
@@ -294,11 +258,6 @@ class SubtaskRepository(
     }
 }
 
-/*
- * =============================================================
- * RESULTADO AL OBSERVAR SUBTAREAS
- * =============================================================
- */
 
 sealed interface SubtaskObserveResult {
 
@@ -314,11 +273,6 @@ sealed interface SubtaskObserveResult {
         SubtaskObserveResult
 }
 
-/*
- * =============================================================
- * RESULTADO AL CREAR
- * =============================================================
- */
 
 sealed interface SubtaskCreateResult {
 
@@ -337,11 +291,6 @@ sealed interface SubtaskCreateResult {
         SubtaskCreateResult
 }
 
-/*
- * =============================================================
- * RESULTADO DE OPERACIONES
- * =============================================================
- */
 
 sealed interface SubtaskOperationResult {
 

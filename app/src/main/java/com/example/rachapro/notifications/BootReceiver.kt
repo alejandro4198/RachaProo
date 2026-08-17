@@ -17,10 +17,6 @@ class BootReceiver :
         intent: Intent
     ) {
 
-        /*
-         * Solo reaccionamos al arranque completo
-         * del dispositivo.
-         */
         if (
             intent.action !=
             Intent.ACTION_BOOT_COMPLETED
@@ -41,12 +37,6 @@ class BootReceiver :
                     context.applicationContext
                             as RachaProApplication
 
-                /*
-                 * Recuperamos la sesión persistida.
-                 *
-                 * Si no existe usuario autenticado,
-                 * no restauramos recordatorios.
-                 */
                 val session =
                     application
                         .sessionManager
@@ -62,10 +52,6 @@ class BootReceiver :
                     return@launch
                 }
 
-                /*
-                 * Room sigue conservando los
-                 * recordatorios después del reinicio.
-                 */
                 val reminders =
                     application
                         .reminderRepository
@@ -78,11 +64,6 @@ class BootReceiver :
 
                 reminders.forEach { reminder ->
 
-                    /*
-                     * Solo restauramos alarmas
-                     * cuya fecha todavía está
-                     * en el futuro.
-                     */
                     if (
                         reminder.triggerAtMillis >
                         currentTime
@@ -96,14 +77,6 @@ class BootReceiver :
 
                     } else {
 
-                        /*
-                         * Si el momento ya pasó,
-                         * no queremos dejar un
-                         * SCHEDULED fantasma.
-                         *
-                         * Más adelante podemos
-                         * crear un estado MISSED.
-                         */
                         application
                             .reminderRepository
                             .cancelReminder(

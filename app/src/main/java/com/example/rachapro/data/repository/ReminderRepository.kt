@@ -10,12 +10,6 @@ class ReminderRepository(
     private val activityDao: ActivityDao
 ) {
 
-    /*
-     * ---------------------------------------------------------
-     * OBSERVAR TODOS LOS RECORDATORIOS DEL USUARIO
-     * ---------------------------------------------------------
-     */
-
     fun observeReminders(
         userId: Long
     ): Flow<List<ReminderEntity>> {
@@ -25,11 +19,6 @@ class ReminderRepository(
         )
     }
 
-    /*
-     * ---------------------------------------------------------
-     * OBSERVAR RECORDATORIOS DE UNA ACTIVIDAD
-     * ---------------------------------------------------------
-     */
 
     fun observeRemindersByActivity(
         userId: Long,
@@ -42,11 +31,6 @@ class ReminderRepository(
         )
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CREAR RECORDATORIO
-     * ---------------------------------------------------------
-     */
 
     suspend fun createReminder(
         userId: Long,
@@ -83,10 +67,6 @@ class ReminderRepository(
 
         return try {
 
-            /*
-             * Si está asociado a una actividad,
-             * comprobamos que pertenezca al usuario.
-             */
             if (activityId != null) {
 
                 val activity =
@@ -129,11 +109,6 @@ class ReminderRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * OBTENER RECORDATORIO
-     * ---------------------------------------------------------
-     */
 
     suspend fun getReminderById(
         reminderId: Long,
@@ -153,12 +128,6 @@ class ReminderRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * OBTENER RECORDATORIOS PROGRAMADOS
-     * ---------------------------------------------------------
-     */
-
     suspend fun getScheduledReminders(
         userId: Long
     ): List<ReminderEntity> {
@@ -175,11 +144,6 @@ class ReminderRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CANCELAR
-     * ---------------------------------------------------------
-     */
 
     suspend fun cancelReminder(
         reminderId: Long,
@@ -206,11 +170,6 @@ class ReminderRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * MARCAR COMO ENTREGADO
-     * ---------------------------------------------------------
-     */
 
     suspend fun markReminderDelivered(
         reminderId: Long,
@@ -240,12 +199,6 @@ class ReminderRepository(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * RESULTADO UPDATE
-     * ---------------------------------------------------------
-     */
-
     private fun resultFromRowsAffected(
         rowsAffected: Int
     ): ReminderOperationResult {
@@ -261,12 +214,6 @@ class ReminderRepository(
         }
     }
 }
-
-/*
- * =============================================================
- * RESULTADO AL CREAR
- * =============================================================
- */
 
 sealed interface ReminderCreateResult {
 
@@ -285,11 +232,6 @@ sealed interface ReminderCreateResult {
         ReminderCreateResult
 }
 
-/*
- * =============================================================
- * RESULTADO DE OPERACIONES
- * =============================================================
- */
 
 sealed interface ReminderOperationResult {
 

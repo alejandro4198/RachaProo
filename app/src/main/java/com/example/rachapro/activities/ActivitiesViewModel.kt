@@ -120,11 +120,6 @@ class ActivitiesViewModel(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CREAR ACTIVIDAD
-     * ---------------------------------------------------------
-     */
 
     fun createActivity(
         title: String,
@@ -411,11 +406,6 @@ class ActivitiesViewModel(
                     activityId = activityId
                 )
 
-            /*
-             * La racha depende del día calendario
-             * local del usuario, no simplemente
-             * de intervalos de 24 horas.
-             */
             val completedDateEpochDay =
                 LocalDate
                     .now()
@@ -554,11 +544,6 @@ class ActivitiesViewModel(
             ActivityActionState.Idle
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CARGAR CATEGORÍAS Y ACTIVIDADES
-     * ---------------------------------------------------------
-     */
 
     private suspend fun refreshActivityStatuses(
         userId: Long
@@ -677,11 +662,6 @@ class ActivitiesViewModel(
             }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CATEGORÍAS INICIALES
-     * ---------------------------------------------------------
-     */
 
     private fun filterActivities(
         activities: List<ActivityEntity>,
@@ -819,20 +799,12 @@ class ActivitiesViewModel(
                     activity.dueDateEpochDay
                 }
 
-                /*
-                 * Las actividades con hora aparecen
-                 * antes que las que no tienen hora.
-                 */
                 .thenBy { activity ->
 
                     activity.dueTimeMinutes
                         ?: Int.MAX_VALUE
                 }
 
-                /*
-                 * Si fecha y hora coinciden,
-                 * priorizamos Alta → Media → Baja.
-                 */
                 .thenBy { activity ->
 
                     priorityOrder(
@@ -923,11 +895,6 @@ class ActivitiesViewModel(
     }
 }
 
-/*
- * -------------------------------------------------------------
- * ESTADO PRINCIPAL DE LA PANTALLA
- * -------------------------------------------------------------
- */
 
 sealed interface ActivitiesUiState {
     data object Loading :
@@ -962,11 +929,6 @@ enum class ActivityFilter {
     COMPLETED
 }
 
-/*
- * -------------------------------------------------------------
- * ESTADO DE OPERACIONES
- * -------------------------------------------------------------
- */
 
 sealed interface ActivityActionState {
 

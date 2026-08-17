@@ -33,38 +33,16 @@ data class ReminderEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    /*
-     * Usuario propietario.
-     */
     val userId: Long,
 
-    /*
-     * Puede ser null para soportar
-     * recordatorios independientes.
-     */
     val activityId: Long? = null,
 
-    /*
-     * Título visible de la notificación.
-     */
     val title: String,
 
-    /*
-     * Texto adicional.
-     */
     val message: String = "",
 
-    /*
-     * Momento exacto en el que debe
-     * activarse el recordatorio.
-     */
     val triggerAtMillis: Long,
 
-    /*
-     * SCHEDULED
-     * DELIVERED
-     * CANCELLED
-     */
     val status: String =
         ReminderStatus.SCHEDULED,
 
@@ -72,10 +50,6 @@ data class ReminderEntity(
 
     val updatedAt: Long,
 
-    /*
-     * Solo tendrá valor después
-     * de mostrarse la notificación.
-     */
     val deliveredAt: Long? = null
 )
 

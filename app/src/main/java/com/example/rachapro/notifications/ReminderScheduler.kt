@@ -16,19 +16,10 @@ class ReminderScheduler(
             AlarmManager::class.java
         )
 
-    /*
-     * =========================================================
-     * PROGRAMAR RECORDATORIO
-     * =========================================================
-     */
-
     fun schedule(
         reminder: ReminderEntity
     ): ReminderScheduleResult {
 
-        /*
-         * No programamos fechas que ya pasaron.
-         */
         if (
             reminder.triggerAtMillis <=
             System.currentTimeMillis()
@@ -48,13 +39,6 @@ class ReminderScheduler(
 
         return try {
 
-            /*
-             * Android 12 / API 31+
-             *
-             * canScheduleExactAlarms()
-             * nos dice si podemos utilizar
-             * una alarma exacta.
-             */
             val canScheduleExact =
                 if (
                     Build.VERSION.SDK_INT >=
@@ -73,10 +57,6 @@ class ReminderScheduler(
                 canScheduleExact
             ) {
 
-                /*
-                 * Recordatorio lo más cercano
-                 * posible al momento solicitado.
-                 */
                 alarmManager
                     .setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
@@ -89,14 +69,6 @@ class ReminderScheduler(
 
             } else {
 
-                /*
-                 * Si Android no permite alarmas
-                 * exactas, usamos una alarma
-                 * aproximada.
-                 *
-                 * Así la app sigue funcionando
-                 * sin lanzar SecurityException.
-                 */
                 alarmManager
                     .setAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
@@ -110,11 +82,6 @@ class ReminderScheduler(
 
         } catch (_: SecurityException) {
 
-            /*
-             * Protección adicional ante posibles
-             * cambios de permiso entre la
-             * comprobación y la programación.
-             */
             try {
 
                 alarmManager
@@ -138,11 +105,6 @@ class ReminderScheduler(
         }
     }
 
-    /*
-     * =========================================================
-     * CANCELAR RECORDATORIO
-     * =========================================================
-     */
 
     fun cancel(
         reminderId: Long,
@@ -165,11 +127,6 @@ class ReminderScheduler(
         pendingIntent.cancel()
     }
 
-    /*
-     * =========================================================
-     * CREAR PENDING INTENT
-     * =========================================================
-     */
 
     private fun createPendingIntent(
         reminderId: Long,
@@ -211,11 +168,6 @@ class ReminderScheduler(
     }
 }
 
-/*
- * =============================================================
- * RESULTADO DE PROGRAMACIÓN
- * =============================================================
- */
 
 sealed interface ReminderScheduleResult {
 
@@ -226,11 +178,6 @@ sealed interface ReminderScheduleResult {
     data object ScheduledExact :
         ReminderScheduleResult
 
-    /*
-     * Se programó correctamente,
-     * pero Android puede retrasarlo
-     * ligeramente.
-     */
     data object ScheduledInexact :
         ReminderScheduleResult
 
@@ -240,12 +187,6 @@ sealed interface ReminderScheduleResult {
     data object Error :
         ReminderScheduleResult
 }
-
-/*
- * =============================================================
- * REQUEST CODE
- * =============================================================
- */
 
 private fun Long.toAlarmRequestCode():
         Int {
