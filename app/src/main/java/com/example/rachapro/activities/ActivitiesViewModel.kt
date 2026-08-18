@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
+import android.os.SystemClock
+import android.util.Log
 
 class ActivitiesViewModel(
     private val activityRepository: ActivityRepository,
@@ -576,6 +578,12 @@ class ActivitiesViewModel(
         loadJob =
             viewModelScope.launch {
 
+                val measurementStart =
+                    SystemClock.elapsedRealtime()
+
+                var measurementLogged =
+                    false
+
                 _uiState.value =
                     ActivitiesUiState.Loading
 
@@ -620,23 +628,21 @@ class ActivitiesViewModel(
 
                     ) { categories, activities, selectedFilter, searchQuery ->
 
-                        val filteredByStatus = filterActivities(
+                        val filteredByStatus =
+                            filterActivities(
                                 activities = activities,
                                 filter = selectedFilter
                             )
 
                         val searchedActivities =
                             searchActivities(
-                                activities =
-                                    filteredByStatus,
-                                query =
-                                    searchQuery
+                                activities = filteredByStatus,
+                                query = searchQuery
                             )
 
                         val filteredActivities =
                             sortActivities(
-                                activities =
-                                    searchedActivities
+                                activities = searchedActivities
                             )
 
                         ActivitiesUiState.Success(
@@ -645,13 +651,31 @@ class ActivitiesViewModel(
                             activities = activities,
                             filteredActivities = filteredActivities,
                             selectedFilter = selectedFilter,
-                            searchQuery = searchQuery,
+                            searchQuery = searchQuery
                         )
 
                     }.collect { state ->
 
                         _uiState.value =
                             state
+
+                        if (
+                            !measurementLogged &&
+                            state.activities.size == 100
+                        ) {
+
+                            val elapsedMillis =
+                                SystemClock.elapsedRealtime() -
+                                        measurementStart
+
+                            Log.i(
+                                "EXP-001",
+                                "load_ms=$elapsedMillis activities=${state.activities.size}"
+                            )
+
+                            measurementLogged =
+                                true
+                        }
                     }
 
                 } catch (_: Exception) {
