@@ -1,0 +1,16 @@
+EXP-001 - Corrida 3
+Uso: medicion valida
+Fecha: 2026-08-18 18:28:47
+Commit instrumentado: 59c182b12c7a2678f6ed09d1b69b399327d097d4
+
+--- Arranque ---
+Starting: Intent { cmp=com.example.rachapro/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.example.rachapro/.MainActivity
+TotalTime: 1101
+WaitTime: 1138
+Complete
+
+--- Medicion ---
+08-18 18:28:43.108 20330 20330 I EXP-001 : load_ms=1317 activities=100

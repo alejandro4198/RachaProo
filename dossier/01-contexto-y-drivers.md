@@ -37,7 +37,7 @@
 
 | Driver preliminar | Justificación | Antecedente | Estado |
 |---|---|---|---|
-| Rendimiento del módulo de actividades | El equipo considera relevante evaluar si el módulo mantiene tiempos de respuesta adecuados cuando aumenta la cantidad de actividades registradas. | RNF02 histórico: rendimiento del módulo de actividades. | DRIVER PRELIMINAR CONFIRMADO POR EL EQUIPO |
+| Rendimiento del módulo de actividades | El equipo considera relevante evaluar el tiempo de respuesta del módulo ante una semilla controlada de actividades registradas. | RNF02 histórico: rendimiento del módulo de actividades. | DRIVER PRELIMINAR CONFIRMADO POR EL EQUIPO |
 
 ## 6. Riesgos iniciales
 
@@ -59,15 +59,21 @@
 
 ## 8. Referencia a la hipótesis inicial
 
-El equipo plantea que el módulo de actividades podría degradar su rendimiento al aumentar la cantidad de actividades registradas. La hipótesis permanece sin verificar mediante evidencia experimental.
+Antes de ejecutar EXP-001, el equipo planteó que el módulo de actividades podría presentar un tiempo de respuesta superior al esperado ante una semilla controlada de actividades.
+
+La hipótesis específica utilizada posteriormente en EXP-001 fue:
+
+Con una semilla de 100 actividades registradas, el tiempo de carga del listado principal podría superar el umbral histórico de 3 segundos.
+
+Esta hipótesis fue formulada antes de disponer de resultados experimentales y fue contrastada posteriormente mediante EXP-001.
 
 ## 9. Qué todavía no ha sido verificado
 
-- El rendimiento actual del módulo de actividades y su posible degradación con más registros.
 - La existencia y funcionamiento del backend actual, reportado por el equipo pero aún sin evidencia incorporada.
 - La referencia oficial sobre pruebas/mediciones y la definición formal de "Opción A".
-- El commit definitivo de línea base de Semana 4.
 - La manifestación real de los riesgos identificados.
+- El comportamiento del rendimiento con cantidades de actividades diferentes a las 100 utilizadas en EXP-001.
+- El comportamiento del escenario medido en dispositivos o condiciones de ejecución diferentes a las utilizadas en EXP-001.
 
 ## 10. Trazabilidad
 
@@ -78,5 +84,7 @@ El equipo plantea que el módulo de actividades podría degradar su rendimiento 
 | RNF02 histórico | Rendimiento del módulo de actividades, con criterios previos de tiempo de respuesta y cantidad de actividades | Antecedente del driver seleccionado actualmente. | HECHO VERIFICADO |
 | CP19 histórico | Prueba planteada para cargar el listado de actividades | Antecedente de medición de rendimiento. | HECHO VERIFICADO |
 | Decisión actual del equipo | Rendimiento del módulo de actividades | Driver arquitectónico preliminar seleccionado. | DECISIÓN ACTUAL |
-| Decisión actual del equipo | Posible degradación al aumentar las actividades registradas | Hipótesis relacionada con el driver. | HIPÓTESIS NO VERIFICADA |
-| Implementación actual | Medición real del rendimiento | Aún falta evidencia reproducible. | EVIDENCIA FALTANTE |
+| Decisión actual del equipo | Hipótesis de rendimiento con una semilla de 100 actividades | Dio origen a la hipótesis previa utilizada en EXP-001. | HIPÓTESIS PREVIA CONTRASTADA POSTERIORMENTE |
+| Commit `3b088858061edc47f6cd018a4130a38c2afb0f73` | Línea base funcional previa a instrumentación | Identifica el estado funcional del sistema previo al experimento. | HECHO VERIFICADO |
+| Commit `59c182b12c7a2678f6ed09d1b69b399327d097d4` | Versión instrumentada utilizada para medir | Relaciona las corridas con la versión ejecutada durante EXP-001. | HECHO VERIFICADO |
+| `experimentos/EXP-001-linea-base/` | Medición real del rendimiento | Contiene condiciones, logs, resultados y script reproducible de EXP-001. | HECHO VERIFICADO |

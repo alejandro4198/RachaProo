@@ -1,13 +1,14 @@
 # 02 - Escenarios de calidad
 
 ## 1. Atributos de calidad considerados
-| Atributo de calidad | Antecedente en el proyecto | Estado |
-|---|---|---|
+
+| Atributo de calidad | Antecedente en el proyecto                   | Estado |
+|---|----------------------------------------------|---|
 | Usabilidad | RNF01, RNF05 y RNF06 del proyecto histórico. | ANTECEDENTE HISTÓRICO |
 | Rendimiento | RNF02: rendimiento del módulo de actividades. | ANTECEDENTE HISTÓRICO |
-| Seguridad | RNF03: seguridad de la información. | ANTECEDENTE HISTÓRICO |
-| Disponibilidad | RNF04: disponibilidad del sistema. | ANTECEDENTE HISTÓRICO |
-| Precisión | RNF07: precisión del temporizador Pomodoro. | ANTECEDENTE HISTÓRICO |
+| Seguridad | RNF03: seguridad de la información.          | ANTECEDENTE HISTÓRICO |
+| Disponibilidad | RNF04: disponibilidad del sistema.           | ANTECEDENTE HISTÓRICO |
+| Precisión | RNF07: precisión del temporizador Pomodoro.  | ANTECEDENTE HISTÓRICO |
 
 ## 2. Relación con stakeholders y contexto
 
@@ -25,7 +26,7 @@ Los atributos anteriores provienen de los requerimientos no funcionales históri
 |---|---|---|
 | Atributo priorizado para el trabajo actual | Rendimiento | DECISIÓN ACTUAL DEL EQUIPO |
 | Área de aplicación | Módulo de actividades | DECISIÓN ACTUAL DEL EQUIPO |
-| Motivo de selección | Se busca comprobar el comportamiento del módulo al cargar un listado con 100 actividades registradas. | HIPÓTESIS AÚN NO VERIFICADA |
+| Motivo de selección | Se busca comprobar el comportamiento del módulo al cargar un listado con 100 actividades registradas. | HIPÓTESIS NO VERIFICADA AL MOMENTO DE LA SELECCIÓN |
 
 Los requerimientos históricos contemplaban varios atributos de calidad con prioridad alta, pero no establecían una priorización arquitectónica comparativa entre ellos. Para el trabajo actual, el equipo seleccionó el rendimiento del módulo de actividades como foco de evaluación.
 
@@ -44,7 +45,8 @@ Este trade-off todavía no ha sido comprobado mediante cambios arquitectónicos 
 | Campo | Definición                                                                                                                                                                 |
 |---|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Fuente del estímulo | Inicialización del módulo de actividades de RachaPro. |
-| Estímulo | Se inicia automáticamente la ejecución de `loadData()` al crearse `ActivitiesViewModel`. || Ambiente | Uso normal de la aplicación con un conjunto previamente cargado de actividades.                                                                                            |
+| Estímulo | Se inicia automáticamente la ejecución de `loadData()` al crearse `ActivitiesViewModel`. |
+| Ambiente | Uso normal de la aplicación con un conjunto previamente cargado de actividades. |
 | Artefacto | Módulo de actividades de RachaPro.                                                                                                                                         |
 | Respuesta | El sistema recupera y prepara los datos del listado.                                                                                                                       |
 | Medida de respuesta | Desde que inicia loadData() hasta que se obtiene ActivitiesUiState.Success con las 100 actividades.                                                                        |
@@ -107,6 +109,61 @@ La hipótesis preliminar establece que, con una semilla de 100 actividades regis
 
 El escenario seleccionado permite contrastar esta hipótesis midiendo el tiempo transcurrido desde el inicio de `loadData()` hasta que el sistema obtiene `ActivitiesUiState.Success` con las 100 actividades cargadas.
 
-La medición se realizará sobre la misma versión del sistema, utilizando `SystemClock.elapsedRealtime()` y registrando los resultados en Logcat.
+Para la medición se definió el uso de la misma versión del sistema, `SystemClock.elapsedRealtime()` y el registro de resultados mediante Logcat.
 
-Hasta este punto no existe evidencia experimental que permita aceptar o rechazar la hipótesis.
+En el momento de definir este escenario y antes de ejecutar EXP-001, no existía evidencia experimental que permitiera aceptar o rechazar la hipótesis.
+
+
+## 11. Matriz de atributos de calidad críticos
+
+Esta matriz corresponde a una consolidación posterior de los atributos de calidad identificados en el proyecto. Fue elaborada después de la selección del escenario de Rendimiento y de la ejecución de EXP-001, por lo que no fue utilizada originalmente para seleccionar dicho atributo ni modifica retroactivamente las decisiones previas.
+
+Como consolidación de los atributos de calidad identificados en la documentación histórica de RachaPro, se realizó una valoración utilizando tres criterios:
+
+- Impacto en el usuario.
+- Impacto en el funcionamiento del sistema.
+- Necesidad de atención arquitectónica.
+
+Cada criterio se valoró mediante una escala de 1 a 3:
+
+- 1: Bajo.
+- 2: Medio.
+- 3: Alto.
+
+La criticidad corresponde a la suma de los tres criterios, con un valor posible entre 3 y 9.
+
+Los rangos utilizados para interpretar el resultado son:
+
+| Puntaje | Nivel |
+|---:|---|
+| 3–4 | Bajo |
+| 5–6 | Medio |
+| 7–8 | Alto |
+| 9 | Crítico |
+
+### Valoración
+
+| Atributo | RNF asociados | Impacto usuario | Impacto sistema | Atención arquitectónica | Total | Nivel |
+|---|---|---:|---:|---:|---:|---|
+| Usabilidad | RNF01, RNF05 y RNF06 | 3 | 2 | 2 | 7 | Alto |
+| Rendimiento | RNF02 | 2 | 2 | 3 | 7 | Alto |
+| Seguridad | RNF03 | 3 | 3 | 3 | 9 | Crítico |
+| Disponibilidad | RNF04 | 3 | 2 | 3 | 8 | Alto |
+| Precisión | RNF07 | 1 | 2 | 1 | 4 | Bajo |
+
+### Justificación de las valoraciones
+
+**Usabilidad — RNF01, RNF05 y RNF06.**
+La usabilidad tiene un impacto alto sobre el usuario debido a que dificultades importantes para comprender o utilizar la aplicación pueden impedir que esta cumpla su propósito. Se considera que su impacto sobre el sistema y su necesidad de atención arquitectónica son medios.
+
+**Rendimiento — RNF02.**
+Un rendimiento deficiente puede generar frustración en los usuarios y afectar la continuidad del uso de la aplicación. Se considera especialmente importante vigilar este atributo en funcionalidades relacionadas con el registro y consulta de actividades.
+
+**Seguridad — RNF03.**
+La seguridad obtuvo la valoración máxima debido a que una falla podría comprometer la información de los usuarios. Su impacto se considera alto tanto para el usuario como para el sistema y requiere una atención arquitectónica elevada.
+
+**Disponibilidad — RNF04.**
+La disponibilidad tiene un impacto alto para el usuario debido a que, si la aplicación no puede abrirse o sus funciones principales no pueden utilizarse, el usuario queda impedido para interactuar con el sistema. Por esta razón también se considera necesaria una atención arquitectónica alta.
+
+**Precisión — RNF07.**
+La precisión del temporizador puede generar inconformidad si presenta fallos, aunque se considera menos crítica frente a otros atributos debido a que el propósito principal de RachaPro se encuentra relacionado con la gestión y registro de actividades.

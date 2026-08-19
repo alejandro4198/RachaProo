@@ -1,0 +1,16 @@
+EXP-001 - Corrida 1
+Uso: calentamiento / descartada
+Fecha: 2026-08-18 18:26:25
+Commit instrumentado: 59c182b12c7a2678f6ed09d1b69b399327d097d4
+
+--- Arranque ---
+Starting: Intent { cmp=com.example.rachapro/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.example.rachapro/.MainActivity
+TotalTime: 1408
+WaitTime: 1424
+Complete
+
+--- Medicion ---
+08-18 18:26:19.848  6367  6367 I EXP-001 : load_ms=1310 activities=100

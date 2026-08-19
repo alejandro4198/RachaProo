@@ -1,0 +1,16 @@
+EXP-001 - Corrida 13
+Uso: medicion valida - ampliacion P95
+Fecha: 2026-08-18 18:37:29
+Commit instrumentado: 59c182b12c7a2678f6ed09d1b69b399327d097d4
+
+--- Arranque ---
+Starting: Intent { cmp=com.example.rachapro/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.example.rachapro/.MainActivity
+TotalTime: 1084
+WaitTime: 1098
+Complete
+
+--- Medicion ---
+08-18 18:37:25.979 27233 27233 I EXP-001 : load_ms=1315 activities=100
