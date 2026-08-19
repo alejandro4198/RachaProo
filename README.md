@@ -66,6 +66,7 @@ La comparación con RNF02 debe interpretarse como una aproximación, ya que EXP-
 | Línea base funcional | `3b088858061edc47f6cd018a4130a38c2afb0f73` |
 | Preparación documental de EXP-001 | `93e7db49312b` |
 | Commit instrumentado utilizado para medir | `59c182b12c7a2678f6ed09d1b69b399327d097d4` |
+| Commit de cierre de evidencias de Semana 4 | `42d78efffd8d880477e39f59c3add69522e302c0` |
 | Historial en GitHub | [Ver historial de commits](https://github.com/alejandro4198/RachaProo/commits/master/) |
 
 ### Historial relevante
@@ -77,6 +78,7 @@ La comparación con RNF02 debe interpretarse como una aproximación, ya que EXP-
 | `3b088858061e` | `Define linea base y documentacion previa al experimento` |
 | `93e7db49312b` | `Documenta preparacion de EXP-001` |
 | `59c182b12c7a` | `Instrumenta medicion de EXP-001` |
+| `42d78efffd8d` | `Cierra evidencia y linea base de Semana 4` |
 
 ### Estado de trazabilidad
 
@@ -84,4 +86,4 @@ El commit `3b088858061edc47f6cd018a4130a38c2afb0f73` identifica la línea base f
 
 El commit `59c182b12c7a2678f6ed09d1b69b399327d097d4` corresponde a la versión instrumentada utilizada durante las mediciones de EXP-001.
 
-Los documentos y evidencias posteriores al experimento deben quedar asociados a un commit final de documentación de Semana 4.
+El commit `42d78efffd8d880477e39f59c3add69522e302c0` consolida los dossiers, logs, resultados, script reproducible y documentación de cierre correspondientes a la evidencia de Semana 4.
