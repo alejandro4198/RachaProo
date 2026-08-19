@@ -19,7 +19,7 @@
 |---|---|---|
 | Semana 1 | Localización y recuperación de documentación previa y prototipo de RachaPro. | `docs/sources/historical/` |
 | Semana 2 | Elaboración del documento de trabajo para Arquitectura de Software. | `docs/sources/historical/ProyectoAS.docx` |
-| Semana 3 | Planificación diaria de los módulos que se desarrollarían en el proyecto. | PENDIENTE DE LOCALIZAR LA EVIDENCIA |
+| Semana 3 | Planificación diaria de los módulos que se desarrollarían en el proyecto. | EVIDENCIA PARCIAL: los commits `280934d` (12/08/2026) y `0f13f0d` (13/08/2026) evidencian incorporación y modificación del código durante ese periodo. No se ha localizado el artefacto específico de planificación diaria. |
 | Semana 4 | Implementación funcional del MVP Android, definición de escenarios de calidad, ejecución de EXP-001 y consolidación de la línea base. | `dossier/` y `experimentos/EXP-001-linea-base/` |
 
 ## 3. Dossier
@@ -67,6 +67,7 @@ La comparación con RNF02 debe interpretarse como una aproximación, ya que EXP-
 | Preparación documental de EXP-001 | `93e7db49312b` |
 | Commit instrumentado utilizado para medir | `59c182b12c7a2678f6ed09d1b69b399327d097d4` |
 | Commit de cierre de evidencias de Semana 4 | `42d78efffd8d880477e39f59c3add69522e302c0` |
+| Ajuste final de reproducibilidad y Dossier 01 | `81bead9` |
 | Historial en GitHub | [Ver historial de commits](https://github.com/alejandro4198/RachaProo/commits/master/) |
 
 ### Historial relevante
@@ -79,6 +80,7 @@ La comparación con RNF02 debe interpretarse como una aproximación, ya que EXP-
 | `93e7db49312b` | `Documenta preparacion de EXP-001` |
 | `59c182b12c7a` | `Instrumenta medicion de EXP-001` |
 | `42d78efffd8d` | `Cierra evidencia y linea base de Semana 4` |
+| `81bead9` | `Mejora reproducibilidad de EXP-001 y ajusta Dossier 01` |
 
 ### Estado de trazabilidad
 
