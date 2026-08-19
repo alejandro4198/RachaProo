@@ -59,6 +59,31 @@ Al momento de formular esta hipótesis todavía no existían resultados experime
 | Fecha límite | 31/12/2030 |
 | Hora | Ninguna |
 
+### Preparación reproducible de la semilla
+
+La semilla utilizada en EXP-001 fue creada directamente sobre la base de datos local mediante Android Studio Database Inspector.
+
+Antes de insertar las actividades se verificaron los identificadores utilizados por el experimento:
+
+- Usuario de prueba: `userId = 1`
+- Categoría `Estudio`: `categoryId = 1`
+
+Antes de ejecutar la inserción, el entorno utilizado en EXP-001 fue preparado sin actividades activas previas para el usuario de prueba. El script de inserción debe ejecutarse sobre un estado equivalente para conservar una semilla activa de exactamente 100 actividades.
+
+Las consultas utilizadas para comprobar estos prerrequisitos se encuentran en:
+
+`scripts/verificar-prerrequisitos-semilla.sql`
+
+La inserción de las 100 actividades se realizó mediante:
+
+`scripts/preparar-semilla.sql`
+
+El script genera actividades con títulos desde `Actividad 001` hasta `Actividad 100` y las características definidas para EXP-001.
+
+Los identificadores `userId = 1` y `categoryId = 1` corresponden al entorno utilizado durante el experimento. Antes de reutilizar el script en otra instalación deben verificarse mediante `verificar-prerrequisitos-semilla.sql`.
+
+La validación de la semilla fue realizada durante la preparación del experimento. Sin embargo, no se conservó como archivo independiente la consulta completa utilizada para comprobar todas sus características, por lo que esta parte se mantiene como una limitación de la evidencia reproducible.
+
 La misma semilla se mantuvo durante las corridas comparables del experimento.
 
 Las condiciones detalladas de la semilla y del entorno se encuentran en `condiciones.md`.
@@ -291,6 +316,8 @@ EXP-001-linea-base/
 ├── README.md
 ├── condiciones.md
 ├── scripts/
+│   ├── preparar-semilla.sql
+│   ├── verificar-prerrequisitos-semilla.sql
 │   └── calcular-resultados.ps1
 ├── resultados/
 │   ├── resultado-linea-base.md
@@ -312,3 +339,5 @@ EXP-001-linea-base/
 - `resultados/resultado-linea-base.md`: síntesis de los resultados.
 - `resultados/calculo-estadistico.txt`: salida reproducible del cálculo estadístico.
 - `scripts/calcular-resultados.ps1`: cálculo automático de mediana, P95, mínimo y máximo.
+- `scripts/preparar-semilla.sql`: script utilizado para insertar las 100 actividades de la semilla bajo los prerrequisitos documentados.
+- `scripts/verificar-prerrequisitos-semilla.sql`: comprobación del usuario y categoría requeridos antes de preparar la semilla.

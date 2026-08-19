@@ -6,23 +6,23 @@
 |---|---|
 | Sistema | RachaPro |
 | Público objetivo principal | Estudiantes universitarios |
-| Público adicional considerado actualmente | Usuarios generales |
+| Público adicional | Usuarios generales |
 | Estado del sistema base | Implementación funcional actual de RachaPro |
 | Alcance funcional general | Gestión de actividades, sesiones Pomodoro, seguimiento del progreso, rachas, logros y recordatorios |
 
 ## 2. Contexto
 
 - RachaPro proviene de un proyecto desarrollado previamente en Ingeniería de Software y estuvo orientado principalmente a estudiantes universitarios.
-- El proyecto previo dejó como antecedentes requerimientos, diagramas, una propuesta arquitectónica y un plan de pruebas.
+- El proyecto previo dejó requerimientos, diagramas, una propuesta arquitectónica y un plan de pruebas.
 - Posteriormente fue adoptado para Arquitectura de Software bajo la modalidad denominada "Opción A". En el documento de adopción se registró que, en ese momento, el proyecto aún estaba en fase de diseño y sin repositorio GitHub; el sistema base actual corresponde a una implementación funcional posterior.
 
 ## 3. Stakeholders y sus preocupaciones
 
-| Stakeholder | Preocupaciones principales | Estado |
-|---|---|---|
-| Estudiante universitario | Recordatorios oportunos; facilidad de uso; registro y recuperación correcta de actividades y progreso; privacidad; rapidez; visualización del progreso; concentración y personalización. | Confirmado por el equipo y respaldado históricamente como público objetivo principal. |
-| Usuario general | Facilidad de uso; recordatorios; personalización; conservación y consistencia de la información; estabilidad; privacidad; rapidez y mensajes claros ante errores. | Incorporado actualmente por decisión del equipo. |
-| Desarrollador / mantenedor | Comprensibilidad y mantenimiento del código; localización de errores; cambios controlados; evitar regresiones; evolución de funcionalidades y comprobación mediante pruebas. | Confirmado actualmente por el equipo. |
+| Stakeholder | Preocupaciones principales |
+|---|---|
+| Estudiante universitario | Recordatorios oportunos; facilidad de uso; registro y recuperación correcta de actividades y progreso; privacidad; rapidez; visualización del progreso; concentración y personalización. |
+| Usuario general | Facilidad de uso; recordatorios; personalización; conservación y consistencia de la información; estabilidad; privacidad; rapidez y mensajes claros ante errores. |
+| Desarrollador / mantenedor | Comprensibilidad y mantenimiento del código; localización de errores; cambios controlados; evitar regresiones; evolución de funcionalidades y comprobación mediante pruebas. |
 
 ## 4. Restricciones
 
@@ -41,21 +41,19 @@
 
 ## 6. Riesgos iniciales
 
-| Riesgo inicial | Posible impacto |
-|---|---|
-| Caída o cierre inesperado de la aplicación | Puede interrumpir el uso del sistema e impedir temporalmente el acceso a sus funciones. |
-| Fallos de persistencia o corrupción de datos | Pueden provocar pérdida, inconsistencia o imposibilidad de recuperar actividades y otra información registrada. |
-| Brechas de seguridad o fallos de autenticación | Pueden comprometer la información del usuario o impedir el acceso legítimo a su sesión. |
-| Fallos en recordatorios, Pomodoro, progreso, rachas o logros | Pueden producir avisos incorrectos, mediciones erróneas o información inconsistente sobre el progreso del usuario. |
-| Fallos de UI/UX | Pueden dificultar el uso de la aplicación y generar errores de interacción. |
-| Errores introducidos durante modificaciones o actualizaciones | Un cambio podría afectar funcionalidades existentes o la información almacenada. |
+- Caída o cierre inesperado de la aplicación.
+- Fallos de persistencia o corrupción de datos.
+- Brechas de seguridad o fallos de autenticación.
+- Fallos en recordatorios, Pomodoro, progreso, rachas o logros.
+- Fallos de UI/UX.
+- Errores introducidos durante modificaciones o actualizaciones.
 
 ## 7. Supuestos
 
-- El usuario dispone de un dispositivo Android compatible y con recursos suficientes para ejecutar RachaPro.
-- Los permisos requeridos por las funcionalidades utilizadas, como notificaciones, se encuentran habilitados y la fecha/hora del dispositivo están correctamente configuradas.
-- Durante el uso normal se ingresan datos válidos, excepto en pruebas diseñadas para evaluar entradas incorrectas.
-- Las pruebas comparables se realizan sobre una misma versión identificable del sistema, sin cambios de código entre ejecuciones.
+- El usuario dispone de un dispositivo Android compatible.
+- Los permisos necesarios están habilitados y la fecha/hora están correctamente configuradas.
+- Se ingresan datos válidos, salvo en pruebas de entradas incorrectas.
+- Las pruebas comparables utilizan la misma versión del sistema sin cambios de código entre ejecuciones.
 
 ## 8. Referencia a la hipótesis inicial
 
@@ -77,14 +75,11 @@ Esta hipótesis fue formulada antes de disponer de resultados experimentales y f
 
 ## 10. Trazabilidad
 
-| Fuente / evidencia | Elemento identificado | Relación actual | Estado |
-|---|---|---|---|
-| Documento histórico de Ingeniería de Software | Estudiantes universitarios como público objetivo | Sustenta el contexto y al stakeholder principal. | HECHO VERIFICADO |
-| Encuesta, entrevista y focus group históricos | Necesidades de organización, recordatorios, facilidad de uso, progreso y privacidad | Sustentan preocupaciones del usuario. | HECHO VERIFICADO |
-| RNF02 histórico | Rendimiento del módulo de actividades, con criterios previos de tiempo de respuesta y cantidad de actividades | Antecedente del driver seleccionado actualmente. | HECHO VERIFICADO |
-| CP19 histórico | Prueba planteada para cargar el listado de actividades | Antecedente de medición de rendimiento. | HECHO VERIFICADO |
-| Decisión actual del equipo | Rendimiento del módulo de actividades | Driver arquitectónico preliminar seleccionado. | DECISIÓN ACTUAL |
-| Decisión actual del equipo | Hipótesis de rendimiento con una semilla de 100 actividades | Dio origen a la hipótesis previa utilizada en EXP-001. | HIPÓTESIS PREVIA CONTRASTADA POSTERIORMENTE |
-| Commit `3b088858061edc47f6cd018a4130a38c2afb0f73` | Línea base funcional previa a instrumentación | Identifica el estado funcional del sistema previo al experimento. | HECHO VERIFICADO |
-| Commit `59c182b12c7a2678f6ed09d1b69b399327d097d4` | Versión instrumentada utilizada para medir | Relaciona las corridas con la versión ejecutada durante EXP-001. | HECHO VERIFICADO |
-| `experimentos/EXP-001-linea-base/` | Medición real del rendimiento | Contiene condiciones, logs, resultados y script reproducible de EXP-001. | HECHO VERIFICADO |
+| Fuente / evidencia | Relación actual | Estado |
+|---|---|---|
+| Documento histórico de Ingeniería de Software | Sustenta a estudiantes universitarios como público objetivo principal. | HECHO VERIFICADO |
+| Encuesta, entrevista y focus group históricos | Sustentan preocupaciones de organización, recordatorios, facilidad de uso, progreso y privacidad. | HECHO VERIFICADO |
+| RNF02 histórico | Antecedente del driver de rendimiento y de sus criterios previos. | HECHO VERIFICADO |
+| CP19 histórico | Antecedente de una prueba de carga del listado de actividades. | HECHO VERIFICADO |
+| Decisión actual del equipo | Rendimiento del módulo de actividades como driver preliminar. | DECISIÓN ACTUAL |
+| Decisión actual del equipo | Hipótesis de rendimiento con una semilla de 100 actividades. | HIPÓTESIS PREVIA CONTRASTADA POSTERIORMENTE |
