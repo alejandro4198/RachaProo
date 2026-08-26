@@ -4,7 +4,17 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CategoryRepository : JpaRepository<CategoryEntity, Long> {
 
-    fun findAllByUserIdAndIsActiveTrueOrderByNameAsc(userId: Long): List<CategoryEntity>
+    fun findAllByUserIdAndIsActiveTrueOrderByNameAsc(
+        userId: Long
+    ): List<CategoryEntity>
 
-    fun existsByUserIdAndNameIgnoreCase(userId: Long, name: String): Boolean
+    fun existsByUserIdAndNameIgnoreCase(
+        userId: Long,
+        name: String
+    ): Boolean
+
+    fun findByIdAndUserIdAndIsActiveTrue(
+        id: Long,
+        userId: Long
+    ): CategoryEntity?
 }
