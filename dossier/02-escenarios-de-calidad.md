@@ -2,13 +2,13 @@
 
 ## 1. Atributos de calidad considerados
 
-| Atributo de calidad | Antecedente en el proyecto                   | Estado |
-|---|----------------------------------------------|---|
+| Atributo de calidad | Antecedente en el proyecto | Estado |
+|---|---|---|
 | Usabilidad | RNF01, RNF05 y RNF06 del proyecto histórico. | ANTECEDENTE HISTÓRICO |
 | Rendimiento | RNF02: rendimiento del módulo de actividades. | ANTECEDENTE HISTÓRICO |
-| Seguridad | RNF03: seguridad de la información.          | ANTECEDENTE HISTÓRICO |
-| Disponibilidad | RNF04: disponibilidad del sistema.           | ANTECEDENTE HISTÓRICO |
-| Precisión | RNF07: precisión del temporizador Pomodoro.  | ANTECEDENTE HISTÓRICO |
+| Seguridad | RNF03: seguridad de la información. | ANTECEDENTE HISTÓRICO |
+| Disponibilidad | RNF04: disponibilidad del sistema. | ANTECEDENTE HISTÓRICO |
+| Precisión | RNF07: precisión del temporizador Pomodoro. | ANTECEDENTE HISTÓRICO |
 
 ## 2. Relación con stakeholders y contexto
 
@@ -26,7 +26,7 @@ Los atributos anteriores provienen de los requerimientos no funcionales históri
 |---|---|---|
 | Atributo priorizado para el trabajo actual | Rendimiento | DECISIÓN ACTUAL DEL EQUIPO |
 | Área de aplicación | Módulo de actividades | DECISIÓN ACTUAL DEL EQUIPO |
-| Motivo de selección | Se busca comprobar el comportamiento del módulo al cargar un listado con 100 actividades registradas. | HIPÓTESIS NO VERIFICADA AL MOMENTO DE LA SELECCIÓN |
+| Motivo de selección | Se busca comprobar el comportamiento del módulo al cargar un listado con 100 actividades registradas. | JUSTIFICACIÓN DE LA DECISIÓN DEL EQUIPO |
 
 Los requerimientos históricos contemplaban varios atributos de calidad con prioridad alta, pero no establecían una priorización arquitectónica comparativa entre ellos. Para el trabajo actual, el equipo seleccionó el rendimiento del módulo de actividades como foco de evaluación.
 
@@ -42,15 +42,15 @@ Este trade-off todavía no ha sido comprobado mediante cambios arquitectónicos 
 
 ### Escenario de rendimiento del módulo de actividades
 
-| Campo | Definición                                                                                                                                                                 |
-|---|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Campo | Definición |
+|---|---|
 | Fuente del estímulo | Inicialización del módulo de actividades de RachaPro. |
 | Estímulo | Se inicia automáticamente la ejecución de `loadData()` al crearse `ActivitiesViewModel`. |
 | Ambiente | Uso normal de la aplicación con un conjunto previamente cargado de actividades. |
-| Artefacto | Módulo de actividades de RachaPro.                                                                                                                                         |
-| Respuesta | El sistema recupera y prepara los datos del listado.                                                                                                                       |
-| Medida de respuesta | Desde que inicia loadData() hasta que se obtiene ActivitiesUiState.Success con las 100 actividades.                                                                        |
-| Criterio / umbral | El listado principal de actividades debe mostrarse en un tiempo ≤ 3 segundos.                                                                                              |
+| Artefacto | Módulo de actividades de RachaPro. |
+| Respuesta | El sistema recupera y prepara los datos del listado. |
+| Medida de respuesta | Desde que inicia `loadData()` hasta que se obtiene `ActivitiesUiState.Success` con las 100 actividades. |
+| Criterio / umbral histórico | El listado principal de actividades debe mostrarse en un tiempo ≤ 3 segundos. |
 | Condiciones de reproducibilidad | Las mediciones se realizan sobre la misma versión de RachaPro, con la misma cantidad y distribución de actividades y bajo las mismas condiciones del entorno de ejecución. |
 
 ## 6. Escenario seleccionado para Semana 4
@@ -59,7 +59,7 @@ El equipo seleccionó para la medición de Semana 4 el escenario de rendimiento 
 
 Este escenario fue elegido por su relación directa con el driver arquitectónico preliminar `Rendimiento del módulo de actividades` y con el antecedente histórico RNF02.
 
-La medición buscará contrastar si el comportamiento observado en la implementación actual cumple el criterio previamente definido para la carga del listado de actividades.
+La medición buscará comparar el comportamiento observado en la implementación actual con el criterio histórico previamente definido para la carga del listado de actividades.
 
 ## 7. Métrica y umbral previamente definidos
 
@@ -112,7 +112,6 @@ El escenario seleccionado permite contrastar esta hipótesis midiendo el tiempo 
 Para la medición se definió el uso de la misma versión del sistema, `SystemClock.elapsedRealtime()` y el registro de resultados mediante Logcat.
 
 En el momento de definir este escenario y antes de ejecutar EXP-001, no existía evidencia experimental que permitiera aceptar o rechazar la hipótesis.
-
 
 ## 11. Matriz de atributos de calidad críticos
 
