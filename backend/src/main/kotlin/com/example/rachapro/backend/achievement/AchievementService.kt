@@ -4,6 +4,7 @@ import com.example.rachapro.backend.achievement.dto.AchievementResponse
 import com.example.rachapro.backend.achievement.dto.CreateAchievementRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import com.example.rachapro.backend.error.ConflictException
 
 @Service
 class AchievementService(
@@ -38,8 +39,8 @@ class AchievementService(
             "Tipo de logro no valido"
         }
 
-        require(!achievementRepository.existsByUserIdAndType(userId, type)) {
-            "El logro ya fue desbloqueado"
+        if (achievementRepository.existsByUserIdAndType(userId, type)) {
+            throw ConflictException("El logro ya fue desbloqueado")
         }
 
         val achievement = AchievementEntity(
