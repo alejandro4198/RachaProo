@@ -143,26 +143,16 @@ class AuthViewModel(
                 is LoginResult.Success -> {
 
                     try {
-
-                        /*
-                         * Primero guardamos la sesión.
-                         */
-                        sessionManager.saveLoggedUser(
-                            userId = result.user.id
+                        sessionManager.saveAuthenticatedSession(
+                            userId = result.user.id,
+                            authToken = result.token
                         )
 
-                        /*
-                         * Restauramos las alarmas pendientes
-                         * de este usuario.
-                         */
                         restoreScheduledReminders(
                             userId =
                                 result.user.id
                         )
 
-                        /*
-                         * Después confirmamos el login.
-                         */
                         _uiState.value =
                             AuthUiState.LoginSuccess(
                                 userId =
@@ -170,16 +160,19 @@ class AuthViewModel(
                             )
 
                     } catch (_: Exception) {
-
                         _uiState.value =
                             AuthUiState.Error
                     }
                 }
 
                 LoginResult.InvalidCredentials -> {
-
                     _uiState.value =
                         AuthUiState.InvalidCredentials
+                }
+
+                LoginResult.Error -> {
+                    _uiState.value =
+                        AuthUiState.Error
                 }
             }
         }
@@ -222,12 +215,10 @@ class AuthViewModel(
                                     )
 
                             } catch (_: Exception) {
-                                // Continuamos con el cierre de sesión.
                             }
                         }
 
                 } catch (_: Exception) {
-                    // El logout debe poder continuar.
                 }
             }
 
@@ -255,13 +246,6 @@ class AuthViewModel(
 
             scheduledReminders
                 .forEach { reminder ->
-
-                    /*
-                     * Si el recordatorio todavía
-                     * corresponde a una hora futura,
-                     * lo volvemos a registrar
-                     * en AlarmManager.
-                     */
                     if (
                         reminder.triggerAtMillis >
                         currentTime
@@ -273,12 +257,6 @@ class AuthViewModel(
                             )
 
                     } else {
-
-                        /*
-                         * Si venció mientras el usuario
-                         * estuvo desconectado, ya no
-                         * tiene sentido reprogramarlo.
-                         */
                         reminderRepository
                             .cancelReminder(
                                 reminderId =
@@ -291,12 +269,6 @@ class AuthViewModel(
                 }
 
         } catch (_: Exception) {
-
-            /*
-             * Un fallo restaurando recordatorios
-             * NO debe impedir que el usuario
-             * pueda iniciar sesión.
-             */
         }
     }
 

@@ -3,11 +3,17 @@ package com.example.rachapro.data.repository
 import com.example.rachapro.data.local.dao.ActivityDao
 import com.example.rachapro.data.local.dao.ReminderDao
 import com.example.rachapro.data.local.entity.ReminderEntity
+import com.example.rachapro.network.ApiService
+import com.example.rachapro.network.dto.CreateReminderRequest
+import com.example.rachapro.network.dto.ReminderResponse
 import kotlinx.coroutines.flow.Flow
+import retrofit2.HttpException
+import java.io.IOException
 
 class ReminderRepository(
     private val reminderDao: ReminderDao,
-    private val activityDao: ActivityDao
+    private val activityDao: ActivityDao,
+    private val apiService: ApiService
 ) {
 
     fun observeReminders(
@@ -18,7 +24,6 @@ class ReminderRepository(
             userId = userId
         )
     }
-
 
     fun observeRemindersByActivity(
         userId: Long,
@@ -31,7 +36,6 @@ class ReminderRepository(
         )
     }
 
-
     suspend fun createReminder(
         userId: Long,
         activityId: Long?,
@@ -40,17 +44,13 @@ class ReminderRepository(
         triggerAtMillis: Long
     ): ReminderCreateResult {
 
-        val normalizedTitle =
-            title.trim()
-
-        val normalizedMessage =
-            message.trim()
+        val normalizedTitle = title.trim()
+        val normalizedMessage = message.trim()
 
         if (normalizedTitle.isBlank()) {
 
             return ReminderCreateResult.InvalidData(
-                message =
-                    "El recordatorio debe tener un título."
+                message = "El recordatorio debe tener un título."
             )
         }
 
@@ -60,8 +60,7 @@ class ReminderRepository(
         if (triggerAtMillis <= currentTime) {
 
             return ReminderCreateResult.InvalidData(
-                message =
-                    "Selecciona una fecha y hora futuras."
+                message = "Selecciona una fecha y hora futuras."
             )
         }
 
@@ -92,8 +91,7 @@ class ReminderRepository(
                         activityId = activityId,
                         title = normalizedTitle,
                         message = normalizedMessage,
-                        triggerAtMillis =
-                            triggerAtMillis,
+                        triggerAtMillis = triggerAtMillis,
                         createdAt = currentTime,
                         updatedAt = currentTime
                     )
@@ -108,7 +106,6 @@ class ReminderRepository(
             ReminderCreateResult.Error
         }
     }
-
 
     suspend fun getReminderById(
         reminderId: Long,
@@ -144,7 +141,6 @@ class ReminderRepository(
         }
     }
 
-
     suspend fun cancelReminder(
         reminderId: Long,
         userId: Long
@@ -169,7 +165,6 @@ class ReminderRepository(
             ReminderOperationResult.Error
         }
     }
-
 
     suspend fun markReminderDelivered(
         reminderId: Long,
@@ -197,6 +192,257 @@ class ReminderRepository(
 
             ReminderOperationResult.Error
         }
+    }
+
+    suspend fun fetchRemoteReminders(
+        userId: Long,
+        activityId: Long
+    ): RemoteRemindersResult {
+
+        return try {
+
+            val reminders =
+                apiService
+                    .getReminders()
+                    .filter { response ->
+                        response.activityId == activityId
+                    }
+                    .map { response ->
+                        response.toEntity(
+                            userId = userId
+                        )
+                    }
+
+            reminders.forEach { reminder ->
+                reminderDao.upsertReminder(
+                    reminder
+                )
+            }
+
+            RemoteRemindersResult.Success(
+                reminders = reminders
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                401 ->
+                    RemoteRemindersResult.Unauthorized
+
+                else ->
+                    RemoteRemindersResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteRemindersResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteRemindersResult.Error
+        }
+    }
+
+    suspend fun createRemoteReminder(
+        userId: Long,
+        activityId: Long?,
+        title: String,
+        message: String,
+        triggerAtMillis: Long
+    ): RemoteReminderCreateResult {
+
+        val normalizedTitle =
+            title.trim()
+
+        val normalizedMessage =
+            message.trim()
+
+        if (normalizedTitle.isBlank()) {
+
+            return RemoteReminderCreateResult.InvalidData(
+                message =
+                    "El recordatorio debe tener un título."
+            )
+        }
+
+        if (
+            triggerAtMillis <=
+            System.currentTimeMillis()
+        ) {
+
+            return RemoteReminderCreateResult.InvalidData(
+                message =
+                    "Selecciona una fecha y hora futuras."
+            )
+        }
+
+        return try {
+
+            val response =
+                apiService.createReminder(
+                    request =
+                        CreateReminderRequest(
+                            activityId = activityId,
+                            title = normalizedTitle,
+                            message = normalizedMessage,
+                            triggerAtMillis =
+                                triggerAtMillis
+                        )
+                )
+
+            val reminder =
+                response.toEntity(
+                    userId = userId
+                )
+
+            reminderDao.upsertReminder(
+                reminder
+            )
+
+            RemoteReminderCreateResult.Success(
+                reminder = reminder
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                400 ->
+                    RemoteReminderCreateResult
+                        .ActivityNotFoundOrNotAllowed
+
+                401 ->
+                    RemoteReminderCreateResult.Unauthorized
+
+                else ->
+                    RemoteReminderCreateResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteReminderCreateResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteReminderCreateResult.Error
+        }
+    }
+
+    suspend fun cancelRemoteReminder(
+        reminderId: Long,
+        userId: Long
+    ): RemoteReminderOperationResult {
+
+        return try {
+
+            val response =
+                apiService.cancelReminder(
+                    reminderId = reminderId
+                )
+
+            val reminder =
+                response.toEntity(
+                    userId = userId
+                )
+
+            reminderDao.upsertReminder(
+                reminder
+            )
+
+            RemoteReminderOperationResult.Success(
+                reminder = reminder
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                401 ->
+                    RemoteReminderOperationResult.Unauthorized
+
+                404 ->
+                    RemoteReminderOperationResult.NotFound
+
+                else ->
+                    RemoteReminderOperationResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteReminderOperationResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteReminderOperationResult.Error
+        }
+    }
+
+    suspend fun markRemoteReminderDelivered(
+        reminderId: Long,
+        userId: Long
+    ): RemoteReminderOperationResult {
+
+        return try {
+
+            val response =
+                apiService.markReminderDelivered(
+                    reminderId = reminderId
+                )
+
+            val reminder =
+                response.toEntity(
+                    userId = userId
+                )
+
+            reminderDao.upsertReminder(
+                reminder
+            )
+
+            RemoteReminderOperationResult.Success(
+                reminder = reminder
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                401 ->
+                    RemoteReminderOperationResult.Unauthorized
+
+                404 ->
+                    RemoteReminderOperationResult.NotFound
+
+                else ->
+                    RemoteReminderOperationResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteReminderOperationResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteReminderOperationResult.Error
+        }
+    }
+
+    private fun ReminderResponse.toEntity(
+        userId: Long
+    ): ReminderEntity {
+
+        return ReminderEntity(
+            id = id,
+            userId = userId,
+            activityId = activityId,
+            title = title,
+            message = message,
+            triggerAtMillis = triggerAtMillis,
+            status = status,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            deliveredAt = deliveredAt
+        )
     }
 
     private fun resultFromRowsAffected(
@@ -232,7 +478,6 @@ sealed interface ReminderCreateResult {
         ReminderCreateResult
 }
 
-
 sealed interface ReminderOperationResult {
 
     data object Success :
@@ -243,4 +488,53 @@ sealed interface ReminderOperationResult {
 
     data object Error :
         ReminderOperationResult
+}
+
+sealed interface RemoteRemindersResult {
+
+    data class Success(
+        val reminders: List<ReminderEntity>
+    ) : RemoteRemindersResult
+
+    data object Unauthorized :
+        RemoteRemindersResult
+
+    data object Error :
+        RemoteRemindersResult
+}
+
+sealed interface RemoteReminderCreateResult {
+
+    data class Success(
+        val reminder: ReminderEntity
+    ) : RemoteReminderCreateResult
+
+    data class InvalidData(
+        val message: String
+    ) : RemoteReminderCreateResult
+
+    data object ActivityNotFoundOrNotAllowed :
+        RemoteReminderCreateResult
+
+    data object Unauthorized :
+        RemoteReminderCreateResult
+
+    data object Error :
+        RemoteReminderCreateResult
+}
+
+sealed interface RemoteReminderOperationResult {
+
+    data class Success(
+        val reminder: ReminderEntity
+    ) : RemoteReminderOperationResult
+
+    data object NotFound :
+        RemoteReminderOperationResult
+
+    data object Unauthorized :
+        RemoteReminderOperationResult
+
+    data object Error :
+        RemoteReminderOperationResult
 }

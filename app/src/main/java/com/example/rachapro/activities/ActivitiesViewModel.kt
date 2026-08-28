@@ -27,6 +27,12 @@ import java.time.LocalDate
 import java.time.LocalTime
 import android.os.SystemClock
 import android.util.Log
+import com.example.rachapro.data.repository.RemoteActivitiesResult
+import com.example.rachapro.data.repository.RemoteCategoriesResult
+import com.example.rachapro.network.dto.ActivityResponse
+import com.example.rachapro.network.dto.CategoryResponse
+import com.example.rachapro.data.repository.RemoteActivityOperationResult
+import com.example.rachapro.data.repository.RemoteActivityDeleteResult
 
 class ActivitiesViewModel(
     private val activityRepository: ActivityRepository,
@@ -92,36 +98,29 @@ class ActivitiesViewModel(
 
     fun refreshStatuses() {
 
-        val currentState =
-            _uiState.value
-
-        if (
-            currentState
-                    !is ActivitiesUiState.Success
-        ) {
-            return
-        }
-
         viewModelScope.launch {
 
-            try {
+            when (
+                activityRepository
+                    .refreshRemoteActivityStatuses()
+            ) {
 
-                refreshActivityStatuses(
-                    userId =
-                        currentState.userId
-                )
+                is RemoteActivitiesResult.Success -> {
+                    loadData()
+                }
 
-            } catch (_: Exception) {
+                RemoteActivitiesResult.Unauthorized,
+                RemoteActivitiesResult.Error -> {
 
-                _actionState.value =
-                    ActivityActionState.Error(
-                        message =
-                            "No fue posible actualizar los estados."
-                    )
+                    _actionState.value =
+                        ActivityActionState.Error(
+                            message =
+                                "No fue posible actualizar los estados."
+                        )
+                }
             }
         }
     }
-
 
     fun createActivity(
         title: String,
@@ -136,15 +135,13 @@ class ActivitiesViewModel(
             return
         }
 
-        val currentState =
-            _uiState.value
+        val currentState = _uiState.value
 
         if (currentState !is ActivitiesUiState.Success) {
 
             _actionState.value =
                 ActivityActionState.Error(
-                    message =
-                        "No fue posible obtener el usuario activo."
+                    message = "No fue posible obtener el usuario activo."
                 )
 
             return
@@ -154,8 +151,7 @@ class ActivitiesViewModel(
 
             _actionState.value =
                 ActivityActionState.ValidationError(
-                    message =
-                        "Selecciona una categoría."
+                    message = "Selecciona una categoría."
                 )
 
             return
@@ -165,8 +161,7 @@ class ActivitiesViewModel(
 
             _actionState.value =
                 ActivityActionState.ValidationError(
-                    message =
-                        "Selecciona una fecha límite."
+                    message = "Selecciona una fecha límite."
                 )
 
             return
@@ -179,71 +174,56 @@ class ActivitiesViewModel(
 
             when (
                 val result =
-                    activityRepository.createActivity(
-                        userId =
-                            currentState.userId,
-
-                        categoryId =
-                            categoryId,
-
-                        title =
-                            title,
-
-                        description =
-                            description,
-
-                        dueDateEpochDay =
-                            dueDateEpochDay,
-
-                        dueTimeMinutes =
-                            dueTimeMinutes,
-
-                        priority =
-                            priority,
-
-                        repeatRule =
-                            null
+                    activityRepository.createRemoteActivity(
+                        categoryId = categoryId,
+                        title = title,
+                        description = description,
+                        dueDateEpochDay = dueDateEpochDay,
+                        dueTimeMinutes = dueTimeMinutes,
+                        priority = priority,
+                        repeatRule = null
                     )
             ) {
 
-                is ActivityCreateResult.Success -> {
-
-                    refreshActivityStatuses(
-                        userId =
-                            currentState.userId
-                    )
+                is RemoteActivityOperationResult.Success -> {
 
                     _actionState.value =
                         ActivityActionState.CreateSuccess(
-                            activityId =
-                                result.activityId
+                            activityId = result.activity.id
                         )
+
+                    loadData()
                 }
 
-                is ActivityCreateResult.InvalidData -> {
+                RemoteActivityOperationResult.InvalidData -> {
 
                     _actionState.value =
                         ActivityActionState.ValidationError(
-                            message =
-                                result.message
+                            message = "Revisa los datos ingresados."
                         )
                 }
 
-                ActivityCreateResult.CategoryNotFound -> {
+                RemoteActivityOperationResult.NotFound -> {
 
                     _actionState.value =
                         ActivityActionState.ValidationError(
-                            message =
-                                "La categoría seleccionada ya no existe."
+                            message = "La categoría seleccionada ya no existe."
                         )
                 }
 
-                ActivityCreateResult.Error -> {
+                RemoteActivityOperationResult.Unauthorized -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "No fue posible crear la actividad."
+                            message = "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteActivityOperationResult.Error -> {
+
+                    _actionState.value =
+                        ActivityActionState.Error(
+                            message = "No fue posible crear la actividad."
                         )
                 }
             }
@@ -260,25 +240,17 @@ class ActivitiesViewModel(
         priority: String
     ) {
 
-        if (
-            _actionState.value
-                    is ActivityActionState.Updating
-        ) {
+        if (_actionState.value is ActivityActionState.Updating) {
             return
         }
 
-        val currentState =
-            _uiState.value
+        val currentState = _uiState.value
 
-        if (
-            currentState
-                    !is ActivitiesUiState.Success
-        ) {
+        if (currentState !is ActivitiesUiState.Success) {
 
             _actionState.value =
                 ActivityActionState.Error(
-                    message =
-                        "No fue posible obtener el usuario activo."
+                    message = "No fue posible obtener el usuario activo."
                 )
 
             return
@@ -288,8 +260,7 @@ class ActivitiesViewModel(
 
             _actionState.value =
                 ActivityActionState.ValidationError(
-                    message =
-                        "Selecciona una categoría."
+                    message = "Selecciona una categoría."
                 )
 
             return
@@ -299,8 +270,7 @@ class ActivitiesViewModel(
 
             _actionState.value =
                 ActivityActionState.ValidationError(
-                    message =
-                        "Selecciona una fecha límite."
+                    message = "Selecciona una fecha límite."
                 )
 
             return
@@ -314,59 +284,57 @@ class ActivitiesViewModel(
                 )
 
             when (
-                activityRepository.updateActivity(
+                activityRepository.updateRemoteActivity(
                     activityId = activityId,
-                    userId = currentState.userId,
                     categoryId = categoryId,
                     title = title,
                     description = description,
-                    dueDateEpochDay =
-                        dueDateEpochDay,
-                    dueTimeMinutes =
-                        dueTimeMinutes,
+                    dueDateEpochDay = dueDateEpochDay,
+                    dueTimeMinutes = dueTimeMinutes,
                     priority = priority,
                     repeatRule = null
                 )
             ) {
 
-                ActivityOperationResult.Success -> {
-
-                    refreshActivityStatuses(
-                        userId =
-                            currentState.userId
-                    )
+                is RemoteActivityOperationResult.Success -> {
 
                     _actionState.value =
                         ActivityActionState.UpdateSuccess(
-                            activityId =
-                                activityId
+                            activityId = activityId
                         )
+
+                    loadData()
                 }
 
-                ActivityOperationResult.NotFoundOrNotAllowed -> {
-
-                    _actionState.value =
-                        ActivityActionState.Error(
-                            message =
-                                "La actividad no existe o ya no puede editarse."
-                        )
-                }
-
-                ActivityOperationResult.InvalidData -> {
+                RemoteActivityOperationResult.InvalidData -> {
 
                     _actionState.value =
                         ActivityActionState.ValidationError(
-                            message =
-                                "Revisa los datos ingresados."
+                            message = "Revisa los datos ingresados."
                         )
                 }
 
-                ActivityOperationResult.Error -> {
+                RemoteActivityOperationResult.NotFound -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "Ocurrió un error al editar la actividad."
+                            message = "La actividad no existe o ya no puede editarse."
+                        )
+                }
+
+                RemoteActivityOperationResult.Unauthorized -> {
+
+                    _actionState.value =
+                        ActivityActionState.Error(
+                            message = "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteActivityOperationResult.Error -> {
+
+                    _actionState.value =
+                        ActivityActionState.Error(
+                            message = "Ocurrió un error al editar la actividad."
                         )
                 }
             }
@@ -377,25 +345,17 @@ class ActivitiesViewModel(
         activityId: Long
     ) {
 
-        if (
-            _actionState.value
-                    is ActivityActionState.Completing
-        ) {
+        if (_actionState.value is ActivityActionState.Completing) {
             return
         }
 
-        val currentState =
-            _uiState.value
+        val currentState = _uiState.value
 
-        if (
-            currentState
-                    !is ActivitiesUiState.Success
-        ) {
+        if (currentState !is ActivitiesUiState.Success) {
 
             _actionState.value =
                 ActivityActionState.Error(
-                    message =
-                        "No fue posible obtener el usuario activo."
+                    message = "No fue posible obtener el usuario activo."
                 )
 
             return
@@ -408,52 +368,51 @@ class ActivitiesViewModel(
                     activityId = activityId
                 )
 
-            val completedDateEpochDay =
-                LocalDate
-                    .now()
-                    .toEpochDay()
-
             when (
-                activityRepository.completeActivity(
-                    activityId = activityId,
-                    userId = currentState.userId,
-                    completedDateEpochDay =
-                        completedDateEpochDay
+                activityRepository.completeRemoteActivity(
+                    activityId = activityId
                 )
             ) {
 
-                ActivityOperationResult.Success -> {
+                is RemoteActivityOperationResult.Success -> {
 
                     _actionState.value =
                         ActivityActionState.CompleteSuccess(
                             activityId = activityId
                         )
+
+                    loadData()
                 }
 
-                ActivityOperationResult.NotFoundOrNotAllowed -> {
+                RemoteActivityOperationResult.NotFound -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "La actividad no existe o ya fue completada."
+                            message = "La actividad no existe o ya fue eliminada."
                         )
                 }
 
-                ActivityOperationResult.InvalidData -> {
+                RemoteActivityOperationResult.InvalidData -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "No fue posible completar la actividad."
+                            message = "No fue posible completar la actividad."
                         )
                 }
 
-                ActivityOperationResult.Error -> {
+                RemoteActivityOperationResult.Unauthorized -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "Ocurrió un error al completar la actividad."
+                            message = "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteActivityOperationResult.Error -> {
+
+                    _actionState.value =
+                        ActivityActionState.Error(
+                            message = "Ocurrió un error al completar la actividad."
                         )
                 }
             }
@@ -464,25 +423,17 @@ class ActivitiesViewModel(
         activityId: Long
     ) {
 
-        if (
-            _actionState.value
-                    is ActivityActionState.Deleting
-        ) {
+        if (_actionState.value is ActivityActionState.Deleting) {
             return
         }
 
-        val currentState =
-            _uiState.value
+        val currentState = _uiState.value
 
-        if (
-            currentState
-                    !is ActivitiesUiState.Success
-        ) {
+        if (currentState !is ActivitiesUiState.Success) {
 
             _actionState.value =
                 ActivityActionState.Error(
-                    message =
-                        "No fue posible obtener el usuario activo."
+                    message = "No fue posible obtener el usuario activo."
                 )
 
             return
@@ -496,44 +447,42 @@ class ActivitiesViewModel(
                 )
 
             when (
-                activityRepository.softDeleteActivity(
-                    activityId = activityId,
-                    userId = currentState.userId
+                activityRepository.deleteRemoteActivity(
+                    activityId = activityId
                 )
             ) {
 
-                ActivityOperationResult.Success -> {
+                RemoteActivityDeleteResult.Success -> {
 
                     _actionState.value =
                         ActivityActionState.DeleteSuccess(
                             activityId = activityId
                         )
+
+                    loadData()
                 }
 
-                ActivityOperationResult.NotFoundOrNotAllowed -> {
+                RemoteActivityDeleteResult.NotFound -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "La actividad no existe o ya fue eliminada."
+                            message = "La actividad no existe o ya fue eliminada."
                         )
                 }
 
-                ActivityOperationResult.InvalidData -> {
+                RemoteActivityDeleteResult.Unauthorized -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "No fue posible eliminar la actividad."
+                            message = "La sesión expiró. Inicia sesión nuevamente."
                         )
                 }
 
-                ActivityOperationResult.Error -> {
+                RemoteActivityDeleteResult.Error -> {
 
                     _actionState.value =
                         ActivityActionState.Error(
-                            message =
-                                "Ocurrió un error al eliminar la actividad."
+                            message = "Ocurrió un error al eliminar la actividad."
                         )
                 }
             }
@@ -551,24 +500,22 @@ class ActivitiesViewModel(
         userId: Long
     ) {
 
-        val today =
-            LocalDate.now()
+        when (
+            activityRepository
+                .refreshRemoteActivityStatuses()
+        ) {
 
-        val currentTime =
-            LocalTime.now()
+            is RemoteActivitiesResult.Success -> {
+                loadData()
+            }
 
-        val currentTimeMinutes =
-            (currentTime.hour * 60) +
-                    currentTime.minute
-
-        activityRepository
-            .refreshActivityStatuses(
-                userId = userId,
-                todayEpochDay =
-                    today.toEpochDay(),
-                currentTimeMinutes =
-                    currentTimeMinutes
-            )
+            RemoteActivitiesResult.Unauthorized,
+            RemoteActivitiesResult.Error -> {
+                throw IllegalStateException(
+                    "No fue posible actualizar los estados."
+                )
+            }
+        }
     }
 
     private fun loadData() {
@@ -577,12 +524,6 @@ class ActivitiesViewModel(
 
         loadJob =
             viewModelScope.launch {
-
-                val measurementStart =
-                    SystemClock.elapsedRealtime()
-
-                var measurementLogged =
-                    false
 
                 _uiState.value =
                     ActivitiesUiState.Loading
@@ -605,28 +546,45 @@ class ActivitiesViewModel(
                         return@launch
                     }
 
-                    ensureDefaultCategories(
-                        userId = userId
-                    )
+                    val remoteCategories =
+                        categoryRepository
+                            .fetchRemoteCategories()
 
-                    refreshActivityStatuses(
-                        userId = userId
-                    )
+                    val remoteActivities =
+                        activityRepository
+                            .fetchRemoteActivities()
+
+                    if (
+                        remoteCategories !is RemoteCategoriesResult.Success ||
+                        remoteActivities !is RemoteActivitiesResult.Success
+                    ) {
+
+                        _uiState.value =
+                            ActivitiesUiState.Error
+
+                        return@launch
+                    }
+
+                    val categories =
+                        remoteCategories.categories.map { category ->
+
+                            category.toEntity(
+                                userId = userId
+                            )
+                        }
+
+                    val activities =
+                        remoteActivities.activities.map { activity ->
+
+                            activity.toEntity(
+                                userId = userId
+                            )
+                        }
 
                     combine(
-                        categoryRepository.observeCategories(
-                            userId = userId
-                        ),
-
-                        activityRepository.observeActivities(
-                            userId = userId
-                        ),
-
                         _selectedFilter,
-
                         _searchQuery
-
-                    ) { categories, activities, selectedFilter, searchQuery ->
+                    ) { selectedFilter, searchQuery ->
 
                         val filteredByStatus =
                             filterActivities(
@@ -658,24 +616,6 @@ class ActivitiesViewModel(
 
                         _uiState.value =
                             state
-
-                        if (
-                            !measurementLogged &&
-                            state.activities.size == 100
-                        ) {
-
-                            val elapsedMillis =
-                                SystemClock.elapsedRealtime() -
-                                        measurementStart
-
-                            Log.i(
-                                "EXP-001",
-                                "load_ms=$elapsedMillis activities=${state.activities.size}"
-                            )
-
-                            measurementLogged =
-                                true
-                        }
                     }
 
                 } catch (_: Exception) {
@@ -686,6 +626,44 @@ class ActivitiesViewModel(
             }
     }
 
+    private fun CategoryResponse.toEntity(
+        userId: Long
+    ): CategoryEntity {
+
+        return CategoryEntity(
+            id = id,
+            userId = userId,
+            name = name,
+            icon = icon,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            isActive = isActive
+        )
+    }
+
+    private fun ActivityResponse.toEntity(
+        userId: Long
+    ): ActivityEntity {
+
+        return ActivityEntity(
+            id = id,
+            userId = userId,
+            categoryId = categoryId,
+            title = title,
+            description = description,
+            dueDateEpochDay = dueDateEpochDay,
+            dueTimeMinutes = dueTimeMinutes,
+            priority = priority,
+            status = status,
+            repeatRule = repeatRule,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            completedAt = completedAt,
+            completedDateEpochDay = completedDateEpochDay,
+            isDeleted = isDeleted,
+            deletedAt = null
+        )
+    }
 
     private fun filterActivities(
         activities: List<ActivityEntity>,
@@ -857,40 +835,6 @@ class ActivitiesViewModel(
             else ->
                 3
         }
-    }
-
-    private suspend fun ensureDefaultCategories(
-        userId: Long
-    ) {
-
-        val currentCategories =
-            categoryRepository
-                .observeCategories(
-                    userId = userId
-                )
-                .first()
-
-        if (currentCategories.isNotEmpty()) {
-            return
-        }
-
-        categoryRepository.createCategory(
-            userId = userId,
-            name = "Estudio",
-            icon = "📚"
-        )
-
-        categoryRepository.createCategory(
-            userId = userId,
-            name = "Personal",
-            icon = "👤"
-        )
-
-        categoryRepository.createCategory(
-            userId = userId,
-            name = "Trabajo",
-            icon = "💼"
-        )
     }
 
     companion object {

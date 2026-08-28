@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import androidx.datastore.preferences.core.stringPreferencesKey
 
 private val Context.sessionDataStore by preferencesDataStore(
     name = "session_preferences"
@@ -17,6 +18,7 @@ private val Context.sessionDataStore by preferencesDataStore(
 
 data class SessionState(
     val userId: Long? = null,
+    val authToken: String? = null,
     val onboardingCompleted: Boolean = false
 ) {
 
@@ -37,6 +39,9 @@ class SessionManager(
 
         private val ONBOARDING_COMPLETED =
             booleanPreferencesKey("onboarding_completed")
+
+        private val AUTH_TOKEN =
+            stringPreferencesKey("auth_token")
     }
 
     val sessionState: Flow<SessionState> =
@@ -53,6 +58,14 @@ class SessionManager(
 
                 SessionState(
                     userId = preferences[USER_ID],
+                    onboardingCompleted =
+                        preferences[ONBOARDING_COMPLETED]
+                            ?: false
+                )
+
+                SessionState(
+                    userId = preferences[USER_ID],
+                    authToken = preferences[AUTH_TOKEN],
                     onboardingCompleted =
                         preferences[ONBOARDING_COMPLETED]
                             ?: false
@@ -74,6 +87,7 @@ class SessionManager(
         appContext.sessionDataStore.edit { preferences ->
 
             preferences.remove(USER_ID)
+            preferences.remove(AUTH_TOKEN)
         }
     }
 
@@ -84,6 +98,18 @@ class SessionManager(
         appContext.sessionDataStore.edit { preferences ->
 
             preferences[ONBOARDING_COMPLETED] = completed
+        }
+    }
+
+    suspend fun saveAuthenticatedSession(
+        userId: Long,
+        authToken: String
+    ) {
+
+        appContext.sessionDataStore.edit { preferences ->
+
+            preferences[USER_ID] = userId
+            preferences[AUTH_TOKEN] = authToken
         }
     }
 }

@@ -18,6 +18,12 @@ interface ReminderDao {
         reminder: ReminderEntity
     ): Long
 
+    @Insert(
+        onConflict = OnConflictStrategy.REPLACE
+    )
+    suspend fun upsertReminder(
+        reminder: ReminderEntity
+    )
 
     @Query(
         """

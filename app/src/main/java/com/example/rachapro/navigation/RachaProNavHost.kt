@@ -41,7 +41,7 @@ import com.example.rachapro.progress.ProgressViewModel
 import com.example.rachapro.profile.ProfileViewModel
 import com.example.rachapro.notifications.NotificationPermission
 import androidx.compose.ui.platform.LocalContext
-
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 object Routes {
 
@@ -86,6 +86,49 @@ fun RachaProNavHost() {
     val appStartState by
     appStartViewModel.uiState
         .collectAsStateWithLifecycle()
+
+    val currentBackStackEntry by
+    navController.currentBackStackEntryAsState()
+
+    val currentRoute =
+        currentBackStackEntry
+            ?.destination
+            ?.route
+
+    LaunchedEffect(
+        appStartState,
+        currentRoute
+    ) {
+
+        val publicRoutes =
+            setOf(
+                Routes.APP_START,
+                Routes.WELCOME,
+                Routes.ONBOARDING,
+                Routes.REGISTER,
+                Routes.LOGIN
+            )
+
+        if (
+            appStartState == AppStartState.LoggedOut &&
+            currentRoute != null &&
+            currentRoute !in publicRoutes
+        ) {
+
+            navController.navigate(
+                Routes.LOGIN
+            ) {
+
+                popUpTo(
+                    navController.graph.startDestinationId
+                ) {
+                    inclusive = true
+                }
+
+                launchSingleTop = true
+            }
+        }
+    }
 
     NavHost(
         navController = navController,

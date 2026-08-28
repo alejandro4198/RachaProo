@@ -13,6 +13,8 @@ import com.example.rachapro.notifications.ReminderScheduler
 import com.example.rachapro.data.repository.PomodoroRepository
 import com.example.rachapro.data.repository.AchievementRepository
 import com.example.rachapro.data.local.UserPreferencesManager
+import com.example.rachapro.network.RetrofitClient
+import com.example.rachapro.network.ApiService
 
 class RachaProApplication : Application() {
 
@@ -32,25 +34,23 @@ class RachaProApplication : Application() {
 
     val userRepository: UserRepository by lazy {
         UserRepository(
-            userDao = database.userDao()
+            userDao = database.userDao(),
+            apiService = apiService
         )
     }
 
     val categoryRepository: CategoryRepository by lazy {
-
         CategoryRepository(
-            categoryDao =
-                database.categoryDao()
+            categoryDao = database.categoryDao(),
+            apiService = apiService
         )
     }
 
     val activityRepository: ActivityRepository by lazy {
-
         ActivityRepository(
-            activityDao =
-                database.activityDao(),
-            categoryDao =
-                database.categoryDao()
+            activityDao = database.activityDao(),
+            categoryDao = database.categoryDao(),
+            apiService = apiService
         )
     }
 
@@ -58,14 +58,17 @@ class RachaProApplication : Application() {
         SessionManager(this)
     }
 
+    val apiService: ApiService by lazy {
+        RetrofitClient.create(
+            sessionManager = sessionManager
+        )
+    }
+
     val subtaskRepository by lazy {
-
         SubtaskRepository(
-            subtaskDao =
-                database.subtaskDao(),
-
-            activityDao =
-                database.activityDao()
+            subtaskDao = database.subtaskDao(),
+            activityDao = database.activityDao(),
+            apiService = apiService
         )
     }
 
@@ -76,7 +79,10 @@ class RachaProApplication : Application() {
                 database.reminderDao(),
 
             activityDao =
-                database.activityDao()
+                database.activityDao(),
+
+            apiService =
+                apiService
         )
     }
 
@@ -91,7 +97,8 @@ class RachaProApplication : Application() {
     val pomodoroRepository by lazy {
         PomodoroRepository(
             pomodoroSessionDao = database.pomodoroSessionDao(),
-            activityDao = database.activityDao()
+            activityDao = database.activityDao(),
+            apiService = apiService
         )
     }
 
@@ -103,7 +110,8 @@ class RachaProApplication : Application() {
 
     val achievementRepository by lazy {
         AchievementRepository(
-            achievementDao = database.achievementDao()
+            achievementDao = database.achievementDao(),
+            apiService = apiService
         )
     }
 

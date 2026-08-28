@@ -3,11 +3,16 @@ package com.example.rachapro.data.repository
 import android.database.sqlite.SQLiteConstraintException
 import com.example.rachapro.data.local.dao.CategoryDao
 import com.example.rachapro.data.local.entity.CategoryEntity
+import com.example.rachapro.network.ApiService
+import com.example.rachapro.network.dto.CategoryResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import retrofit2.HttpException
+import java.io.IOException
 
 class CategoryRepository(
-    private val categoryDao: CategoryDao
+    private val categoryDao: CategoryDao,
+    private val apiService: ApiService
 ) {
 
     fun observeCategories(
@@ -42,7 +47,6 @@ class CategoryRepository(
             name.trim()
 
         if (normalizedName.isBlank()) {
-
             return CategoryCreateResult.InvalidName
         }
 
@@ -92,6 +96,35 @@ class CategoryRepository(
             CategoryCreateResult.Error
         }
     }
+
+    suspend fun fetchRemoteCategories(): RemoteCategoriesResult {
+
+        return try {
+
+            val categories =
+                apiService.getCategories()
+
+            RemoteCategoriesResult.Success(
+                categories = categories
+            )
+
+        } catch (exception: HttpException) {
+
+            if (exception.code() == 401) {
+                RemoteCategoriesResult.Unauthorized
+            } else {
+                RemoteCategoriesResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteCategoriesResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteCategoriesResult.Error
+        }
+    }
 }
 
 sealed interface CategoryCreateResult {
@@ -108,4 +141,17 @@ sealed interface CategoryCreateResult {
 
     data object Error :
         CategoryCreateResult
+}
+
+sealed interface RemoteCategoriesResult {
+
+    data class Success(
+        val categories: List<CategoryResponse>
+    ) : RemoteCategoriesResult
+
+    data object Unauthorized :
+        RemoteCategoriesResult
+
+    data object Error :
+        RemoteCategoriesResult
 }

@@ -42,4 +42,11 @@ interface AchievementDao {
     suspend fun insertAchievement(
         achievement: AchievementEntity
     ): Long
+
+    @Insert(
+        onConflict = OnConflictStrategy.REPLACE
+    )
+    suspend fun upsertAchievement(
+        achievement: AchievementEntity
+    )
 }

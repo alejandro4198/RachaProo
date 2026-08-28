@@ -85,6 +85,10 @@ class PomodoroViewModel(
             currentUserId =
                 userId
 
+            pomodoroRepository.syncRemoteSessions(
+                userId = userId
+            )
+
             combine(
                 userPreferencesManager
                     .observePomodoroPreferences(

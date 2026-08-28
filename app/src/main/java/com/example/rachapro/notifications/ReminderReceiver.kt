@@ -182,12 +182,21 @@ class ReminderReceiver :
                 application
                     .reminderRepository
                     .markReminderDelivered(
-                        reminderId =
-                            reminderId,
-
-                        userId =
-                            userId
+                        reminderId = reminderId,
+                        userId = userId
                     )
+
+                try {
+
+                    application
+                        .reminderRepository
+                        .markRemoteReminderDelivered(
+                            reminderId = reminderId,
+                            userId = userId
+                        )
+
+                } catch (_: Exception) {
+                }
 
             } finally {
 

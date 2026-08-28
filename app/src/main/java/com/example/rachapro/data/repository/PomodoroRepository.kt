@@ -1,59 +1,69 @@
 package com.example.rachapro.data.repository
 
 import com.example.rachapro.data.local.dao.ActivityDao
+import com.example.rachapro.data.local.dao.DailyPomodoroStats
 import com.example.rachapro.data.local.dao.PomodoroSessionDao
 import com.example.rachapro.data.local.entity.PomodoroSessionEntity
 import com.example.rachapro.data.local.entity.PomodoroSessionStatus
 import com.example.rachapro.data.local.entity.PomodoroSessionType
+import com.example.rachapro.network.ApiService
+import com.example.rachapro.network.dto.CreatePomodoroSessionRequest
+import com.example.rachapro.network.dto.PomodoroSessionResponse
 import kotlinx.coroutines.flow.Flow
-import java.time.Instant
-import java.time.ZoneId
-import com.example.rachapro.data.local.dao.DailyPomodoroStats
-
+import retrofit2.HttpException
 
 class PomodoroRepository(
     private val pomodoroSessionDao: PomodoroSessionDao,
-    private val activityDao: ActivityDao
+    private val activityDao: ActivityDao,
+    private val apiService: ApiService
 ) {
 
     fun observeActiveSession(
         userId: Long
     ): Flow<PomodoroSessionEntity?> {
-
-        return pomodoroSessionDao
-            .observeActiveSession(
-                userId = userId
-            )
+        return pomodoroSessionDao.observeActiveSession(userId)
     }
 
     suspend fun getActiveSession(
         userId: Long
     ): PomodoroSessionEntity? {
-
-        return pomodoroSessionDao
-            .getActiveSession(
-                userId = userId
-            )
+        return pomodoroSessionDao.getActiveSession(userId)
     }
 
     fun observeSessions(
         userId: Long
     ): Flow<List<PomodoroSessionEntity>> {
-
-        return pomodoroSessionDao
-            .observeSessions(
-                userId = userId
-            )
+        return pomodoroSessionDao.observeSessions(userId)
     }
 
     fun observeCompletedFocusDays(
         userId: Long
     ): Flow<List<Long>> {
+        return pomodoroSessionDao.observeCompletedFocusDays(userId)
+    }
 
-        return pomodoroSessionDao
-            .observeCompletedFocusDays(
-                userId = userId
-            )
+    suspend fun syncRemoteSessions(
+        userId: Long
+    ): PomodoroSyncResult {
+        return try {
+            val sessions = apiService.getPomodoroSessions()
+
+            sessions.forEach { response ->
+                pomodoroSessionDao.upsertSession(
+                    response.toEntity(userId)
+                )
+            }
+
+            PomodoroSyncResult.Success
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
+                PomodoroSyncResult.Unauthorized
+            } else {
+                PomodoroSyncResult.Error
+            }
+        } catch (_: Exception) {
+            PomodoroSyncResult.Error
+        }
     }
 
     suspend fun startSession(
@@ -67,10 +77,8 @@ class PomodoroRepository(
             userId <= 0L ||
             plannedDurationSeconds <= 0
         ) {
-
             return PomodoroStartResult.InvalidData(
-                message =
-                    "Los datos de la sesión no son válidos."
+                "Los datos de la sesión no son válidos."
             )
         }
 
@@ -81,72 +89,57 @@ class PomodoroRepository(
                 PomodoroSessionType.LONG_BREAK
             )
         ) {
-
             return PomodoroStartResult.InvalidData(
-                message =
-                    "El tipo de sesión no es válido."
+                "El tipo de sesión no es válido."
             )
         }
-
-        val activeSession =
-            pomodoroSessionDao
-                .getActiveSession(
-                    userId = userId
-                )
-
-        if (activeSession != null) {
-
-            return PomodoroStartResult
-                .ActiveSessionAlreadyExists
-        }
-
-        if (activityId != null) {
-
-            val activity =
-                activityDao
-                    .getActivityById(
-                        activityId = activityId,
-                        userId = userId
-                    )
-
-            if (
-                activity == null ||
-                activity.isDeleted
-            ) {
-
-                return PomodoroStartResult
-                    .ActivityNotFoundOrNotAllowed
-            }
-        }
-
-        val now =
-            System.currentTimeMillis()
 
         return try {
+            val remoteSessions =
+                apiService.getPomodoroSessions()
 
-            val sessionId =
-                pomodoroSessionDao
-                    .insertSession(
-                        PomodoroSessionEntity(
-                            userId = userId,
-                            activityId = activityId,
-                            type = type,
-                            plannedDurationSeconds =
-                                plannedDurationSeconds,
-                            status =
-                                PomodoroSessionStatus.RUNNING,
-                            startedAtMillis = now,
-                            createdAt = now,
-                            updatedAt = now
-                        )
+            remoteSessions.forEach { response ->
+                pomodoroSessionDao.upsertSession(
+                    response.toEntity(userId)
+                )
+            }
+
+            val activeSession =
+                remoteSessions.firstOrNull {
+                    it.status == PomodoroSessionStatus.RUNNING ||
+                            it.status == PomodoroSessionStatus.PAUSED
+                }
+
+            if (activeSession != null) {
+                return PomodoroStartResult.ActiveSessionAlreadyExists
+            }
+
+            val response =
+                apiService.createPomodoroSession(
+                    CreatePomodoroSessionRequest(
+                        activityId = activityId,
+                        type = type,
+                        plannedDurationSeconds =
+                            plannedDurationSeconds
                     )
+                )
 
-            PomodoroStartResult.Success(
-                sessionId = sessionId
+            pomodoroSessionDao.upsertSession(
+                response.toEntity(userId)
             )
 
-        } catch (_: Exception) {
+            PomodoroStartResult.Success(
+                sessionId = response.id
+            )
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400 ->
+                    PomodoroStartResult.ActivityNotFoundOrNotAllowed
 
+                else ->
+                    PomodoroStartResult.Error
+            }
+        } catch (_: Exception) {
             PomodoroStartResult.Error
         }
     }
@@ -155,27 +148,24 @@ class PomodoroRepository(
         sessionId: Long,
         userId: Long
     ): PomodoroOperationResult {
-
-        val now =
-            System.currentTimeMillis()
-
         return try {
+            val response =
+                apiService.pausePomodoroSession(sessionId)
 
-            val rowsAffected =
-                pomodoroSessionDao
-                    .pauseSession(
-                        sessionId = sessionId,
-                        userId = userId,
-                        pausedAtMillis = now,
-                        updatedAt = now
-                    )
-
-            resultFromRowsAffected(
-                rowsAffected
+            pomodoroSessionDao.upsertSession(
+                response.toEntity(userId)
             )
 
-        } catch (_: Exception) {
+            PomodoroOperationResult.Success
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400, 404 ->
+                    PomodoroOperationResult.NotFoundOrInvalidState
 
+                else ->
+                    PomodoroOperationResult.Error
+            }
+        } catch (_: Exception) {
             PomodoroOperationResult.Error
         }
     }
@@ -184,27 +174,24 @@ class PomodoroRepository(
         sessionId: Long,
         userId: Long
     ): PomodoroOperationResult {
-
-        val now =
-            System.currentTimeMillis()
-
         return try {
+            val response =
+                apiService.resumePomodoroSession(sessionId)
 
-            val rowsAffected =
-                pomodoroSessionDao
-                    .resumeSession(
-                        sessionId = sessionId,
-                        userId = userId,
-                        resumedAtMillis = now,
-                        updatedAt = now
-                    )
-
-            resultFromRowsAffected(
-                rowsAffected
+            pomodoroSessionDao.upsertSession(
+                response.toEntity(userId)
             )
 
-        } catch (_: Exception) {
+            PomodoroOperationResult.Success
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400, 404 ->
+                    PomodoroOperationResult.NotFoundOrInvalidState
 
+                else ->
+                    PomodoroOperationResult.Error
+            }
+        } catch (_: Exception) {
             PomodoroOperationResult.Error
         }
     }
@@ -216,81 +203,52 @@ class PomodoroRepository(
 
         val session =
             try {
-
-                pomodoroSessionDao
-                    .getSessionById(
-                        sessionId = sessionId,
-                        userId = userId
-                    )
-
+                pomodoroSessionDao.getSessionById(
+                    sessionId = sessionId,
+                    userId = userId
+                )
             } catch (_: Exception) {
-
                 return PomodoroCompleteResult.Error
             }
 
         if (session == null) {
-
-            return PomodoroCompleteResult
-                .NotFoundOrNotAllowed
+            return PomodoroCompleteResult.NotFoundOrNotAllowed
         }
 
         if (
             session.status !=
             PomodoroSessionStatus.RUNNING
         ) {
-
-            return PomodoroCompleteResult
-                .InvalidState
+            return PomodoroCompleteResult.InvalidState
         }
-
-        val now =
-            System.currentTimeMillis()
 
         if (
-            calculateRemainingMillis(
-                session = session,
-                nowMillis = now
-            ) > 0L
+            calculateRemainingMillis(session) > 0L
         ) {
-
-            return PomodoroCompleteResult
-                .TimeRemaining
+            return PomodoroCompleteResult.TimeRemaining
         }
 
-        val completedDateEpochDay =
-            Instant
-                .ofEpochMilli(now)
-                .atZone(
-                    ZoneId.systemDefault()
-                )
-                .toLocalDate()
-                .toEpochDay()
-
         return try {
+            val response =
+                apiService.completePomodoroSession(sessionId)
 
-            val rowsAffected =
-                pomodoroSessionDao
-                    .completeSession(
-                        sessionId = sessionId,
-                        userId = userId,
-                        completedAtMillis = now,
-                        completedDateEpochDay =
-                            completedDateEpochDay,
-                        updatedAt = now
-                    )
+            pomodoroSessionDao.upsertSession(
+                response.toEntity(userId)
+            )
 
-            if (rowsAffected > 0) {
+            PomodoroCompleteResult.Success
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400 ->
+                    PomodoroCompleteResult.InvalidState
 
-                PomodoroCompleteResult.Success
+                404 ->
+                    PomodoroCompleteResult.NotFoundOrNotAllowed
 
-            } else {
-
-                PomodoroCompleteResult
-                    .InvalidState
+                else ->
+                    PomodoroCompleteResult.Error
             }
-
         } catch (_: Exception) {
-
             PomodoroCompleteResult.Error
         }
     }
@@ -299,51 +257,43 @@ class PomodoroRepository(
         sessionId: Long,
         userId: Long
     ): PomodoroOperationResult {
-
-        val now =
-            System.currentTimeMillis()
-
         return try {
+            val response =
+                apiService.cancelPomodoroSession(sessionId)
 
-            val rowsAffected =
-                pomodoroSessionDao
-                    .cancelSession(
-                        sessionId = sessionId,
-                        userId = userId,
-                        updatedAt = now
-                    )
-
-            resultFromRowsAffected(
-                rowsAffected
+            pomodoroSessionDao.upsertSession(
+                response.toEntity(userId)
             )
 
-        } catch (_: Exception) {
+            PomodoroOperationResult.Success
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400, 404 ->
+                    PomodoroOperationResult.NotFoundOrInvalidState
 
+                else ->
+                    PomodoroOperationResult.Error
+            }
+        } catch (_: Exception) {
             PomodoroOperationResult.Error
         }
     }
 
     fun calculateRemainingMillis(
         session: PomodoroSessionEntity,
-        nowMillis: Long =
-            System.currentTimeMillis()
+        nowMillis: Long = System.currentTimeMillis()
     ): Long {
 
         val plannedMillis =
-            session.plannedDurationSeconds *
-                    1000L
+            session.plannedDurationSeconds * 1000L
 
         val effectiveNow =
             if (
                 session.status ==
                 PomodoroSessionStatus.PAUSED
             ) {
-
-                session.pausedAtMillis
-                    ?: nowMillis
-
+                session.pausedAtMillis ?: nowMillis
             } else {
-
                 nowMillis
             }
 
@@ -352,44 +302,21 @@ class PomodoroRepository(
                     effectiveNow -
                             session.startedAtMillis -
                             session.totalPausedMillis
-                    )
-                .coerceAtLeast(0L)
+                    ).coerceAtLeast(0L)
 
         return (
                 plannedMillis -
                         elapsedMillis
-                )
-            .coerceAtLeast(0L)
-    }
-
-    private fun resultFromRowsAffected(
-        rowsAffected: Int
-    ): PomodoroOperationResult {
-
-        return if (rowsAffected > 0) {
-
-            PomodoroOperationResult.Success
-
-        } else {
-
-            PomodoroOperationResult
-                .NotFoundOrInvalidState
-        }
+                ).coerceAtLeast(0L)
     }
 
     suspend fun countCompletedFocusSessions(
         userId: Long
     ): Int {
-
         return try {
-
             pomodoroSessionDao
-                .countCompletedFocusSessions(
-                    userId = userId
-                )
-
+                .countCompletedFocusSessions(userId)
         } catch (_: Exception) {
-
             0
         }
     }
@@ -397,21 +324,15 @@ class PomodoroRepository(
     fun observeCompletedFocusCount(
         userId: Long
     ): Flow<Int> {
-
         return pomodoroSessionDao
-            .observeCompletedFocusCount(
-                userId = userId
-            )
+            .observeCompletedFocusCount(userId)
     }
 
     fun observeCompletedFocusSeconds(
         userId: Long
     ): Flow<Long> {
-
         return pomodoroSessionDao
-            .observeCompletedFocusSeconds(
-                userId = userId
-            )
+            .observeCompletedFocusSeconds(userId)
     }
 
     fun observeCompletedFocusCountBetween(
@@ -419,12 +340,11 @@ class PomodoroRepository(
         startEpochDay: Long,
         endEpochDay: Long
     ): Flow<Int> {
-
         return pomodoroSessionDao
             .observeCompletedFocusCountBetween(
-                userId = userId,
-                startEpochDay = startEpochDay,
-                endEpochDay = endEpochDay
+                userId,
+                startEpochDay,
+                endEpochDay
             )
     }
 
@@ -433,12 +353,11 @@ class PomodoroRepository(
         startEpochDay: Long,
         endEpochDay: Long
     ): Flow<Long> {
-
         return pomodoroSessionDao
             .observeCompletedFocusSecondsBetween(
-                userId = userId,
-                startEpochDay = startEpochDay,
-                endEpochDay = endEpochDay
+                userId,
+                startEpochDay,
+                endEpochDay
             )
     }
 
@@ -447,16 +366,41 @@ class PomodoroRepository(
         startEpochDay: Long,
         endEpochDay: Long
     ): Flow<List<DailyPomodoroStats>> {
-
         return pomodoroSessionDao
             .observeCompletedFocusStatsByDay(
-                userId = userId,
-                startEpochDay = startEpochDay,
-                endEpochDay = endEpochDay
+                userId,
+                startEpochDay,
+                endEpochDay
             )
     }
 
+    private fun PomodoroSessionResponse.toEntity(
+        userId: Long
+    ): PomodoroSessionEntity {
+        return PomodoroSessionEntity(
+            id = id,
+            userId = userId,
+            activityId = activityId,
+            type = type,
+            plannedDurationSeconds =
+                plannedDurationSeconds,
+            status = status,
+            startedAtMillis = startedAtMillis,
+            pausedAtMillis = pausedAtMillis,
+            totalPausedMillis = totalPausedMillis,
+            completedAtMillis = completedAtMillis,
+            completedDateEpochDay =
+                completedDateEpochDay,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+    }
+}
 
+sealed interface PomodoroSyncResult {
+    data object Success : PomodoroSyncResult
+    data object Unauthorized : PomodoroSyncResult
+    data object Error : PomodoroSyncResult
 }
 
 sealed interface PomodoroStartResult {

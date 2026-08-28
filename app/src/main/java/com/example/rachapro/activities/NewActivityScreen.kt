@@ -54,13 +54,6 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.rachapro.notifications.NotificationPermission
 import java.time.ZoneId
 
-
-/*
- * =============================================================
- * CREAR ACTIVIDAD
- * =============================================================
- */
-
 @Composable
 fun NewActivityScreen(
     categories: List<CategoryEntity>,
@@ -125,12 +118,6 @@ fun NewActivityScreen(
             onResetActionState
     )
 }
-
-/*
- * =============================================================
- * EDITAR ACTIVIDAD
- * =============================================================
- */
 
 @Composable
 fun EditActivityScreen(
@@ -276,12 +263,6 @@ fun EditActivityScreen(
     )
 }
 
-/*
- * =============================================================
- * FORMULARIO REUTILIZABLE
- * =============================================================
- */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ActivityFormScreen(
@@ -306,20 +287,8 @@ private fun ActivityFormScreen(
     extraContent: (@Composable () -> Unit)? = null
 ) {
 
-    /*
-     * ---------------------------------------------------------
-     * ¿ESTAMOS CREANDO O EDITANDO?
-     * ---------------------------------------------------------
-     */
-
     val isEditing =
         activity != null
-
-    /*
-     * ---------------------------------------------------------
-     * ESTADO DEL FORMULARIO
-     * ---------------------------------------------------------
-     */
 
     var title by
     rememberSaveable(
@@ -410,11 +379,6 @@ private fun ActivityFormScreen(
         )
     }
 
-    /*
-     * ---------------------------------------------------------
-     * FORMATO DE FECHA
-     * ---------------------------------------------------------
-     */
 
     val dateFormatter =
         remember {
@@ -425,11 +389,6 @@ private fun ActivityFormScreen(
                 )
         }
 
-    /*
-     * ---------------------------------------------------------
-     * FECHA INICIAL DEL DATE PICKER
-     * ---------------------------------------------------------
-     */
 
     val initialDateMillis =
         remember(
@@ -458,11 +417,6 @@ private fun ActivityFormScreen(
                 initialDateMillis
         )
 
-    /*
-     * ---------------------------------------------------------
-     * HORA INICIAL DEL TIME PICKER
-     * ---------------------------------------------------------
-     */
 
     val currentTime =
         remember {
@@ -498,24 +452,12 @@ private fun ActivityFormScreen(
                 true
         )
 
-    /*
-     * ---------------------------------------------------------
-     * CATEGORÍA SELECCIONADA
-     * ---------------------------------------------------------
-     */
-
     val selectedCategory =
         categories.firstOrNull { category ->
 
             category.id ==
                     selectedCategoryId
         }
-
-    /*
-     * ---------------------------------------------------------
-     * OPERACIÓN EXITOSA
-     * ---------------------------------------------------------
-     */
 
     LaunchedEffect(
         actionState
@@ -555,12 +497,6 @@ private fun ActivityFormScreen(
             onSuccess()
         }
     }
-
-    /*
-     * ---------------------------------------------------------
-     * DATE PICKER
-     * ---------------------------------------------------------
-     */
 
     if (
         showDatePicker
@@ -638,12 +574,6 @@ private fun ActivityFormScreen(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * TIME PICKER
-     * ---------------------------------------------------------
-     */
-
     if (
         showTimePicker
     ) {
@@ -714,12 +644,6 @@ private fun ActivityFormScreen(
         )
     }
 
-    /*
-     * =========================================================
-     * CONTENIDO DEL FORMULARIO
-     * =========================================================
-     */
-
     Column(
         modifier =
             Modifier
@@ -731,12 +655,6 @@ private fun ActivityFormScreen(
                     20.dp
                 )
     ) {
-
-        /*
-         * -----------------------------------------------------
-         * VOLVER
-         * -----------------------------------------------------
-         */
 
         TextButton(
             onClick = {
@@ -752,12 +670,6 @@ private fun ActivityFormScreen(
                     "← Volver"
             )
         }
-
-        /*
-         * -----------------------------------------------------
-         * ENCABEZADO
-         * -----------------------------------------------------
-         */
 
         Text(
             text =
@@ -791,12 +703,6 @@ private fun ActivityFormScreen(
                 )
         )
 
-        /*
-         * -----------------------------------------------------
-         * TÍTULO
-         * -----------------------------------------------------
-         */
-
         OutlinedTextField(
             value =
                 title,
@@ -827,12 +733,6 @@ private fun ActivityFormScreen(
                     16.dp
                 )
         )
-
-        /*
-         * -----------------------------------------------------
-         * DESCRIPCIÓN
-         * -----------------------------------------------------
-         */
 
         OutlinedTextField(
             value =
@@ -868,12 +768,6 @@ private fun ActivityFormScreen(
                     20.dp
                 )
         )
-
-        /*
-         * -----------------------------------------------------
-         * CATEGORÍA
-         * -----------------------------------------------------
-         */
 
         Text(
             text =
@@ -965,12 +859,6 @@ private fun ActivityFormScreen(
                 )
         )
 
-        /*
-         * -----------------------------------------------------
-         * FECHA
-         * -----------------------------------------------------
-         */
-
         Text(
             text =
                 "Fecha límite *",
@@ -1021,12 +909,6 @@ private fun ActivityFormScreen(
                 )
         )
 
-        /*
-         * -----------------------------------------------------
-         * HORA
-         * -----------------------------------------------------
-         */
-
         Text(
             text =
                 "Hora",
@@ -1067,8 +949,7 @@ private fun ActivityFormScreen(
                         ?.let { minutes ->
 
                             val hour =
-                                minutes /
-                                        60
+                                minutes / 60
 
                             val minute =
                                 minutes %
@@ -1109,12 +990,6 @@ private fun ActivityFormScreen(
                     20.dp
                 )
         )
-
-        /*
-         * -----------------------------------------------------
-         * PRIORIDAD
-         * -----------------------------------------------------
-         */
 
         Text(
             text =
@@ -1209,13 +1084,6 @@ private fun ActivityFormScreen(
                 )
         )
 
-        /*
-         * -----------------------------------------------------
-         * CONTENIDO ADICIONAL
-         * SUBTAREAS EN MODO EDICIÓN
-         * -----------------------------------------------------
-         */
-
         if (
             extraContent != null
         ) {
@@ -1229,12 +1097,6 @@ private fun ActivityFormScreen(
                     )
             )
         }
-
-        /*
-         * -----------------------------------------------------
-         * ERRORES DE ACTIVIDAD
-         * -----------------------------------------------------
-         */
 
         when (
             actionState
@@ -1290,12 +1152,6 @@ private fun ActivityFormScreen(
                 Unit
         }
 
-        /*
-         * -----------------------------------------------------
-         * GUARDAR / CREAR
-         * -----------------------------------------------------
-         */
-
         val isProcessing =
             (actionState is ActivityActionState.Saving) ||
                     (actionState is ActivityActionState.Updating)
@@ -1344,12 +1200,6 @@ private fun ActivityFormScreen(
     }
 }
 
-/*
- * =============================================================
- * SECCIÓN DE SUBTAREAS
- * =============================================================
- */
-
 @Composable
 private fun SubtasksSection(
     uiState: SubtasksUiState,
@@ -1396,11 +1246,6 @@ private fun SubtasksSection(
     rememberSaveable {
         mutableStateOf("")
     }
-
-    /*
-     * Cuando Room confirma la creación,
-     * limpiamos el campo.
-     */
 
     LaunchedEffect(
         actionState
@@ -1538,88 +1383,88 @@ private fun SubtasksSection(
                 }
             }
         )
+    }
 
-        if (deletingSubtaskId != null) {
+    if (deletingSubtaskId != null) {
 
-            val isDeleting =
-                (actionState is SubtaskActionState.Deleting)
+        val isDeleting =
+            (actionState is SubtaskActionState.Deleting)
 
-            AlertDialog(
-                onDismissRequest = {
+        AlertDialog(
+            onDismissRequest = {
 
-                    if (!isDeleting) {
+                if (!isDeleting) {
 
-                        deletingSubtaskId = null
-                        deletingSubtaskTitle = ""
-                    }
-                },
+                    deletingSubtaskId = null
+                    deletingSubtaskTitle = ""
+                }
+            },
 
-                title = {
+            title = {
 
-                    Text(
-                        text = "¿Eliminar subtarea?"
-                    )
-                },
+                Text(
+                    text = "¿Eliminar subtarea?"
+                )
+            },
 
-                text = {
+            text = {
+
+                Text(
+                    text =
+                        "¿Quieres eliminar \"$deletingSubtaskTitle\"?"
+                )
+            },
+
+            confirmButton = {
+
+                TextButton(
+                    onClick = {
+
+                        val subtaskId =
+                            deletingSubtaskId
+
+                        if (subtaskId != null) {
+
+                            onDeleteSubtask(
+                                subtaskId
+                            )
+                        }
+                    },
+
+                    enabled =
+                        !isDeleting
+                ) {
 
                     Text(
                         text =
-                            "¿Quieres eliminar \"$deletingSubtaskTitle\"?"
-                    )
-                },
-
-                confirmButton = {
-
-                    TextButton(
-                        onClick = {
-
-                            val subtaskId =
-                                deletingSubtaskId
-
-                            if (subtaskId != null) {
-
-                                onDeleteSubtask(
-                                    subtaskId
-                                )
+                            if (isDeleting) {
+                                "Eliminando..."
+                            } else {
+                                "Eliminar"
                             }
-                        },
-
-                        enabled =
-                            !isDeleting
-                    ) {
-
-                        Text(
-                            text =
-                                if (isDeleting) {
-                                    "Eliminando..."
-                                } else {
-                                    "Eliminar"
-                                }
-                        )
-                    }
-                },
-
-                dismissButton = {
-
-                    TextButton(
-                        onClick = {
-
-                            deletingSubtaskId = null
-                            deletingSubtaskTitle = ""
-                        },
-
-                        enabled =
-                            !isDeleting
-                    ) {
-
-                        Text(
-                            text = "Cancelar"
-                        )
-                    }
+                    )
                 }
-            )
-        }
+            },
+
+            dismissButton = {
+
+                TextButton(
+                    onClick = {
+
+                        deletingSubtaskId = null
+                        deletingSubtaskTitle = ""
+                    },
+
+                    enabled =
+                        !isDeleting
+                ) {
+
+                    Text(
+                        text = "Cancelar"
+                    )
+                }
+            }
+        )
     }
 
     Text(
@@ -1639,12 +1484,6 @@ private fun SubtasksSection(
                 8.dp
             )
     )
-
-    /*
-     * ---------------------------------------------------------
-     * LISTADO
-     * ---------------------------------------------------------
-     */
 
     when (
         uiState
@@ -1812,12 +1651,6 @@ private fun SubtasksSection(
             )
     )
 
-    /*
-     * ---------------------------------------------------------
-     * NUEVA SUBTAREA
-     * ---------------------------------------------------------
-     */
-
     OutlinedTextField(
         value =
             newSubtaskTitle,
@@ -1850,12 +1683,6 @@ private fun SubtasksSection(
         singleLine =
             true
     )
-
-    /*
-     * ---------------------------------------------------------
-     * ERRORES
-     * ---------------------------------------------------------
-     */
 
     if (
         actionState
@@ -1913,12 +1740,6 @@ private fun SubtasksSection(
                 8.dp
             )
     )
-
-    /*
-     * ---------------------------------------------------------
-     * AGREGAR
-     * ---------------------------------------------------------
-     */
 
     val isCreating =
         (actionState is SubtaskActionState.Creating)
@@ -2017,10 +1838,6 @@ private fun RemindersSection(
         )
     }
 
-    /*
-     * Datos pendientes mientras Android
-     * muestra el diálogo de permiso.
-     */
     var pendingTitle by
     rememberSaveable {
         mutableStateOf<String?>(
@@ -2061,12 +1878,6 @@ private fun RemindersSection(
             is24Hour =
                 true
         )
-
-    /*
-     * =========================================================
-     * PERMISO DE NOTIFICACIONES
-     * =========================================================
-     */
 
     val notificationPermissionLauncher =
         rememberLauncherForActivityResult(
@@ -2111,12 +1922,6 @@ private fun RemindersSection(
                 null
         }
 
-    /*
-     * =========================================================
-     * LIMPIAR FORMULARIO DESPUÉS DE CREAR
-     * =========================================================
-     */
-
     LaunchedEffect(
         actionState
     ) {
@@ -2139,12 +1944,6 @@ private fun RemindersSection(
                 null
         }
     }
-
-    /*
-     * =========================================================
-     * DATE PICKER
-     * =========================================================
-     */
 
     if (showDatePicker) {
 
@@ -2215,12 +2014,6 @@ private fun RemindersSection(
         }
     }
 
-    /*
-     * =========================================================
-     * TIME PICKER
-     * =========================================================
-     */
-
     if (showTimePicker) {
 
         AlertDialog(
@@ -2287,12 +2080,6 @@ private fun RemindersSection(
         )
     }
 
-    /*
-     * =========================================================
-     * TÍTULO
-     * =========================================================
-     */
-
     Text(
         text = "Recordatorios",
         fontSize = 19.sp,
@@ -2303,12 +2090,6 @@ private fun RemindersSection(
         modifier =
             Modifier.height(8.dp)
     )
-
-    /*
-     * =========================================================
-     * RECORDATORIOS EXISTENTES
-     * =========================================================
-     */
 
     when (uiState) {
 
@@ -2401,10 +2182,6 @@ private fun RemindersSection(
                                 13.sp
                         )
 
-                        /*
-                         * Solo se pueden cancelar
-                         * recordatorios pendientes.
-                         */
                         if (
                             reminder.status ==
                             "SCHEDULED"
@@ -2487,12 +2264,6 @@ private fun RemindersSection(
             Modifier.height(16.dp)
     )
 
-    /*
-     * =========================================================
-     * FORMULARIO
-     * =========================================================
-     */
-
     Text(
         text =
             "Nuevo recordatorio",
@@ -2570,12 +2341,6 @@ private fun RemindersSection(
             Modifier.height(12.dp)
     )
 
-    /*
-     * =========================================================
-     * FECHA
-     * =========================================================
-     */
-
     OutlinedButton(
         onClick = {
 
@@ -2612,12 +2377,6 @@ private fun RemindersSection(
             Modifier.height(8.dp)
     )
 
-    /*
-     * =========================================================
-     * HORA
-     * =========================================================
-     */
-
     OutlinedButton(
         onClick = {
 
@@ -2643,12 +2402,6 @@ private fun RemindersSection(
                     ?: "Seleccionar hora"
         )
     }
-
-    /*
-     * =========================================================
-     * MENSAJES
-     * =========================================================
-     */
 
     if (localError != null) {
 
@@ -2765,12 +2518,6 @@ private fun RemindersSection(
             Modifier.height(12.dp)
     )
 
-    /*
-     * =========================================================
-     * PROGRAMAR
-     * =========================================================
-     */
-
     val isCreating =
         (actionState is ReminderActionState.Creating)
 
@@ -2818,10 +2565,6 @@ private fun RemindersSection(
                 return@Button
             }
 
-            /*
-             * Convertimos fecha + hora local
-             * a epoch milliseconds.
-             */
             val localDate =
                 LocalDate.ofEpochDay(
                     dateEpochDay
@@ -2856,12 +2599,6 @@ private fun RemindersSection(
                 return@Button
             }
 
-            /*
-             * Android < 13 devuelve true
-             * directamente desde nuestro helper.
-             *
-             * Android 13+ comprueba el permiso.
-             */
             if (
                 NotificationPermission
                     .isGranted(
@@ -2877,11 +2614,6 @@ private fun RemindersSection(
 
             } else {
 
-                /*
-                 * Conservamos lo que el usuario
-                 * intentaba programar mientras
-                 * Android muestra el diálogo.
-                 */
                 pendingTitle =
                     reminderTitle
 

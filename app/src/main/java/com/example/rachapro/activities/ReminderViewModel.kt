@@ -9,8 +9,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.rachapro.RachaProApplication
 import com.example.rachapro.data.local.SessionManager
 import com.example.rachapro.data.local.entity.ReminderEntity
-import com.example.rachapro.data.repository.ReminderCreateResult
-import com.example.rachapro.data.repository.ReminderOperationResult
+import com.example.rachapro.data.repository.RemoteReminderCreateResult
+import com.example.rachapro.data.repository.RemoteReminderOperationResult
+import com.example.rachapro.data.repository.RemoteRemindersResult
 import com.example.rachapro.data.repository.ReminderRepository
 import com.example.rachapro.notifications.ReminderScheduleResult
 import com.example.rachapro.notifications.ReminderScheduler
@@ -43,17 +44,9 @@ class ReminderViewModel(
     val actionState: StateFlow<ReminderActionState> =
         _actionState.asStateFlow()
 
-    private var loadJob: Job? =
-        null
+    private var loadJob: Job? = null
 
-    private var currentActivityId: Long? =
-        null
-
-    /*
-     * =========================================================
-     * CARGAR RECORDATORIOS DE UNA ACTIVIDAD
-     * =========================================================
-     */
+    private var currentActivityId: Long? = null
 
     fun loadReminders(
         activityId: Long
@@ -99,20 +92,41 @@ class ReminderViewModel(
                         return@launch
                     }
 
-                    reminderRepository
-                        .observeRemindersByActivity(
-                            userId = userId,
-                            activityId = activityId
-                        )
-                        .collect { reminders ->
+                    when (
+                        val result =
+                            reminderRepository
+                                .fetchRemoteReminders(
+                                    userId = userId,
+                                    activityId = activityId
+                                )
+                    ) {
+
+                        is RemoteRemindersResult.Success -> {
 
                             _uiState.value =
                                 ReminderUiState.Success(
                                     userId = userId,
                                     activityId = activityId,
-                                    reminders = reminders
+                                    reminders =
+                                        result.reminders
                                 )
                         }
+
+                        RemoteRemindersResult.Unauthorized -> {
+
+                            _uiState.value =
+                                ReminderUiState.NoActiveSession
+                        }
+
+                        RemoteRemindersResult.Error -> {
+
+                            _uiState.value =
+                                ReminderUiState.Error(
+                                    message =
+                                        "No fue posible cargar los recordatorios."
+                                )
+                        }
+                    }
 
                 } catch (_: Exception) {
 
@@ -125,12 +139,6 @@ class ReminderViewModel(
             }
     }
 
-    /*
-     * =========================================================
-     * REINTENTAR
-     * =========================================================
-     */
-
     fun retry() {
 
         val activityId =
@@ -141,12 +149,6 @@ class ReminderViewModel(
             activityId = activityId
         )
     }
-
-    /*
-     * =========================================================
-     * CREAR Y PROGRAMAR
-     * =========================================================
-     */
 
     fun createReminder(
         title: String,
@@ -186,7 +188,7 @@ class ReminderViewModel(
             when (
                 val result =
                     reminderRepository
-                        .createReminder(
+                        .createRemoteReminder(
                             userId =
                                 currentState.userId,
 
@@ -204,18 +206,18 @@ class ReminderViewModel(
                         )
             ) {
 
-                is ReminderCreateResult.Success -> {
+                is RemoteReminderCreateResult.Success -> {
 
                     scheduleCreatedReminder(
-                        reminderId =
-                            result.reminderId,
+                        reminder =
+                            result.reminder,
 
                         userId =
                             currentState.userId
                     )
                 }
 
-                is ReminderCreateResult.InvalidData -> {
+                is RemoteReminderCreateResult.InvalidData -> {
 
                     _actionState.value =
                         ReminderActionState.ValidationError(
@@ -224,7 +226,7 @@ class ReminderViewModel(
                         )
                 }
 
-                ReminderCreateResult
+                RemoteReminderCreateResult
                     .ActivityNotFoundOrNotAllowed -> {
 
                     _actionState.value =
@@ -234,7 +236,16 @@ class ReminderViewModel(
                         )
                 }
 
-                ReminderCreateResult.Error -> {
+                RemoteReminderCreateResult.Unauthorized -> {
+
+                    _actionState.value =
+                        ReminderActionState.Error(
+                            message =
+                                "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteReminderCreateResult.Error -> {
 
                     _actionState.value =
                         ReminderActionState.Error(
@@ -246,38 +257,10 @@ class ReminderViewModel(
         }
     }
 
-    /*
-     * =========================================================
-     * PROGRAMAR DESPUÉS DE INSERTAR EN ROOM
-     * =========================================================
-     */
-
     private suspend fun scheduleCreatedReminder(
-        reminderId: Long,
+        reminder: ReminderEntity,
         userId: Long
     ) {
-
-        val reminder =
-            reminderRepository
-                .getReminderById(
-                    reminderId = reminderId,
-                    userId = userId
-                )
-
-        /*
-         * Si por alguna razón Room no puede devolver
-         * el registro recién creado, no continuamos.
-         */
-        if (reminder == null) {
-
-            _actionState.value =
-                ReminderActionState.Error(
-                    message =
-                        "No fue posible programar el recordatorio."
-                )
-
-            return
-        }
 
         when (
             reminderScheduler.schedule(
@@ -285,38 +268,53 @@ class ReminderViewModel(
             )
         ) {
 
-            ReminderScheduleResult
-                .ScheduledExact -> {
+            ReminderScheduleResult.ScheduledExact -> {
 
                 _actionState.value =
                     ReminderActionState.CreateSuccess(
-                        reminderId = reminder.id,
-                        isExact = true
+                        reminderId =
+                            reminder.id,
+
+                        isExact =
+                            true
                     )
+
+                currentActivityId?.let { activityId ->
+
+                    loadReminders(
+                        activityId = activityId
+                    )
+                }
             }
 
-            ReminderScheduleResult
-                .ScheduledInexact -> {
+            ReminderScheduleResult.ScheduledInexact -> {
 
                 _actionState.value =
                     ReminderActionState.CreateSuccess(
-                        reminderId = reminder.id,
-                        isExact = false
+                        reminderId =
+                            reminder.id,
+
+                        isExact =
+                            false
                     )
+
+                currentActivityId?.let { activityId ->
+
+                    loadReminders(
+                        activityId = activityId
+                    )
+                }
             }
 
-            ReminderScheduleResult
-                .InvalidTime -> {
+            ReminderScheduleResult.InvalidTime -> {
 
-                /*
-                 * El registro existe en Room pero no
-                 * debe quedar como SCHEDULED.
-                 */
-                reminderRepository
-                    .cancelReminder(
-                        reminderId = reminder.id,
-                        userId = userId
-                    )
+                compensateFailedSchedule(
+                    reminderId =
+                        reminder.id,
+
+                    userId =
+                        userId
+                )
 
                 _actionState.value =
                     ReminderActionState.ValidationError(
@@ -327,17 +325,13 @@ class ReminderViewModel(
 
             ReminderScheduleResult.Error -> {
 
-                /*
-                 * Compensación:
-                 *
-                 * si AlarmManager falló,
-                 * cancelamos también el registro lógico.
-                 */
-                reminderRepository
-                    .cancelReminder(
-                        reminderId = reminder.id,
-                        userId = userId
-                    )
+                compensateFailedSchedule(
+                    reminderId =
+                        reminder.id,
+
+                    userId =
+                        userId
+                )
 
                 _actionState.value =
                     ReminderActionState.Error(
@@ -348,11 +342,39 @@ class ReminderViewModel(
         }
     }
 
-    /*
-     * =========================================================
-     * CANCELAR
-     * =========================================================
-     */
+    private suspend fun compensateFailedSchedule(
+        reminderId: Long,
+        userId: Long
+    ) {
+
+        try {
+
+            reminderRepository
+                .cancelRemoteReminder(
+                    reminderId =
+                        reminderId,
+
+                    userId =
+                        userId
+                )
+
+        } catch (_: Exception) {
+        }
+
+        try {
+
+            reminderRepository
+                .cancelReminder(
+                    reminderId =
+                        reminderId,
+
+                    userId =
+                        userId
+                )
+
+        } catch (_: Exception) {
+        }
+    }
 
     fun cancelReminder(
         reminderId: Long
@@ -383,17 +405,9 @@ class ReminderViewModel(
                         reminderId
                 )
 
-            /*
-             * Primero cancelamos en Room.
-             *
-             * Esto es importante porque incluso si
-             * AlarmManager conservara accidentalmente
-             * el PendingIntent, ReminderReceiver revisa
-             * que el estado siga siendo SCHEDULED.
-             */
             when (
                 reminderRepository
-                    .cancelReminder(
+                    .cancelRemoteReminder(
                         reminderId =
                             reminderId,
 
@@ -402,7 +416,7 @@ class ReminderViewModel(
                     )
             ) {
 
-                ReminderOperationResult.Success -> {
+                is RemoteReminderOperationResult.Success -> {
 
                     try {
 
@@ -415,15 +429,6 @@ class ReminderViewModel(
                         )
 
                     } catch (_: Exception) {
-
-                        /*
-                         * Room ya está CANCELLED.
-                         *
-                         * Aunque AlarmManager intentara
-                         * ejecutar después el receiver,
-                         * ReminderReceiver no mostrará
-                         * una notificación cancelada.
-                         */
                     }
 
                     _actionState.value =
@@ -431,10 +436,14 @@ class ReminderViewModel(
                             reminderId =
                                 reminderId
                         )
+
+                    loadReminders(
+                        activityId =
+                            currentState.activityId
+                    )
                 }
 
-                ReminderOperationResult
-                    .NotFoundOrNotAllowed -> {
+                RemoteReminderOperationResult.NotFound -> {
 
                     _actionState.value =
                         ReminderActionState.Error(
@@ -443,7 +452,16 @@ class ReminderViewModel(
                         )
                 }
 
-                ReminderOperationResult.Error -> {
+                RemoteReminderOperationResult.Unauthorized -> {
+
+                    _actionState.value =
+                        ReminderActionState.Error(
+                            message =
+                                "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteReminderOperationResult.Error -> {
 
                     _actionState.value =
                         ReminderActionState.Error(
@@ -455,23 +473,11 @@ class ReminderViewModel(
         }
     }
 
-    /*
-     * =========================================================
-     * LIMPIAR ESTADO DE OPERACIÓN
-     * =========================================================
-     */
-
     fun resetActionState() {
 
         _actionState.value =
             ReminderActionState.Idle
     }
-
-    /*
-     * =========================================================
-     * FACTORY
-     * =========================================================
-     */
 
     companion object {
 
@@ -500,12 +506,6 @@ class ReminderViewModel(
     }
 }
 
-/*
- * =============================================================
- * ESTADO PRINCIPAL
- * =============================================================
- */
-
 sealed interface ReminderUiState {
 
     data object Idle :
@@ -529,12 +529,6 @@ sealed interface ReminderUiState {
     ) : ReminderUiState
 }
 
-/*
- * =============================================================
- * ESTADOS DE OPERACIONES
- * =============================================================
- */
-
 sealed interface ReminderActionState {
 
     data object Idle :
@@ -545,11 +539,6 @@ sealed interface ReminderActionState {
 
     data class CreateSuccess(
         val reminderId: Long,
-
-        /*
-         * true  → alarma exacta
-         * false → Android la programó de manera aproximada
-         */
         val isExact: Boolean
     ) : ReminderActionState
 

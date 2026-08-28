@@ -9,9 +9,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.rachapro.RachaProApplication
 import com.example.rachapro.data.local.SessionManager
 import com.example.rachapro.data.local.entity.SubtaskEntity
-import com.example.rachapro.data.repository.SubtaskCreateResult
-import com.example.rachapro.data.repository.SubtaskObserveResult
-import com.example.rachapro.data.repository.SubtaskOperationResult
 import com.example.rachapro.data.repository.SubtaskRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +16,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.example.rachapro.data.repository.RemoteSubtaskDeleteResult
+import com.example.rachapro.data.repository.RemoteSubtaskOperationResult
+import com.example.rachapro.data.repository.RemoteSubtasksResult
+import com.example.rachapro.network.dto.SubtaskResponse
 
 class SubtasksViewModel(
     private val subtaskRepository: SubtaskRepository,
@@ -46,11 +47,6 @@ class SubtasksViewModel(
     private var currentActivityId: Long? =
         null
 
-    /*
-     * ---------------------------------------------------------
-     * CARGAR SUBTAREAS
-     * ---------------------------------------------------------
-     */
 
     fun loadSubtasks(
         activityId: Long
@@ -60,15 +56,13 @@ class SubtasksViewModel(
 
             _uiState.value =
                 SubtasksUiState.Error(
-                    message =
-                        "La actividad no es válida."
+                    message = "La actividad no es válida."
                 )
 
             return
         }
 
-        currentActivityId =
-            activityId
+        currentActivityId = activityId
 
         loadJob?.cancel()
 
@@ -99,33 +93,27 @@ class SubtasksViewModel(
                     when (
                         val result =
                             subtaskRepository
-                                .observeSubtasks(
-                                    userId = userId,
-                                    activityId =
-                                        activityId
+                                .fetchRemoteSubtasks(
+                                    activityId = activityId
                                 )
                     ) {
 
-                        is SubtaskObserveResult.Success -> {
+                        is RemoteSubtasksResult.Success -> {
 
-                            result.subtasks
-                                .collect { subtasks ->
-
-                                    _uiState.value =
-                                        SubtasksUiState.Success(
-                                            userId =
-                                                userId,
-
-                                            activityId =
-                                                activityId,
-
-                                            subtasks =
-                                                subtasks
-                                        )
+                            val subtasks =
+                                result.subtasks.map { subtask ->
+                                    subtask.toEntity()
                                 }
+
+                            _uiState.value =
+                                SubtasksUiState.Success(
+                                    userId = userId,
+                                    activityId = activityId,
+                                    subtasks = subtasks
+                                )
                         }
 
-                        SubtaskObserveResult.NotFoundOrNotAllowed -> {
+                        RemoteSubtasksResult.NotFound -> {
 
                             _uiState.value =
                                 SubtasksUiState.Error(
@@ -134,7 +122,13 @@ class SubtasksViewModel(
                                 )
                         }
 
-                        SubtaskObserveResult.Error -> {
+                        RemoteSubtasksResult.Unauthorized -> {
+
+                            _uiState.value =
+                                SubtasksUiState.NoActiveSession
+                        }
+
+                        RemoteSubtasksResult.Error -> {
 
                             _uiState.value =
                                 SubtasksUiState.Error(
@@ -155,12 +149,6 @@ class SubtasksViewModel(
             }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * CREAR
-     * ---------------------------------------------------------
-     */
-
     fun createSubtask(
         title: String
     ) {
@@ -168,10 +156,7 @@ class SubtasksViewModel(
         val currentState =
             _uiState.value
 
-        if (
-            currentState
-                    !is SubtasksUiState.Success
-        ) {
+        if (currentState !is SubtasksUiState.Success) {
 
             _actionState.value =
                 SubtaskActionState.Error(
@@ -182,10 +167,7 @@ class SubtasksViewModel(
             return
         }
 
-        if (
-            _actionState.value
-                    is SubtaskActionState.Creating
-        ) {
+        if (_actionState.value is SubtaskActionState.Creating) {
             return
         }
 
@@ -197,37 +179,36 @@ class SubtasksViewModel(
             when (
                 val result =
                     subtaskRepository
-                        .createSubtask(
-                            userId =
-                                currentState.userId,
-
+                        .createRemoteSubtask(
                             activityId =
                                 currentState.activityId,
-
-                            title =
-                                title
+                            title = title
                         )
             ) {
 
-                is SubtaskCreateResult.Success -> {
+                is RemoteSubtaskOperationResult.Success -> {
 
                     _actionState.value =
                         SubtaskActionState.CreateSuccess(
-                            subtaskId =
-                                result.subtaskId
+                            subtaskId = result.subtask.id
                         )
+
+                    loadSubtasks(
+                        activityId =
+                            currentState.activityId
+                    )
                 }
 
-                is SubtaskCreateResult.InvalidData -> {
+                RemoteSubtaskOperationResult.InvalidData -> {
 
                     _actionState.value =
                         SubtaskActionState.ValidationError(
                             message =
-                                result.message
+                                "Escribe el nombre de la subtarea."
                         )
                 }
 
-                SubtaskCreateResult.NotFoundOrNotAllowed -> {
+                RemoteSubtaskOperationResult.NotFound -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -236,7 +217,16 @@ class SubtasksViewModel(
                         )
                 }
 
-                SubtaskCreateResult.Error -> {
+                RemoteSubtaskOperationResult.Unauthorized -> {
+
+                    _actionState.value =
+                        SubtaskActionState.Error(
+                            message =
+                                "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteSubtaskOperationResult.Error -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -248,12 +238,6 @@ class SubtasksViewModel(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * EDITAR
-     * ---------------------------------------------------------
-     */
-
     fun updateSubtask(
         subtaskId: Long,
         title: String
@@ -262,10 +246,7 @@ class SubtasksViewModel(
         val currentState =
             _uiState.value
 
-        if (
-            currentState
-                    !is SubtasksUiState.Success
-        ) {
+        if (currentState !is SubtasksUiState.Success) {
             return
         }
 
@@ -273,37 +254,33 @@ class SubtasksViewModel(
 
             _actionState.value =
                 SubtaskActionState.Updating(
-                    subtaskId =
-                        subtaskId
+                    subtaskId = subtaskId
                 )
 
             when (
                 subtaskRepository
-                    .updateSubtaskTitle(
-                        userId =
-                            currentState.userId,
-
+                    .updateRemoteSubtask(
                         activityId =
                             currentState.activityId,
-
-                        subtaskId =
-                            subtaskId,
-
-                        title =
-                            title
+                        subtaskId = subtaskId,
+                        title = title
                     )
             ) {
 
-                SubtaskOperationResult.Success -> {
+                is RemoteSubtaskOperationResult.Success -> {
 
                     _actionState.value =
                         SubtaskActionState.UpdateSuccess(
-                            subtaskId =
-                                subtaskId
+                            subtaskId = subtaskId
                         )
+
+                    loadSubtasks(
+                        activityId =
+                            currentState.activityId
+                    )
                 }
 
-                SubtaskOperationResult.InvalidData -> {
+                RemoteSubtaskOperationResult.InvalidData -> {
 
                     _actionState.value =
                         SubtaskActionState.ValidationError(
@@ -312,7 +289,7 @@ class SubtasksViewModel(
                         )
                 }
 
-                SubtaskOperationResult.NotFoundOrNotAllowed -> {
+                RemoteSubtaskOperationResult.NotFound -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -321,7 +298,16 @@ class SubtasksViewModel(
                         )
                 }
 
-                SubtaskOperationResult.Error -> {
+                RemoteSubtaskOperationResult.Unauthorized -> {
+
+                    _actionState.value =
+                        SubtaskActionState.Error(
+                            message =
+                                "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteSubtaskOperationResult.Error -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -333,12 +319,6 @@ class SubtasksViewModel(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * COMPLETAR / DESMARCAR
-     * ---------------------------------------------------------
-     */
-
     fun setSubtaskCompleted(
         subtaskId: Long,
         isCompleted: Boolean
@@ -347,10 +327,7 @@ class SubtasksViewModel(
         val currentState =
             _uiState.value
 
-        if (
-            currentState
-                    !is SubtasksUiState.Success
-        ) {
+        if (currentState !is SubtasksUiState.Success) {
             return
         }
 
@@ -358,37 +335,33 @@ class SubtasksViewModel(
 
             _actionState.value =
                 SubtaskActionState.ChangingCompletion(
-                    subtaskId =
-                        subtaskId
+                    subtaskId = subtaskId
                 )
 
             when (
                 subtaskRepository
-                    .setSubtaskCompleted(
-                        userId =
-                            currentState.userId,
-
+                    .setRemoteSubtaskCompleted(
                         activityId =
                             currentState.activityId,
-
-                        subtaskId =
-                            subtaskId,
-
-                        isCompleted =
-                            isCompleted
+                        subtaskId = subtaskId,
+                        isCompleted = isCompleted
                     )
             ) {
 
-                SubtaskOperationResult.Success -> {
+                is RemoteSubtaskOperationResult.Success -> {
 
                     _actionState.value =
                         SubtaskActionState.CompletionSuccess(
-                            subtaskId =
-                                subtaskId
+                            subtaskId = subtaskId
                         )
+
+                    loadSubtasks(
+                        activityId =
+                            currentState.activityId
+                    )
                 }
 
-                SubtaskOperationResult.NotFoundOrNotAllowed -> {
+                RemoteSubtaskOperationResult.NotFound -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -397,7 +370,7 @@ class SubtasksViewModel(
                         )
                 }
 
-                SubtaskOperationResult.InvalidData -> {
+                RemoteSubtaskOperationResult.InvalidData -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -406,7 +379,16 @@ class SubtasksViewModel(
                         )
                 }
 
-                SubtaskOperationResult.Error -> {
+                RemoteSubtaskOperationResult.Unauthorized -> {
+
+                    _actionState.value =
+                        SubtaskActionState.Error(
+                            message =
+                                "La sesión expiró. Inicia sesión nuevamente."
+                        )
+                }
+
+                RemoteSubtaskOperationResult.Error -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -418,12 +400,6 @@ class SubtasksViewModel(
         }
     }
 
-    /*
-     * ---------------------------------------------------------
-     * ELIMINAR
-     * ---------------------------------------------------------
-     */
-
     fun deleteSubtask(
         subtaskId: Long
     ) {
@@ -431,10 +407,7 @@ class SubtasksViewModel(
         val currentState =
             _uiState.value
 
-        if (
-            currentState
-                    !is SubtasksUiState.Success
-        ) {
+        if (currentState !is SubtasksUiState.Success) {
             return
         }
 
@@ -442,34 +415,32 @@ class SubtasksViewModel(
 
             _actionState.value =
                 SubtaskActionState.Deleting(
-                    subtaskId =
-                        subtaskId
+                    subtaskId = subtaskId
                 )
 
             when (
                 subtaskRepository
-                    .deleteSubtask(
-                        userId =
-                            currentState.userId,
-
+                    .deleteRemoteSubtask(
                         activityId =
                             currentState.activityId,
-
-                        subtaskId =
-                            subtaskId
+                        subtaskId = subtaskId
                     )
             ) {
 
-                SubtaskOperationResult.Success -> {
+                RemoteSubtaskDeleteResult.Success -> {
 
                     _actionState.value =
                         SubtaskActionState.DeleteSuccess(
-                            subtaskId =
-                                subtaskId
+                            subtaskId = subtaskId
                         )
+
+                    loadSubtasks(
+                        activityId =
+                            currentState.activityId
+                    )
                 }
 
-                SubtaskOperationResult.NotFoundOrNotAllowed -> {
+                RemoteSubtaskDeleteResult.NotFound -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -478,16 +449,16 @@ class SubtasksViewModel(
                         )
                 }
 
-                SubtaskOperationResult.InvalidData -> {
+                RemoteSubtaskDeleteResult.Unauthorized -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
                             message =
-                                "No fue posible eliminar la subtarea."
+                                "La sesión expiró. Inicia sesión nuevamente."
                         )
                 }
 
-                SubtaskOperationResult.Error -> {
+                RemoteSubtaskDeleteResult.Error -> {
 
                     _actionState.value =
                         SubtaskActionState.Error(
@@ -504,12 +475,6 @@ class SubtasksViewModel(
         _actionState.value =
             SubtaskActionState.Idle
     }
-
-    /*
-     * ---------------------------------------------------------
-     * FACTORY
-     * ---------------------------------------------------------
-     */
 
     companion object {
 
@@ -533,13 +498,20 @@ class SubtasksViewModel(
                 }
             }
     }
-}
 
-/*
- * =============================================================
- * ESTADO DE LA PANTALLA
- * =============================================================
- */
+    private fun SubtaskResponse.toEntity(): SubtaskEntity {
+
+        return SubtaskEntity(
+            id = id,
+            activityId = activityId,
+            title = title,
+            isCompleted = isCompleted,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            completedAt = completedAt
+        )
+    }
+}
 
 sealed interface SubtasksUiState {
 
@@ -563,12 +535,6 @@ sealed interface SubtasksUiState {
         val message: String
     ) : SubtasksUiState
 }
-
-/*
- * =============================================================
- * ESTADO DE OPERACIONES
- * =============================================================
- */
 
 sealed interface SubtaskActionState {
 

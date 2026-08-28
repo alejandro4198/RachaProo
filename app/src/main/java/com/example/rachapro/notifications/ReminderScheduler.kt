@@ -171,10 +171,6 @@ class ReminderScheduler(
 
 sealed interface ReminderScheduleResult {
 
-    /*
-     * Android permitió programarlo
-     * de manera exacta.
-     */
     data object ScheduledExact :
         ReminderScheduleResult
 

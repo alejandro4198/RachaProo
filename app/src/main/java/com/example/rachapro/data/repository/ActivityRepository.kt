@@ -2,17 +2,24 @@ package com.example.rachapro.data.repository
 
 import com.example.rachapro.data.local.dao.ActivityDao
 import com.example.rachapro.data.local.dao.CategoryDao
+import com.example.rachapro.data.local.dao.DailyActivityCount
 import com.example.rachapro.data.local.entity.ActivityEntity
 import com.example.rachapro.data.local.entity.ActivityPriority
 import com.example.rachapro.data.local.entity.ActivityStatus
+import com.example.rachapro.network.ApiService
+import com.example.rachapro.network.dto.ActivityResponse
+import com.example.rachapro.network.dto.CreateActivityRequest
+import com.example.rachapro.network.dto.UpdateActivityRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import com.example.rachapro.data.local.dao.DailyActivityCount
+import retrofit2.HttpException
+import java.io.IOException
 
 class ActivityRepository(
     private val activityDao: ActivityDao,
-    private val categoryDao: CategoryDao
+    private val categoryDao: CategoryDao,
+    private val apiService: ApiService
 ) {
 
     fun observeActivities(
@@ -48,7 +55,6 @@ class ActivityRepository(
                 userId = userId
             )
             .map { days ->
-
                 days
                     .filterNotNull()
                     .distinct()
@@ -63,10 +69,7 @@ class ActivityRepository(
         currentTimeMinutes: Int
     ): ActivityStatusRefreshResult {
 
-        if (
-            currentTimeMinutes !in 0..1439
-        ) {
-
+        if (currentTimeMinutes !in 0..1439) {
             return ActivityStatusRefreshResult.Error
         }
 
@@ -79,8 +82,7 @@ class ActivityRepository(
                 activityDao.markOverdueActivities(
                     userId = userId,
                     todayEpochDay = todayEpochDay,
-                    currentTimeMinutes =
-                        currentTimeMinutes,
+                    currentTimeMinutes = currentTimeMinutes,
                     updatedAt = currentTime
                 )
 
@@ -88,8 +90,7 @@ class ActivityRepository(
                 activityDao.restorePendingActivities(
                     userId = userId,
                     todayEpochDay = todayEpochDay,
-                    currentTimeMinutes =
-                        currentTimeMinutes,
+                    currentTimeMinutes = currentTimeMinutes,
                     updatedAt = currentTime
                 )
 
@@ -182,19 +183,13 @@ class ActivityRepository(
                         categoryId = categoryId,
                         title = normalizedTitle,
                         description = normalizedDescription,
-                        dueDateEpochDay =
-                            dueDateEpochDay,
-                        dueTimeMinutes =
-                            dueTimeMinutes,
+                        dueDateEpochDay = dueDateEpochDay,
+                        dueTimeMinutes = dueTimeMinutes,
                         priority = priority,
-                        status =
-                            ActivityStatus.PENDING,
-                        repeatRule =
-                            repeatRule,
-                        createdAt =
-                            currentTime,
-                        updatedAt =
-                            currentTime
+                        status = ActivityStatus.PENDING,
+                        repeatRule = repeatRule,
+                        createdAt = currentTime,
+                        updatedAt = currentTime
                     )
 
                 val activityId =
@@ -232,7 +227,6 @@ class ActivityRepository(
             description.trim()
 
         if (normalizedTitle.isBlank()) {
-
             return ActivityOperationResult.InvalidData
         }
 
@@ -240,21 +234,15 @@ class ActivityRepository(
             dueTimeMinutes != null &&
             dueTimeMinutes !in 0..1439
         ) {
-
             return ActivityOperationResult.InvalidData
         }
 
         if (!isValidPriority(priority)) {
-
             return ActivityOperationResult.InvalidData
         }
 
         return try {
 
-            /*
-             * Verificamos que la categoría exista
-             * y que pertenezca al mismo usuario.
-             */
             val category =
                 categoryDao.getCategoryById(
                     categoryId = categoryId,
@@ -277,20 +265,15 @@ class ActivityRepository(
                         categoryId = categoryId,
                         title = normalizedTitle,
                         description = normalizedDescription,
-                        dueDateEpochDay =
-                            dueDateEpochDay,
-                        dueTimeMinutes =
-                            dueTimeMinutes,
+                        dueDateEpochDay = dueDateEpochDay,
+                        dueTimeMinutes = dueTimeMinutes,
                         priority = priority,
-                        repeatRule =
-                            repeatRule,
-                        updatedAt =
-                            currentTime
+                        repeatRule = repeatRule,
+                        updatedAt = currentTime
                     )
 
                 resultFromRowsAffected(
-                    rowsAffected =
-                        rowsAffected
+                    rowsAffected = rowsAffected
                 )
             }
 
@@ -342,7 +325,6 @@ class ActivityRepository(
             newDueTimeMinutes != null &&
             newDueTimeMinutes !in 0..1439
         ) {
-
             return ActivityOperationResult.InvalidData
         }
 
@@ -461,7 +443,252 @@ class ActivityRepository(
             )
     }
 
+    suspend fun fetchRemoteActivities(): RemoteActivitiesResult {
 
+        return try {
+
+            val activities =
+                apiService.getActivities()
+
+            RemoteActivitiesResult.Success(
+                activities = activities
+            )
+
+        } catch (exception: HttpException) {
+
+            if (exception.code() == 401) {
+                RemoteActivitiesResult.Unauthorized
+            } else {
+                RemoteActivitiesResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteActivitiesResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteActivitiesResult.Error
+        }
+    }
+
+    suspend fun refreshRemoteActivityStatuses(): RemoteActivitiesResult {
+
+        return try {
+
+            val activities =
+                apiService.refreshActivityStatuses()
+
+            RemoteActivitiesResult.Success(
+                activities = activities
+            )
+
+        } catch (exception: HttpException) {
+
+            if (exception.code() == 401) {
+                RemoteActivitiesResult.Unauthorized
+            } else {
+                RemoteActivitiesResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteActivitiesResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteActivitiesResult.Error
+        }
+    }
+
+    suspend fun createRemoteActivity(
+        categoryId: Long,
+        title: String,
+        description: String,
+        dueDateEpochDay: Long,
+        dueTimeMinutes: Int?,
+        priority: String,
+        repeatRule: String? = null
+    ): RemoteActivityOperationResult {
+
+        return try {
+
+            val activity =
+                apiService.createActivity(
+                    CreateActivityRequest(
+                        categoryId = categoryId,
+                        title = title.trim(),
+                        description = description.trim(),
+                        dueDateEpochDay = dueDateEpochDay,
+                        dueTimeMinutes = dueTimeMinutes,
+                        priority = priority,
+                        repeatRule = repeatRule
+                    )
+                )
+
+            RemoteActivityOperationResult.Success(
+                activity = activity
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                400 ->
+                    RemoteActivityOperationResult.InvalidData
+
+                401 ->
+                    RemoteActivityOperationResult.Unauthorized
+
+                404 ->
+                    RemoteActivityOperationResult.NotFound
+
+                else ->
+                    RemoteActivityOperationResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteActivityOperationResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteActivityOperationResult.Error
+        }
+    }
+
+    suspend fun updateRemoteActivity(
+        activityId: Long,
+        categoryId: Long,
+        title: String,
+        description: String,
+        dueDateEpochDay: Long,
+        dueTimeMinutes: Int?,
+        priority: String,
+        repeatRule: String? = null
+    ): RemoteActivityOperationResult {
+
+        return try {
+
+            val activity =
+                apiService.updateActivity(
+                    activityId = activityId,
+                    request = UpdateActivityRequest(
+                        categoryId = categoryId,
+                        title = title.trim(),
+                        description = description.trim(),
+                        dueDateEpochDay = dueDateEpochDay,
+                        dueTimeMinutes = dueTimeMinutes,
+                        priority = priority,
+                        repeatRule = repeatRule
+                    )
+                )
+
+            RemoteActivityOperationResult.Success(
+                activity = activity
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                400 ->
+                    RemoteActivityOperationResult.InvalidData
+
+                401 ->
+                    RemoteActivityOperationResult.Unauthorized
+
+                404 ->
+                    RemoteActivityOperationResult.NotFound
+
+                else ->
+                    RemoteActivityOperationResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteActivityOperationResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteActivityOperationResult.Error
+        }
+    }
+
+    suspend fun completeRemoteActivity(
+        activityId: Long
+    ): RemoteActivityOperationResult {
+
+        return try {
+
+            val activity =
+                apiService.completeActivity(
+                    activityId = activityId
+                )
+
+            RemoteActivityOperationResult.Success(
+                activity = activity
+            )
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                401 ->
+                    RemoteActivityOperationResult.Unauthorized
+
+                404 ->
+                    RemoteActivityOperationResult.NotFound
+
+                else ->
+                    RemoteActivityOperationResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteActivityOperationResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteActivityOperationResult.Error
+        }
+    }
+
+    suspend fun deleteRemoteActivity(
+        activityId: Long
+    ): RemoteActivityDeleteResult {
+
+        return try {
+
+            val response =
+                apiService.deleteActivity(
+                    activityId = activityId
+                )
+
+            when (response.code()) {
+
+                204 ->
+                    RemoteActivityDeleteResult.Success
+
+                401 ->
+                    RemoteActivityDeleteResult.Unauthorized
+
+                404 ->
+                    RemoteActivityDeleteResult.NotFound
+
+                else ->
+                    RemoteActivityDeleteResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RemoteActivityDeleteResult.Error
+
+        } catch (_: Exception) {
+
+            RemoteActivityDeleteResult.Error
+        }
+    }
 }
 
 sealed interface ActivityCreateResult {
@@ -505,4 +732,51 @@ sealed interface ActivityStatusRefreshResult {
 
     data object Error :
         ActivityStatusRefreshResult
+}
+
+sealed interface RemoteActivitiesResult {
+
+    data class Success(
+        val activities: List<ActivityResponse>
+    ) : RemoteActivitiesResult
+
+    data object Unauthorized :
+        RemoteActivitiesResult
+
+    data object Error :
+        RemoteActivitiesResult
+}
+
+sealed interface RemoteActivityOperationResult {
+
+    data class Success(
+        val activity: ActivityResponse
+    ) : RemoteActivityOperationResult
+
+    data object InvalidData :
+        RemoteActivityOperationResult
+
+    data object NotFound :
+        RemoteActivityOperationResult
+
+    data object Unauthorized :
+        RemoteActivityOperationResult
+
+    data object Error :
+        RemoteActivityOperationResult
+}
+
+sealed interface RemoteActivityDeleteResult {
+
+    data object Success :
+        RemoteActivityDeleteResult
+
+    data object NotFound :
+        RemoteActivityDeleteResult
+
+    data object Unauthorized :
+        RemoteActivityDeleteResult
+
+    data object Error :
+        RemoteActivityDeleteResult
 }

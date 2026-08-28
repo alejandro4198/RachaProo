@@ -24,6 +24,13 @@ interface PomodoroSessionDao {
         session: PomodoroSessionEntity
     ): Long
 
+    @Insert(
+        onConflict = OnConflictStrategy.REPLACE
+    )
+    suspend fun upsertSession(
+        session: PomodoroSessionEntity
+    )
+
     @Query(
         """
         SELECT *

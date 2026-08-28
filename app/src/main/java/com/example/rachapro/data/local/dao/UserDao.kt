@@ -17,6 +17,13 @@ interface UserDao {
         user: UserEntity
     ): Long
 
+    @Insert(
+        onConflict = OnConflictStrategy.REPLACE
+    )
+    suspend fun upsertUser(
+        user: UserEntity
+    )
+
     @Query(
         """
         SELECT * 

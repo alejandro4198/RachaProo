@@ -3,20 +3,62 @@ package com.example.rachapro.data.repository
 import android.database.sqlite.SQLiteConstraintException
 import com.example.rachapro.data.local.dao.UserDao
 import com.example.rachapro.data.local.entity.UserEntity
+import com.example.rachapro.network.ApiService
+import com.example.rachapro.network.dto.LoginRequest
+import com.example.rachapro.network.dto.UserResponse
 import com.example.rachapro.security.PasswordHasher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.io.IOException
+import com.example.rachapro.network.dto.CreateUserRequest
+import com.example.rachapro.network.dto.UpdateUserRequest
 
 class UserRepository(
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val apiService: ApiService
 ) {
+
     suspend fun getUserById(
         userId: Long
     ): UserEntity? {
 
-        return userDao.getUserById(
-            userId = userId
-        )
+        return try {
+
+            val response =
+                apiService.getCurrentUser()
+
+            val existing =
+                userDao.getUserById(
+                    userId = response.id
+                )
+
+            val user =
+                UserEntity(
+                    id = response.id,
+                    fullName = response.fullName,
+                    email = response.email,
+                    passwordHash =
+                        existing?.passwordHash ?: "",
+                    passwordSalt =
+                        existing?.passwordSalt ?: "",
+                    semester = response.semester,
+                    acceptedPrivacyPolicy =
+                        response.acceptedPrivacyPolicy,
+                    createdAt = response.createdAt,
+                    updatedAt = response.updatedAt
+                )
+
+            userDao.upsertUser(user)
+
+            user
+
+        } catch (_: Exception) {
+
+            userDao.getUserById(
+                userId = userId
+            )
+        }
     }
 
     suspend fun registerUser(
@@ -27,44 +69,61 @@ class UserRepository(
         acceptedPrivacyPolicy: Boolean
     ): RegisterResult {
 
-        val normalizedEmail = email
-            .trim()
-            .lowercase()
+        val normalizedEmail =
+            email.trim().lowercase()
 
-        val normalizedName = fullName.trim()
-
-        if (userDao.emailExists(normalizedEmail)) {
-            return RegisterResult.EmailAlreadyRegistered
-        }
-
-        val passwordResult = withContext(Dispatchers.Default) {
-            PasswordHasher.hashPassword(password)
-        }
-
-        val currentTime = System.currentTimeMillis()
-
-        val user = UserEntity(
-            fullName = normalizedName,
-            email = normalizedEmail,
-            passwordHash = passwordResult.hash,
-            passwordSalt = passwordResult.salt,
-            semester = semester,
-            acceptedPrivacyPolicy = acceptedPrivacyPolicy,
-            createdAt = currentTime,
-            updatedAt = currentTime
-        )
+        val normalizedName =
+            fullName.trim()
 
         return try {
 
-            val userId = userDao.insertUser(user)
+            val response =
+                apiService.createUser(
+                    CreateUserRequest(
+                        fullName = normalizedName,
+                        email = normalizedEmail,
+                        password = password,
+                        semester = semester,
+                        acceptedPrivacyPolicy =
+                            acceptedPrivacyPolicy
+                    )
+                )
 
-            RegisterResult.Success(
-                userId = userId
+            val passwordResult =
+                withContext(Dispatchers.Default) {
+                    PasswordHasher.hashPassword(password)
+                }
+
+            userDao.upsertUser(
+                UserEntity(
+                    id = response.id,
+                    fullName = response.fullName,
+                    email = response.email,
+                    passwordHash = passwordResult.hash,
+                    passwordSalt = passwordResult.salt,
+                    semester = response.semester,
+                    acceptedPrivacyPolicy =
+                        response.acceptedPrivacyPolicy,
+                    createdAt = response.createdAt,
+                    updatedAt = response.updatedAt
+                )
             )
 
-        } catch (_: SQLiteConstraintException) {
+            RegisterResult.Success(
+                userId = response.id
+            )
 
-            RegisterResult.EmailAlreadyRegistered
+        } catch (exception: HttpException) {
+
+            if (exception.code() == 409) {
+                RegisterResult.EmailAlreadyRegistered
+            } else {
+                RegisterResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            RegisterResult.Error
 
         } catch (_: Exception) {
 
@@ -81,27 +140,35 @@ class UserRepository(
             .trim()
             .lowercase()
 
-        val user = userDao.getUserByEmail(
-            normalizedEmail
-        ) ?: return LoginResult.InvalidCredentials
+        return try {
 
-        val passwordIsValid = withContext(Dispatchers.Default) {
-            PasswordHasher.verifyPassword(
-                password = password,
-                storedHash = user.passwordHash,
-                storedSalt = user.passwordSalt
+            val response = apiService.login(
+                LoginRequest(
+                    email = normalizedEmail,
+                    password = password
+                )
             )
-        }
-
-        return if (passwordIsValid) {
 
             LoginResult.Success(
-                user = user
+                user = response.user,
+                token = response.token
             )
 
-        } else {
+        } catch (exception: HttpException) {
 
-            LoginResult.InvalidCredentials
+            if (exception.code() == 401) {
+                LoginResult.InvalidCredentials
+            } else {
+                LoginResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            LoginResult.Error
+
+        } catch (_: Exception) {
+
+            LoginResult.Error
         }
     }
 
@@ -111,7 +178,8 @@ class UserRepository(
         semester: Int
     ): UpdateProfileResult {
 
-        val normalizedName = fullName.trim()
+        val normalizedName =
+            fullName.trim()
 
         if (normalizedName.isBlank()) {
             return UpdateProfileResult.InvalidData(
@@ -125,21 +193,59 @@ class UserRepository(
             )
         }
 
-        val user =
-            userDao.getUserById(userId = userId)
-                ?: return UpdateProfileResult.NotFound
-
         return try {
 
-            userDao.updateUser(
-                user.copy(
-                    fullName = normalizedName,
-                    semester = semester,
-                    updatedAt = System.currentTimeMillis()
+            val response =
+                apiService.updateCurrentUser(
+                    UpdateUserRequest(
+                        fullName = normalizedName,
+                        semester = semester
+                    )
+                )
+
+            val existing =
+                userDao.getUserById(
+                    userId = response.id
+                )
+
+            userDao.upsertUser(
+                UserEntity(
+                    id = response.id,
+                    fullName = response.fullName,
+                    email = response.email,
+                    passwordHash =
+                        existing?.passwordHash ?: "",
+                    passwordSalt =
+                        existing?.passwordSalt ?: "",
+                    semester = response.semester,
+                    acceptedPrivacyPolicy =
+                        response.acceptedPrivacyPolicy,
+                    createdAt = response.createdAt,
+                    updatedAt = response.updatedAt
                 )
             )
 
             UpdateProfileResult.Success
+
+        } catch (exception: HttpException) {
+
+            when (exception.code()) {
+
+                400 ->
+                    UpdateProfileResult.InvalidData(
+                        "Los datos ingresados no son válidos."
+                    )
+
+                404 ->
+                    UpdateProfileResult.NotFound
+
+                else ->
+                    UpdateProfileResult.Error
+            }
+
+        } catch (_: IOException) {
+
+            UpdateProfileResult.Error
 
         } catch (_: Exception) {
 
@@ -164,22 +270,29 @@ sealed interface RegisterResult {
 sealed interface LoginResult {
 
     data class Success(
-        val user: UserEntity
+        val user: UserResponse,
+        val token: String
     ) : LoginResult
 
     data object InvalidCredentials :
+        LoginResult
+
+    data object Error :
         LoginResult
 }
 
 sealed interface UpdateProfileResult {
 
-    data object Success : UpdateProfileResult
+    data object Success :
+        UpdateProfileResult
 
-    data object NotFound : UpdateProfileResult
+    data object NotFound :
+        UpdateProfileResult
 
     data class InvalidData(
         val message: String
     ) : UpdateProfileResult
 
-    data object Error : UpdateProfileResult
+    data object Error :
+        UpdateProfileResult
 }
