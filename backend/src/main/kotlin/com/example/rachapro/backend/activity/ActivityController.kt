@@ -98,6 +98,25 @@ class ActivityController(
         return ResponseEntity.ok(activity)
     }
 
+    @PatchMapping("/refresh-statuses")
+    fun refreshStatuses(
+        @AuthenticationPrincipal jwt: Jwt
+    ): ResponseEntity<List<ActivityResponse>> {
+
+        val userId =
+            jwt.subject
+                ?.toLongOrNull()
+                ?: return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build()
+
+        return ResponseEntity.ok(
+            activityService.refreshStatuses(
+                userId = userId
+            )
+        )
+    }
+
     @PatchMapping("/{id}/complete")
     fun complete(
         @AuthenticationPrincipal jwt: Jwt,

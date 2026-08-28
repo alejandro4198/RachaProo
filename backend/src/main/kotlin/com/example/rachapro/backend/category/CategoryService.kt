@@ -4,7 +4,7 @@ import com.example.rachapro.backend.category.dto.CategoryResponse
 import com.example.rachapro.backend.category.dto.CreateCategoryRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
+import com.example.rachapro.backend.error.ConflictException
 @Service
 class CategoryService(
     private val categoryRepository: CategoryRepository
@@ -25,8 +25,15 @@ class CategoryService(
             "El nombre de la categoria es obligatorio"
         }
 
-        require(!categoryRepository.existsByUserIdAndNameIgnoreCase(userId, name)) {
-            "La categoria ya existe"
+        if (
+            categoryRepository.existsByUserIdAndNameIgnoreCase(
+                userId,
+                name
+            )
+        ) {
+            throw ConflictException(
+                "La categoria ya existe"
+            )
         }
 
         val now = System.currentTimeMillis()

@@ -148,4 +148,35 @@ class SubtaskService(
 
         return true
     }
+
+    @Transactional
+    fun uncomplete(
+        userId: Long,
+        activityId: Long,
+        subtaskId: Long
+    ): SubtaskResponse? {
+
+        activityRepository
+            .findByIdAndUserIdAndIsDeletedFalse(
+                activityId,
+                userId
+            )
+            ?: return null
+
+        val subtask =
+            subtaskRepository
+                .findByIdAndActivityId(
+                    subtaskId,
+                    activityId
+                )
+                ?: return null
+
+        subtask.isCompleted = false
+        subtask.completedAt = null
+        subtask.updatedAt = System.currentTimeMillis()
+
+        return subtaskRepository
+            .save(subtask)
+            .toResponse()
+    }
 }

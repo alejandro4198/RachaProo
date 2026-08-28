@@ -143,4 +143,30 @@ class SubtaskController(
 
         return ResponseEntity.noContent().build()
     }
+
+    @PatchMapping("/{subtaskId}/uncomplete")
+    fun uncomplete(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable activityId: Long,
+        @PathVariable subtaskId: Long
+    ): ResponseEntity<SubtaskResponse> {
+
+        val userId = jwt.subject
+            ?.toLongOrNull()
+            ?: return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .build()
+
+        val subtask =
+            subtaskService.uncomplete(
+                userId = userId,
+                activityId = activityId,
+                subtaskId = subtaskId
+            )
+                ?: return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build()
+
+        return ResponseEntity.ok(subtask)
+    }
 }

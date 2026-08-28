@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import com.example.rachapro.backend.activity.dto.UpdateActivityRequest
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Service
 class ActivityService(
@@ -164,6 +165,70 @@ class ActivityService(
         return activityRepository
             .save(activity)
             .toResponse()
+    }
+
+    @Transactional
+    fun refreshStatuses(
+        userId: Long
+    ): List<ActivityResponse> {
+
+        val todayEpochDay =
+            LocalDate.now().toEpochDay()
+
+        val currentTimeMinutes =
+            LocalTime.now().toSecondOfDay() / 60
+
+        val now =
+            System.currentTimeMillis()
+
+        val activities =
+            activityRepository
+                .findAllByUserIdAndIsDeletedFalseOrderByDueDateEpochDayAsc(
+                    userId
+                )
+
+        activities.forEach { activity ->
+
+            if (activity.status == "PENDING") {
+
+                val isOverdue =
+                    activity.dueDateEpochDay < todayEpochDay ||
+                            (
+                                    activity.dueDateEpochDay == todayEpochDay &&
+                                            activity.dueTimeMinutes != null &&
+                                            activity.dueTimeMinutes!! < currentTimeMinutes
+                                    )
+
+                if (isOverdue) {
+                    activity.status = "OVERDUE"
+                    activity.updatedAt = now
+                }
+            }
+
+            if (activity.status == "OVERDUE") {
+
+                val shouldBePending =
+                    activity.dueDateEpochDay > todayEpochDay ||
+                            (
+                                    activity.dueDateEpochDay == todayEpochDay &&
+                                            (
+                                                    activity.dueTimeMinutes == null ||
+                                                            activity.dueTimeMinutes!! >= currentTimeMinutes
+                                                    )
+                                    )
+
+                if (shouldBePending) {
+                    activity.status = "PENDING"
+                    activity.updatedAt = now
+                }
+            }
+        }
+
+        activityRepository.saveAll(activities)
+
+        return activities.map {
+            it.toResponse()
+        }
     }
 
     @Transactional

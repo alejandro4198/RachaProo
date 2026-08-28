@@ -98,6 +98,30 @@ class PomodoroSessionController(
         return ResponseEntity.ok(session)
     }
 
+    @PatchMapping("/{id}/complete")
+    fun complete(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable id: Long
+    ): ResponseEntity<PomodoroSessionResponse> {
+
+        val userId = jwt.subject
+            ?.toLongOrNull()
+            ?: return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .build()
+
+        val session =
+            pomodoroSessionService.complete(
+                userId = userId,
+                sessionId = id
+            )
+                ?: return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build()
+
+        return ResponseEntity.ok(session)
+    }
+
     @PatchMapping("/{id}/cancel")
     fun cancel(
         @AuthenticationPrincipal jwt: Jwt,
