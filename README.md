@@ -23,12 +23,14 @@
 | Semana 4 | Implementación funcional del MVP Android, definición de escenarios de calidad, ejecución de EXP-001 y consolidación de la línea base. | `dossier/` y `experimentos/EXP-001-linea-base/` |
 
 ## 3. Dossier
-
-| Documento | Enlace |
-|---|---|
-| Contexto y drivers | [01-contexto-y-drivers](dossier/01-contexto-y-drivers.md) |
-| Escenarios de calidad | [02-escenarios-de-calidad](dossier/02-escenarios-de-calidad.md) |
-| Medición y línea base | [04-evidencia-ejecutable](dossier/04-evidencia-ejecutable.md) |
+| Documento | Enlace | Estado |
+|---|---|---|
+| Contexto del sistema | [01-contexto-sistema](dossier/01-contexto-sistema.md) | Documento actual de consolidación |
+| Stakeholders, restricciones y drivers preliminares | [02-stakeholders-drivers](dossier/02-stakeholders-drivers.md) | Documento actual de consolidación |
+| Contexto y drivers previo | [01-contexto-y-drivers](dossier/01-contexto-y-drivers.md) | Documento previo conservado por trazabilidad |
+| Escenarios de calidad | [02-escenarios-de-calidad](dossier/02-escenarios-de-calidad.md) | Evidencia existente |
+| Medición y línea base | [04-evidencia-ejecutable](dossier/04-evidencia-ejecutable.md) | Evidencia existente |
+| Ejecución local reproducible | [ejecucion-local](docs/ejecucion-local.md) | Procedimiento verificado en el entorno actual |
 
 ## 4. Experimento de línea base
 

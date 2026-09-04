@@ -16,3 +16,5 @@ local.properties
 
 # PostgreSQL local
 infra/postgres/.env
+
+/.idea/markdown.xml
