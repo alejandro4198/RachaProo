@@ -73,16 +73,24 @@ La existencia de un único integrante implica una distribución individual de la
 La reutilización de RachaPro como sistema previo condiciona el trabajo actual a partir de artefactos históricos existentes, pero no obliga a conservar sin cambios las propuestas arquitectónicas elaboradas durante Ingeniería de Software.
 
 ## 6. Drivers arquitectónicos preliminares
-El equipo mantiene como driver arquitectónico preliminar el **rendimiento del módulo de actividades**.
+Durante la revisión documental realizada el 04 de septiembre de 2026 para completar la evidencia correspondiente a las semanas iniciales del curso, el equipo formalizó una priorización actual de los drivers arquitectónicos preliminares de RachaPro.
 
-| Driver preliminar | Justificación | Antecedente | Estado |
-|---|---|---|---|
-| Rendimiento del módulo de actividades | Se considera relevante evaluar el comportamiento del módulo de actividades ante distintos volúmenes de información y condiciones de uso. | RNF02 histórico: rendimiento del módulo de actividades. | DRIVER PRELIMINAR CONFIRMADO POR EL EQUIPO |
+Esta priorización corresponde a una decisión actual del equipo y no se presenta como evidencia de que el mismo orden hubiera sido definido durante la Semana 2 original.
 
-El antecedente histórico de este driver se encuentra en el RNF02 definido durante Ingeniería de Software. Dicho requerimiento establecía, entre otros criterios, que el listado principal de actividades no superara los 3 segundos de carga en condiciones normales y que el sistema mantuviera un comportamiento estable con al menos 100 actividades registradas.
+| Prioridad | Driver preliminar | Justificación del equipo | Estado |
+|---:|---|---|---|
+| 1 | Rendimiento | El equipo considera que la fluidez de la aplicación es fundamental para RachaPro. Si la carga de información genera tiempos de espera altos, la experiencia de uso se deteriora y la aplicación puede perder utilidad a largo plazo. | DRIVER PRELIMINAR PRIORIZADO POR EL EQUIPO |
+| 2 | Seguridad | Se considera importante proteger la información asociada a los usuarios, principalmente el correo, el nombre de usuario y la información que podría permitir observar sus rutinas de uso. Dentro del alcance actual, el equipo no considera que se maneje información de alto impacto, por lo que seguridad se ubica después de rendimiento. | DRIVER PRELIMINAR PRIORIZADO POR EL EQUIPO |
+| 3 | Usabilidad | RachaPro está orientada principalmente a estudiantes, por lo que el equipo considera importante que la aplicación sea simple, comprensible y fácil de utilizar para su público objetivo. | DRIVER PRELIMINAR PRIORIZADO POR EL EQUIPO |
+| 4 | Disponibilidad | El equipo considera necesario que la infraestructura pueda recibir y atender las solicitudes de los usuarios. Sin embargo, dentro de la priorización actual se ubica después de rendimiento, seguridad y usabilidad, porque se considera que el valor principal de RachaPro depende especialmente de la rapidez de respuesta, la protección de la información y la facilidad de uso. | DRIVER PRELIMINAR PRIORIZADO POR EL EQUIPO |
 
-La selección actual del rendimiento como driver preliminar corresponde a una decisión del equipo en la etapa de Arquitectura de Software. Los valores de 3 segundos y 100 actividades se conservan como **antecedentes históricos** y no se reinterpretan automáticamente como nuevos umbrales o métricas definidos en la etapa actual.
+### Antecedente del driver de rendimiento
 
+El rendimiento del módulo de actividades ya había sido seleccionado previamente como driver arquitectónico preliminar.
+
+Su antecedente histórico se encuentra en el RNF02 definido durante Ingeniería de Software. Dicho requerimiento establecía, entre otros criterios, que el listado principal de actividades no superara los 3 segundos de carga en condiciones normales y que el sistema mantuviera un comportamiento estable con al menos 100 actividades registradas.
+
+Los valores de 3 segundos y 100 actividades se conservan únicamente como **ANTECEDENTES HISTÓRICOS**. La priorización actual no redefine automáticamente estos valores como métricas o umbrales vigentes.
 ## 7. Evidencias y fuentes
 Las afirmaciones de este documento se sustentan en fuentes históricas del proyecto y en evidencia de la implementación actual.
 
@@ -97,9 +105,9 @@ Las afirmaciones de este documento se sustentan en fuentes históricas del proye
 | `backend/src/main/resources/application.properties` | Dependencia del backend respecto a las variables de conexión con PostgreSQL. | EVIDENCIA ACTUAL |
 | `infra/postgres/docker-compose.yml` | Ejecución local de PostgreSQL mediante Docker Compose. | EVIDENCIA ACTUAL |
 | `docs/ejecucion-local.md` | Procedimiento reproducible y comprobaciones realizadas para ejecutar PostgreSQL, backend y aplicación Android. | EVIDENCIA EJECUTABLE |
-| Decisión actual del equipo | Mantener el rendimiento del módulo de actividades como driver arquitectónico preliminar. | DECISIÓN ACTUAL DEL EQUIPO |
+| Decisión actual del equipo, 04 de septiembre de 2026 | Priorización preliminar actual: 1) Rendimiento, 2) Seguridad, 3) Usabilidad y 4) Disponibilidad. | DECISIÓN ACTUAL DEL EQUIPO |
 
-El RNF02 histórico se utiliza únicamente como antecedente del driver de rendimiento. La decisión de mantener dicho driver en la etapa actual corresponde al equipo y no se presenta como una consecuencia automática de la documentación previa.
+El RNF02 histórico se utiliza únicamente como antecedente del driver de rendimiento. La selección y priorización actual de rendimiento, seguridad, usabilidad y disponibilidad corresponde al equipo y no se presenta como una consecuencia automática de la documentación histórica.
 
 ## 8. Información pendiente de verificación
 A partir de la revisión de las fuentes históricas y de la implementación actual, permanecen los siguientes puntos pendientes de verificación o formalización:
@@ -107,6 +115,6 @@ A partir de la revisión de las fuentes históricas y de la implementación actu
 - No se ha identificado una restricción económica actual específica para la etapa de Arquitectura de Software. El presupuesto existente corresponde al proyecto histórico de Ingeniería de Software y se conserva únicamente como antecedente.
 - No existe una fuente específica que recoja y priorice formalmente las preocupaciones del desarrollador / mantenedor; las preocupaciones asociadas a este rol se mantienen como inferencias derivadas de sus responsabilidades actuales.
 - La ampliación del público objetivo hacia un “usuario general” no se considera confirmada mientras no exista una decisión explícita del equipo que la incorpore como stakeholder independiente.
-- El rendimiento del módulo de actividades se mantiene como driver arquitectónico preliminar por decisión actual del equipo, pero la priorización relativa frente a otros posibles drivers todavía no se considera formalmente establecida.
+- La priorización preliminar actual de drivers fue formalizada por el equipo el 04 de septiembre de 2026: rendimiento, seguridad, usabilidad y disponibilidad, en ese orden. Todavía falta desarrollar para cada driver los escenarios, métricas y criterios verificables correspondientes en las etapas del curso que lo requieran.
 - Los valores históricos de 3 segundos y 100 actividades asociados al RNF02 se conservan como antecedentes. No se interpretan automáticamente como métricas o umbrales redefinidos para la etapa actual.
 - Las restricciones técnicas documentadas describen el estado actual de la implementación y no deben interpretarse como obligaciones permanentes de arquitectura sin evidencia adicional.
