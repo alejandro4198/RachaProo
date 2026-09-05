@@ -1,0 +1,56 @@
+﻿
+         /\      Grafana   /ÔÇ¥ÔÇ¥/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ÔÇ¥ÔÇ¥\ 
+  /          \   |   (  |  (ÔÇ¥)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: .\experimentos\EXP-002-k6-api-activities\scripts\baseline-activities.js
+        output: json (.\experimentos\EXP-002-k6-api-activities\resultados\raw-post-activities.json)
+
+     scenarios: (100.00%) 1 scenario, 1 max VUs, 10m30s max duration (incl. graceful stop):
+              * default: 25 iterations shared among 1 VUs (maxDuration: 10m0s, gracefulStop: 30s)
+
+
+running (00m01.0s), 1/1 VUs, 9 complete and 0 interrupted iterations
+default   [  36% ] 1 VUs  00m00.1s/10m0s  09/25 shared iters
+
+
+  Ôûê TOTAL RESULTS 
+
+    checks_total.......: 52      37.647271/s
+    checks_succeeded...: 100.00% 52 out of 52
+    checks_failed......: 0.00%   0 out of 52
+
+    Ô£ô login devuelve 200
+    Ô£ô categories devuelve 200
+    Ô£ô actividad devuelve 201
+    Ô£ô actividad devuelve id
+
+    CUSTOM
+    activity_create_duration.......: avg=11.16ms min=6.84ms med=8.48ms max=46.02ms  p(90)=10.58ms p(95)=31.5ms 
+    activity_create_success........: 100.00% 25 out of 25
+
+    HTTP
+    http_req_duration..............: avg=25.69ms min=5.89ms med=8.08ms max=863.73ms p(90)=10.03ms p(95)=30.49ms
+      { expected_response:true }...: avg=25.69ms min=5.89ms med=8.08ms max=863.73ms p(90)=10.03ms p(95)=30.49ms
+    http_req_failed................: 0.00%   0 out of 53
+    http_reqs......................: 53      38.371257/s
+
+    EXECUTION
+    iteration_duration.............: avg=11.33ms min=7.39ms med=8.6ms  max=46.02ms  p(90)=10.69ms p(95)=31.95ms
+    iterations.....................: 25      18.09965/s
+    vus............................: 1       min=1        max=1
+    vus_max........................: 1       min=1        max=1
+
+    NETWORK
+    data_received..................: 32 kB   23 kB/s
+    data_sent......................: 27 kB   20 kB/s
+
+
+
+
+running (00m01.4s), 0/1 VUs, 25 complete and 0 interrupted iterations
+default Ô£ô [ 100% ] 1 VUs  00m00.3s/10m0s  25/25 shared iters

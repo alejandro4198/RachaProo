@@ -1,0 +1,45 @@
+﻿
+         /\      Grafana   /ÔÇ¥ÔÇ¥/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ÔÇ¥ÔÇ¥\ 
+  /          \   |   (  |  (ÔÇ¥)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: .\scripts\baseline-activities.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 1 max VUs, 10m30s max duration (incl. graceful stop):
+              * default: 25 iterations shared among 1 VUs (maxDuration: 10m0s, gracefulStop: 30s)
+
+
+
+  Ôûê TOTAL RESULTS 
+
+    checks_total.......: 26      26.274474/s
+    checks_succeeded...: 100.00% 26 out of 26
+    checks_failed......: 0.00%   0 out of 26
+
+    Ô£ô login devuelve 200
+    Ô£ô activities devuelve 200
+
+    HTTP
+    http_req_duration..............: avg=37.48ms min=3.3ms  med=4.29ms max=859.27ms p(90)=6.6ms  p(95)=7.78ms
+      { expected_response:true }...: avg=37.48ms min=3.3ms  med=4.29ms max=859.27ms p(90)=6.6ms  p(95)=7.78ms
+    http_req_failed................: 0.00%  0 out of 26
+    http_reqs......................: 26     26.274474/s
+
+    EXECUTION
+    iteration_duration.............: avg=4.71ms  min=3.76ms med=4.4ms  max=8.08ms   p(90)=6.37ms p(95)=6.89ms
+    iterations.....................: 25     25.263917/s
+
+    NETWORK
+    data_received..................: 8.2 kB 8.3 kB/s
+    data_sent......................: 10 kB  10 kB/s
+
+
+
+
+running (00m01.0s), 0/1 VUs, 25 complete and 0 interrupted iterations
+default Ô£ô [ 100% ] 1 VUs  00m00.1s/10m0s  25/25 shared iters
