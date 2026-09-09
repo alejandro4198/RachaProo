@@ -1,3 +1,23 @@
+> [!IMPORTANT]
+> **ESTADO DOCUMENTAL: CORTE HISTÓRICO DE SEMANA 4**
+>
+> Este archivo conserva el estado del proyecto y de sus evidencias al momento de realizar Semana 4.
+> Algunos elementos que aquí aparecen como `pendientes` o `evidencia faltante` fueron resueltos posteriormente durante las Semanas 5, 6 y 7.
+>
+> Este documento no debe utilizarse aisladamente para determinar el estado vigente del proyecto.
+>
+> Para el estado posterior consultar especialmente:
+>
+> - `dossier/03-atributos-calidad.md`
+> - `dossier/05-c4-contexto.md`
+> - `dossier/06-c4-contenedores.md`
+> - `dossier/07-c4-componentes.md`
+> - `dossier/08-decision-estilo-arquitectonico.md`
+> - `experimentos/EXP-002-k6-api-activities/`
+> - `experimentos/EXP-003-k6-carga-activities/`
+>
+> Los pendientes originales se conservan por trazabilidad histórica.
+
 # Semana 4 - Arquitectura de Software
 
 Este directorio reune las evidencias y documentos utilizados durante la Semana 4 del proyecto RachaPro.

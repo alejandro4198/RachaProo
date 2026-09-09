@@ -1,4 +1,4 @@
-﻿# 01 - Contexto del sistema
+# 01 - Contexto del sistema
 
 ## 1. Identificación del sistema
 | Elemento | Información |
@@ -92,11 +92,11 @@ Las afirmaciones presentadas en este documento se apoyan en fuentes históricas 
 | `infra/postgres/` | Evidencia de la configuración de PostgreSQL mediante Docker. | Evolución posterior |
 | `docs/performance/prueba-carga-500k.md` y `docs/performance/resultados-carga-500k.csv` | Evidencia de la prueba posterior con 500 usuarios y 500.000 actividades. | Arquitectura posterior con backend y PostgreSQL |
 
-## 10. Información pendiente de verificación
+## 10. Información pendiente y actualizaciones posteriores
 La revisión de las fuentes históricas y de la implementación actual permite identificar los siguientes puntos que todavía requieren evidencia adicional o documentación más precisa:
 
 - No se ha identificado una restricción económica actual específica para el proyecto en la asignatura Arquitectura de Software. El documento histórico contiene un presupuesto estimado correspondiente a Ingeniería de Software, pero este no se considera automáticamente una restricción económica vigente.
 - Las instrucciones reproducibles para ejecutar el sistema completo todavía requieren ser consolidadas. Actualmente se han identificado dependencias de configuración local en el backend y en la dirección utilizada por la aplicación Android para comunicarse con este.
-- Debe verificarse y documentarse de forma explícita el papel que conserva Room/SQLite dentro de la arquitectura actual después de la incorporación del backend y PostgreSQL.
+- El papel de Room/SQLite fue precisado posteriormente mediante las vistas C4 de contenedores y componentes. Room continúa como persistencia local utilizada por la aplicación Android, mientras PostgreSQL constituye la persistencia central del backend. La implementación observada presenta acceso remoto/local según la funcionalidad y no se ha demostrado un motor general de sincronización, una estrategia offline-first uniforme ni resolución general de conflictos.
 - Las integraciones descritas únicamente en la arquitectura histórica, como el servicio externo de notificaciones push o el despliegue de base de datos sobre Raspberry Pi, no se consideran parte de la implementación actual mientras no exista evidencia correspondiente en el repositorio.
 - Los límites arquitectónicos formales del sistema todavía no han sido definidos mediante las vistas C4 requeridas posteriormente en el curso.

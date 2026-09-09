@@ -1,3 +1,13 @@
+> [!NOTE]
+> **ESTADO DOCUMENTAL: DOCUMENTO DE UNA ETAPA ANTERIOR**
+>
+> Este archivo se conserva por trazabilidad y refleja el estado conocido cuando fue elaborado.
+> Algunos estados `Pendiente` pueden haber sido desarrollados, medidos o documentados posteriormente.
+>
+> Para determinar el estado vigente del proyecto deben consultarse los documentos posteriores del dossier y las evidencias experimentales actuales.
+>
+> El contenido original se conserva sin reescritura retroactiva.
+
 # 04 - Medición y línea base
 
 ## 1. Sistema y versión medida
