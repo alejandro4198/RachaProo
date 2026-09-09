@@ -1,3 +1,20 @@
+> [!IMPORTANT]
+> **ESTADO DOCUMENTAL: SNAPSHOT HISTÓRICO**
+>
+> Este documento conserva una auditoría incremental realizada sobre una etapa anterior de RachaPro.
+> Las expresiones `EVIDENCIA PENDIENTE`, `EVIDENCIA FALTANTE`, `arquitectura actual` y afirmaciones sobre la ausencia de backend o persistencia remota deben interpretarse dentro del corte temporal en que fueron escritas.
+>
+> **Este archivo no representa por sí solo el AS-IS vigente del sistema.**
+>
+> Para consultar la arquitectura vigente revisada posteriormente, utilizar:
+>
+> - `dossier/05-c4-contexto.md` — C4 Nivel 1.
+> - `dossier/06-c4-contenedores.md` — C4 Nivel 2.
+> - `dossier/07-c4-componentes.md` — C4 Nivel 3.
+> - `dossier/08-decision-estilo-arquitectonico.md` — arquitectura objetivo TO-BE.
+>
+> Se conserva este documento sin reescribir sus hallazgos originales para mantener la trazabilidad de la evolución arquitectónica.
+
 # Arquitectura actual de RachaPro
 
 Este documento registra la arquitectura observada directamente en el código fuente actual del proyecto.

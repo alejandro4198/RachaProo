@@ -1,3 +1,26 @@
+> [!IMPORTANT]
+> **ESTADO DOCUMENTAL: REGISTRO HISTÓRICO DE PENDIENTES**
+>
+> Los elementos descritos a continuación corresponden a los pendientes identificados durante Semana 4.
+> No todos continúan abiertos actualmente.
+>
+> **ESTADO POSTERIOR DE LOS PENDIENTES**
+>
+> | Área | Estado posterior |
+> |---|---|
+> | Arquitectura AS-IS | **Resuelta posteriormente** mediante C4 Nivel 1, 2 y 3. |
+> | Comparación arquitectónica | **Realizada en un corte histórico y complementada posteriormente** por los C4 vigentes. |
+> | Estado exacto de todas las pantallas históricas | **No se declara cerrado aquí sin una verificación específica.** |
+> | Usabilidad | **Pendiente de prueba ejecutable completa.** |
+> | Rendimiento | **Existe evidencia experimental posterior** mediante EXP-001, EXP-002 y EXP-003, cada uno dentro de su alcance. |
+> | Seguridad | **Parcialmente resuelta:** existen mecanismos y evidencia arquitectónica de autenticación/JWT; permanecen verificaciones específicas no demostradas. |
+> | Compilación reproducible | **Resuelta posteriormente** bajo el entorno documentado. |
+> | Ejecución Android | **Resuelta posteriormente** en el entorno y dispositivo comprobados. |
+> | Historial y línea base Git | **Resuelto.** |
+> | Fuente oficial de la modalidad académica, si se exige | **Permanece pendiente mientras no exista una fuente oficial incorporada al repositorio.** |
+>
+> El contenido original se conserva debajo sin modificación para mantener la cronología de la auditoría.
+
 # Evidencia pendiente - Semana 4
 
 Este archivo registra información del proyecto RachaPro que todavía necesita ser comprobada, documentada o relacionada con una evidencia reproducible.

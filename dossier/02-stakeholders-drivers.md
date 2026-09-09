@@ -1,4 +1,4 @@
-﻿# 02 - Stakeholders, restricciones y drivers preliminares
+# 02 - Stakeholders, restricciones y drivers preliminares
 
 ## 1. Stakeholders identificados
 A partir de la documentación histórica y del estado actual del proyecto se identifican los siguientes stakeholders respaldados por evidencia:
@@ -109,12 +109,12 @@ Las afirmaciones de este documento se sustentan en fuentes históricas del proye
 
 El RNF02 histórico se utiliza únicamente como antecedente del driver de rendimiento. La selección y priorización actual de rendimiento, seguridad, usabilidad y disponibilidad corresponde al equipo y no se presenta como una consecuencia automática de la documentación histórica.
 
-## 8. Información pendiente de verificación
-A partir de la revisión de las fuentes históricas y de la implementación actual, permanecen los siguientes puntos pendientes de verificación o formalización:
+## 8. Información pendiente y actualizaciones posteriores
+A partir de la revisión de las fuentes históricas y de la implementación actual, se registran los siguientes pendientes vigentes y actualizaciones formalizadas posteriormente:
 
 - No se ha identificado una restricción económica actual específica para la etapa de Arquitectura de Software. El presupuesto existente corresponde al proyecto histórico de Ingeniería de Software y se conserva únicamente como antecedente.
 - No existe una fuente específica que recoja y priorice formalmente las preocupaciones del desarrollador / mantenedor; las preocupaciones asociadas a este rol se mantienen como inferencias derivadas de sus responsabilidades actuales.
 - La ampliación del público objetivo hacia un “usuario general” no se considera confirmada mientras no exista una decisión explícita del equipo que la incorpore como stakeholder independiente.
-- La priorización preliminar actual de drivers fue formalizada por el equipo el 04 de septiembre de 2026: rendimiento, seguridad, usabilidad y disponibilidad, en ese orden. Todavía falta desarrollar para cada driver los escenarios, métricas y criterios verificables correspondientes en las etapas del curso que lo requieran.
+- La priorización de drivers fue formalizada por el equipo el 04 de septiembre de 2026: rendimiento, seguridad, usabilidad y disponibilidad, en ese orden. Los escenarios, métricas y criterios verificables asociados fueron desarrollados posteriormente en `dossier/03-atributos-calidad.md`. Las mediciones y pruebas ejecutables se mantienen como evidencia independiente de la definición de los atributos.
 - Los valores históricos de 3 segundos y 100 actividades asociados al RNF02 se conservan como antecedentes. No se interpretan automáticamente como métricas o umbrales redefinidos para la etapa actual.
 - Las restricciones técnicas documentadas describen el estado actual de la implementación y no deben interpretarse como obligaciones permanentes de arquitectura sin evidencia adicional.

@@ -4,90 +4,221 @@
 
 | Campo | Información |
 |---|---|
-| Proyecto | RachaPro |
-| Integrante | Alejandro Villamizar Rodriguez |
+| Proyecto | RachaPro — Gestor de Productividad Académica |
+| Integrante | Alejandro Villamizar Rodríguez |
 | Curso | Arquitectura de Software |
-| Semana actual | Semana 4 |
-| Sistema base | Implementación funcional actual de RachaPro para Android, previa a cualquier cambio arquitectónico derivado de los experimentos de Arquitectura de Software. |
+| Estado académico documentado | Semanas 1–7 completadas |
+| Próxima etapa | Semana 8 — ADR y mini-comité arquitectónico |
 | Repositorio | https://github.com/alejandro4198/RachaProo.git |
-| Línea base funcional | `3b088858061edc47f6cd018a4130a38c2afb0f73` |
-| Commit instrumentado utilizado para EXP-001 | `59c182b12c7a2678f6ed09d1b69b399327d097d4` |
 
-## 2. Navegación de evidencias
+RachaPro es una aplicación móvil orientada a productividad académica que integra gestión de actividades, subtareas, categorías, recordatorios, sesiones Pomodoro, progreso, rachas y logros.
 
-| Semana | Actividad realizada | Evidencia / ubicación |
+El repositorio contiene tanto la implementación actual como documentación histórica conservada para mantener trazabilidad sobre la evolución del sistema.
+
+---
+
+## 2. Estado actual de la arquitectura
+
+La arquitectura AS-IS vigente documentada está compuesta por:
+
+    Aplicación Android
+        |
+        | HTTP/JSON + JWT
+        v
+    API backend Spring Boot
+        |
+        | Spring Data JPA
+        v
+    PostgreSQL
+
+La aplicación Android mantiene además componentes locales:
+
+- Room / SQLite;
+- DataStore;
+- servicios Android para alarmas y notificaciones.
+
+El papel exacto de cada componente y las relaciones verificadas se encuentran documentados en las vistas C4.
+
+La arquitectura objetivo seleccionada durante Semana 7 es un:
+
+**Monolito modular**
+
+con los módulos conceptuales:
+
+    Identity
+    Activities
+    Focus
+    Progress
+    Reminders
+
+Este diseño se considera TO-BE y no se presenta como si ya estuviera completamente implementado.
+
+---
+
+## 3. Navegación por semanas
+
+| Semana | Trabajo principal | Evidencia |
 |---|---|---|
-| Semana 1 | Localización y recuperación de documentación previa y prototipo de RachaPro. | `docs/sources/historical/` |
-| Semana 2 | Elaboración del documento de trabajo para Arquitectura de Software. | `docs/sources/historical/ProyectoAS.docx` |
-| Semana 3 | Planificación diaria de los módulos que se desarrollarían en el proyecto. | EVIDENCIA PARCIAL: los commits `280934d` (12/08/2026) y `0f13f0d` (13/08/2026) evidencian incorporación y modificación del código durante ese periodo. No se ha localizado el artefacto específico de planificación diaria. |
-| Semana 4 | Implementación funcional del MVP Android, definición de escenarios de calidad, ejecución de EXP-001 y consolidación de la línea base. | `dossier/` y `experimentos/EXP-001-linea-base/` |
+| Semana 1 | Recuperación de contexto, documentación histórica y antecedentes del proyecto. | `docs/sources/historical/`, `dossier/01-contexto-sistema.md` |
+| Semana 2 | Stakeholders, drivers, riesgos, checkpoint técnico y ejecución local. | `dossier/02-stakeholders-drivers.md`, `docs/riesgos-semana2.md`, `docs/checkpoint-semana2.md`, `docs/ejecucion-local.md` |
+| Semana 3 | Priorización y formalización de atributos de calidad. | `dossier/03-atributos-calidad.md` |
+| Semana 4 | Escenarios de calidad y experimentos ejecutables. | `dossier/04-escenarios-calidad.md`, `experimentos/EXP-001-linea-base/`, `experimentos/EXP-002-k6-api-activities/` |
+| Semana 5 | Arquitectura C4 Nivel 1 y Nivel 2. | `dossier/05-c4-contexto.md`, `dossier/06-c4-contenedores.md` |
+| Semana 6 | Arquitectura C4 Nivel 3 y verificación de componentes. | `dossier/07-c4-componentes.md` |
+| Semana 7 | Comparación de estilos, decisión arquitectónica, mapa modular y crítica de IA. | `dossier/08-decision-estilo-arquitectonico.md` |
 
-## 3. Dossier
-| Documento | Enlace | Estado |
-|---|---|---|
-| Contexto del sistema | [01-contexto-sistema](dossier/01-contexto-sistema.md) | Documento actual de consolidación |
-| Stakeholders, restricciones y drivers preliminares | [02-stakeholders-drivers](dossier/02-stakeholders-drivers.md) | Documento actual de consolidación |
-| Contexto y drivers previo | [01-contexto-y-drivers](dossier/01-contexto-y-drivers.md) | Documento previo conservado por trazabilidad |
-| Escenarios de calidad | [02-escenarios-de-calidad](dossier/02-escenarios-de-calidad.md) | Evidencia existente |
-| Medición y línea base | [04-evidencia-ejecutable](dossier/04-evidencia-ejecutable.md) | Evidencia existente |
-| Ejecución local reproducible | [ejecucion-local](docs/ejecucion-local.md) | Procedimiento verificado en el entorno actual |
+Los documentos de semanas anteriores pueden contener estados o pendientes que eran válidos en el momento en que fueron escritos. Cuando existe evidencia posterior, debe interpretarse junto con los documentos más recientes y no como una descripción del estado vigente.
 
-## 4. Experimento de línea base
+---
 
-| Evidencia | Enlace |
+## 4. Arquitectura vigente — referencias canónicas
+
+Para conocer el estado actual del sistema se debe consultar, en este orden:
+
+1. `dossier/05-c4-contexto.md` — C4 Nivel 1.
+2. `dossier/06-c4-contenedores.md` — C4 Nivel 2.
+3. `dossier/07-c4-componentes.md` — C4 Nivel 3.
+4. `dossier/08-decision-estilo-arquitectonico.md` — decisión TO-BE de Semana 7.
+
+Los siguientes documentos se conservan como trazabilidad histórica y **no deben utilizarse por sí solos como representación del AS-IS vigente**:
+
+- `docs/architecture/current/architecture-current.md`
+- `docs/architecture/comparison-historical-current.md`
+
+---
+
+## 5. Dossier principal
+
+| Documento | Propósito |
 |---|---|
-| EXP-001 - Línea base | [EXP-001-linea-base](experimentos/EXP-001-linea-base/README.md) |
-| Condiciones de ejecución | [condiciones](experimentos/EXP-001-linea-base/condiciones.md) |
-| Resultado de línea base | [resultado-linea-base](experimentos/EXP-001-linea-base/resultados/resultado-linea-base.md) |
-| Cálculo estadístico | [calculo-estadistico](experimentos/EXP-001-linea-base/resultados/calculo-estadistico.txt) |
+| `01-contexto-sistema.md` | Contexto consolidado del sistema |
+| `02-stakeholders-drivers.md` | Stakeholders, restricciones y drivers |
+| `03-atributos-calidad.md` | Priorización y escenarios de atributos de calidad |
+| `04-escenarios-calidad.md` | Escenarios de calidad |
+| `05-c4-contexto.md` | C4 Nivel 1 |
+| `06-c4-contenedores.md` | C4 Nivel 2 |
+| `07-c4-componentes.md` | C4 Nivel 3 |
+| `08-decision-estilo-arquitectonico.md` | Decisión de estilo y arquitectura objetivo |
 
-### Resultado principal de EXP-001
+Documentos anteriores como `01-contexto-y-drivers.md`, `02-escenarios-de-calidad.md` y `04-evidencia-ejecutable.md` se conservan por trazabilidad histórica cuando corresponda.
 
-| Métrica | Resultado |
-|---|---:|
-| Mediana originalmente planificada | 1308 ms (1.308 s) |
-| Mediana de 25 mediciones válidas | 1325 ms (1.325 s) |
-| P95 - Nearest Rank | 1621 ms (1.621 s) |
-| Máximo observado | 1666 ms (1.666 s) |
-| Umbral histórico RNF02 | ≤ 3 s |
+---
 
-La comparación con RNF02 debe interpretarse como una aproximación, ya que EXP-001 finaliza en `ActivitiesUiState.Success` y no mide directamente la finalización del renderizado visual del listado.
+## 6. Evidencia experimental
 
-## 5. Arquitectura del sistema
+### EXP-001 — Línea base Android
 
-| Evidencia | Enlace |
-|---|---|
-| Arquitectura actual observada | [Ver arquitectura actual](docs/architecture/current/architecture-current.md) |
-| Comparación histórica vs. actual | [Ver comparación arquitectónica](docs/architecture/comparison-historical-current.md) |
+Experimento histórico orientado a medir el flujo de carga de actividades en la aplicación Android.
 
-## 6. Trazabilidad Git
+Ruta:
 
-| Elemento | Referencia |
-|---|---|
-| Rama de trabajo | `master` |
-| Línea base funcional | `3b088858061edc47f6cd018a4130a38c2afb0f73` |
-| Preparación documental de EXP-001 | `93e7db49312b` |
-| Commit instrumentado utilizado para medir | `59c182b12c7a2678f6ed09d1b69b399327d097d4` |
-| Commit de cierre de evidencias de Semana 4 | `42d78efffd8d880477e39f59c3add69522e302c0` |
-| Ajuste final de reproducibilidad y Dossier 01 | `81bead9` |
-| Historial en GitHub | [Ver historial de commits](https://github.com/alejandro4198/RachaProo/commits/master/) |
+`experimentos/EXP-001-linea-base/`
 
-### Historial relevante
+Sus resultados deben interpretarse dentro de las condiciones registradas y no como una medición universal del sistema.
 
-| Commit | Mensaje |
-|---|---|
-| `280934d` | `Initial commit` |
-| `0f13f0d` | `Correcion de errores` |
-| `3b088858061e` | `Define linea base y documentacion previa al experimento` |
-| `93e7db49312b` | `Documenta preparacion de EXP-001` |
-| `59c182b12c7a` | `Instrumenta medicion de EXP-001` |
-| `42d78efffd8d` | `Cierra evidencia y linea base de Semana 4` |
-| `81bead9` | `Mejora reproducibilidad de EXP-001 y ajusta Dossier 01` |
+### EXP-002 — API de actividades
 
-### Estado de trazabilidad
+Experimento k6 sobre operaciones de creación de actividades en el backend.
 
-El commit `3b088858061edc47f6cd018a4130a38c2afb0f73` identifica la línea base funcional previa a la instrumentación.
+Ruta:
 
-El commit `59c182b12c7a2678f6ed09d1b69b399327d097d4` corresponde a la versión instrumentada utilizada durante las mediciones de EXP-001.
+`experimentos/EXP-002-k6-api-activities/`
 
-El commit `42d78efffd8d880477e39f59c3add69522e302c0` consolida los dossiers, logs, resultados, script reproducible y documentación de cierre correspondientes a la evidencia de Semana 4.
+Evalúa solicitudes consecutivas bajo las condiciones documentadas y no representa una prueba Android end-to-end ni un escenario independiente de concurrencia.
+
+### EXP-003 — Carga concurrente
+
+Experimento k6 para observar:
+
+`GET /api/activities`
+
+con un dataset sintético de:
+
+- 500 usuarios;
+- 1.000 actividades por usuario;
+- 500.000 actividades totales.
+
+Escenarios:
+
+- 10 VUs;
+- 50 VUs;
+- 100 VUs;
+- 250 VUs;
+- 500 VUs.
+
+Ruta:
+
+`experimentos/EXP-003-k6-carga-activities/`
+
+En los escenarios ejecutados se obtuvo corrección funcional completa de los GET evaluados. Los resultados no implican escalabilidad ilimitada ni representan condiciones de producción.
+
+---
+
+## 7. Implementación técnica actual
+
+### Android
+
+- Kotlin
+- Jetpack Compose
+- Navigation Compose
+- ViewModels
+- Coroutines / Flow
+- Retrofit
+- OkHttp
+- Room
+- DataStore
+- AlarmManager
+- BroadcastReceiver
+
+### Backend
+
+- Kotlin
+- Spring Boot
+- Spring Security
+- JWT
+- Spring Data JPA
+- Actuator
+
+### Persistencia central
+
+- PostgreSQL 17
+- Docker para infraestructura local reproducible
+
+---
+
+## 8. Trazabilidad arquitectónica
+
+La evolución del repositorio mantiene separación entre:
+
+- evidencia histórica;
+- hechos verificados;
+- decisiones actuales del equipo;
+- inferencias de auditoría;
+- arquitectura AS-IS;
+- arquitectura TO-BE;
+- limitaciones experimentales;
+- decisiones todavía pendientes.
+
+No debe interpretarse una limitación documentada en un experimento como una falla del sistema salvo que exista evidencia que la demuestre.
+
+Tampoco debe interpretarse un documento histórico como descripción automática del estado actual.
+
+---
+
+## 9. Estado al cierre de Semana 7
+
+El equipo ha definido como arquitectura objetivo:
+
+**Monolito modular**
+
+con cinco módulos principales:
+
+- Identity;
+- Activities;
+- Focus;
+- Progress;
+- Reminders.
+
+Las reglas técnicas exactas para imponer los límites entre módulos, los mecanismos de comunicación interna y la estrategia de migración quedan como decisiones posteriores y podrán formalizarse mediante ADR.
+
+El siguiente bloque académico corresponde a Semana 8.

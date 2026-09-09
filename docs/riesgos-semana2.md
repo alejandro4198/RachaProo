@@ -1,4 +1,4 @@
-﻿# Inventario inicial y registro crítico de riesgos - Semana 2
+# Inventario inicial y registro crítico de riesgos - Semana 2
 
 ## 1. Inventario inicial de riesgos
 Antes de realizar la clasificación crítica solicitada para Semana 2, se recuperó el inventario de riesgos que ya se encontraba documentado previamente en el proyecto:
@@ -52,7 +52,7 @@ Estas propuestas no se consideran automáticamente riesgos válidos del proyecto
 | IA-R02 | Una configuración incorrecta o incompleta de las variables de entorno podría impedir el inicio del backend. | Spring Boot requiere variables de conexión a PostgreSQL y el secreto JWT. |
 | IA-R03 | El uso de HTTP sin TLS podría exponer información intercambiada entre la aplicación y el backend si el mismo esquema se utilizara fuera del entorno local controlado. | `android:usesCleartextTraffic="true"` y comunicación HTTP en el entorno actual. |
 | IA-R04 | La pérdida o indisponibilidad de PostgreSQL podría impedir operaciones que dependan de la persistencia central del backend. | La implementación actual utiliza PostgreSQL como datasource del backend. |
-| IA-R05 | Si Room/SQLite y PostgreSQL mantienen información equivalente sin reglas claras de sincronización, podrían producirse inconsistencias entre los datos locales y remotos. | Room continúa presente en las dependencias Android y PostgreSQL forma parte de la arquitectura posterior; el papel actual de Room todavía requiere verificación formal. |
+| IA-R05 | Si Room/SQLite y PostgreSQL mantienen información equivalente sin reglas claras de sincronización, podrían producirse inconsistencias entre los datos locales y remotos. | El papel arquitectónico de Room/SQLite fue precisado posteriormente en los C4: permanece como persistencia local de Android y PostgreSQL como persistencia central del backend. No se ha demostrado un mecanismo general de sincronización, una estrategia offline-first uniforme ni resolución general de conflictos. |
 | IA-R06 | Un cambio en el backend podría introducir incompatibilidades con la aplicación Android si cambia el contrato de la API sin una coordinación correspondiente en el cliente. | Android consume servicios del backend mediante Retrofit. |
 | IA-R07 | La concentración del desarrollo, documentación y mantenimiento en un único integrante podría generar dependencia de conocimiento en una sola persona. | El proyecto actual cuenta con un único integrante. |
 | IA-R08 | La falta de pruebas sobre condiciones diferentes al entorno local comprobado podría ocultar fallos que aparezcan en otras redes, dispositivos o condiciones de despliegue. | El checkpoint actual fue verificado bajo un entorno local específico. |
@@ -113,7 +113,7 @@ La identificación de un riesgo no implica que el problema se haya manifestado. 
 | Inconsistencias entre actividades creadas y mostradas | No se dispone todavía de una prueba específica que compare sistemáticamente creación, recuperación y visualización de actividades. | EVIDENCIA FALTANTE |
 | Fuga o exposición de información | Se reconoce como riesgo de seguridad. No existe evidencia actual de que haya ocurrido una fuga de información. | RIESGO / MANIFESTACIÓN NO VERIFICADA |
 | Registro de nuevos usuarios | Durante el checkpoint se logró registrar un usuario nuevo. Esto demuestra el funcionamiento del flujo bajo las condiciones probadas, pero no garantiza su funcionamiento en todos los escenarios. | HECHO VERIFICADO bajo las condiciones probadas |
-| Papel actual de Room/SQLite | Room continúa presente en el proyecto, pero todavía no se ha documentado formalmente qué responsabilidad conserva frente a PostgreSQL. | EVIDENCIA FALTANTE |
+| Papel actual de Room/SQLite | El papel arquitectónico fue precisado posteriormente en `dossier/06-c4-contenedores.md` y `dossier/07-c4-componentes.md`: Room permanece como persistencia local de la aplicación Android y PostgreSQL como persistencia central del backend. No se generaliza una sincronización uniforme entre ambos. | RESUELTO DOCUMENTALMENTE / LIMITACIONES DE SINCRONIZACIÓN VIGENTES |
 | Funcionamiento en otros dispositivos o redes | Las comprobaciones realizadas corresponden al entorno utilizado durante el checkpoint. | EVIDENCIA FALTANTE para otros entornos |
 
 ### Observación metodológica
@@ -132,11 +132,25 @@ A partir del inventario y de la revisión crítica realizada, permanecen abierto
 | P-03 | Verificar sistemáticamente que las actividades creadas, recuperadas y mostradas por la aplicación permanezcan consistentes. | EQ-R03 |
 | P-04 | Evaluar los mecanismos actuales de protección de información y determinar si existen condiciones que puedan producir exposición no autorizada de datos. | EQ-R04, IA-R03 |
 | P-05 | Ampliar las pruebas del registro de usuarios a condiciones diferentes de las utilizadas durante el checkpoint. | EQ-R05 |
-| P-06 | Determinar y documentar formalmente el papel actual de Room/SQLite dentro de la implementación y su relación con PostgreSQL. | IA-R05 |
 | P-07 | Evaluar el comportamiento de la aplicación cuando cambia la dirección de red utilizada para acceder al backend. | IA-R01 |
 | P-08 | Verificar el comportamiento del sistema ante indisponibilidad de PostgreSQL. | IA-R04 |
 | P-09 | Verificar qué ocurre cuando existe una incompatibilidad entre el contrato esperado por Retrofit y las respuestas o endpoints del backend. | IA-R06 |
 | P-10 | Ejecutar pruebas en otras redes, dispositivos o condiciones de despliegue antes de generalizar los resultados obtenidos en el entorno local. | IA-R08 |
 | P-11 | Determinar, si aparece nueva evidencia histórica, el origen de los riesgos R-01 a R-06 incorporados originalmente en el commit `3b08885`. | R-01 a R-06 |
 
-Estos elementos se mantienen como pendientes y no se consideran problemas demostrados mientras no exista evidencia que permita confirmarlos.
+### Actualización posterior de P-06
+
+**P-06 fue resuelto documentalmente en una etapa posterior.**
+
+Las vistas C4 de contenedores y componentes precisaron que Room/SQLite permanece como persistencia local utilizada por la aplicación Android, mientras PostgreSQL constituye la persistencia central del backend.
+
+La evidencia revisada no demuestra un mecanismo general de sincronización entre ambos almacenamientos, una estrategia offline-first uniforme ni resolución general de conflictos.
+
+Referencias:
+
+- `dossier/06-c4-contenedores.md`
+- `dossier/07-c4-componentes.md`
+
+El riesgo relacionado con posibles inconsistencias entre persistencia local y remota no se considera eliminado automáticamente por esta aclaración documental.
+
+Los elementos que continúan listados como pendientes no se consideran problemas demostrados mientras no exista evidencia que permita confirmarlos. P-06 se conserva como antecedente resuelto documentalmente, sin que esto elimine automáticamente los riesgos asociados a la coexistencia de persistencia local y remota.

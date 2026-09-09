@@ -1,3 +1,20 @@
+> [!IMPORTANT]
+> **ESTADO DOCUMENTAL: COMPARACIÓN HISTÓRICA**
+>
+> Este documento compara la arquitectura propuesta históricamente con el estado de implementación conocido durante una etapa anterior de la auditoría.
+> En ese corte todavía no se había incorporado o verificado dentro del análisis la arquitectura backend Spring Boot + PostgreSQL que posteriormente quedó documentada en el repositorio.
+>
+> Por lo tanto, las referencias internas a `arquitectura actual` describen el estado observado en ese momento y **no el AS-IS vigente de septiembre de 2026**.
+>
+> Para el estado arquitectónico vigente consultar:
+>
+> - `dossier/05-c4-contexto.md`
+> - `dossier/06-c4-contenedores.md`
+> - `dossier/07-c4-componentes.md`
+> - `dossier/08-decision-estilo-arquitectonico.md`
+>
+> El contenido original se conserva por trazabilidad y no debe modificarse retroactivamente para simular que la evidencia posterior ya era conocida.
+
 # Comparación entre arquitectura histórica y arquitectura actual de RachaPro
 
 Este documento compara la arquitectura propuesta previamente durante la asignatura Ingeniería de Software con la arquitectura observada en la implementación actual de RachaPro.
