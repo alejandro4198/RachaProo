@@ -1,0 +1,630 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: .\experimentos\semana8-diagnostico-activities\scripts\diagnostico-tiempos-http.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 499 max VUs, 1m5s max duration (incl. graceful stop):
+              * sustainedActivities: 499 looping VUs for 1m0s (gracefulStop: 5s)
+
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+Run                   [ 100% ] setup()
+sustainedActivities   [   0% ]
+
+running (1m54.9s), 499/499 VUs, 0 complete and 0 interrupted iterations
+sustainedActivities   [   0% ] 499 VUs  0m00.1s/1m0s
+
+running (1m55.9s), 499/499 VUs, 128 complete and 0 interrupted iterations
+sustainedActivities   [   2% ] 499 VUs  0m01.2s/1m0s
+
+running (1m56.9s), 499/499 VUs, 289 complete and 0 interrupted iterations
+sustainedActivities   [   4% ] 499 VUs  0m02.2s/1m0s
+
+running (1m57.9s), 499/499 VUs, 454 complete and 0 interrupted iterations
+sustainedActivities   [   5% ] 499 VUs  0m03.2s/1m0s
+
+running (1m58.9s), 499/499 VUs, 614 complete and 0 interrupted iterations
+sustainedActivities   [   7% ] 499 VUs  0m04.2s/1m0s
+
+running (1m59.9s), 499/499 VUs, 766 complete and 0 interrupted iterations
+sustainedActivities   [   9% ] 499 VUs  0m05.2s/1m0s
+
+running (2m00.9s), 499/499 VUs, 933 complete and 0 interrupted iterations
+sustainedActivities   [  10% ] 499 VUs  0m06.2s/1m0s
+
+running (2m01.9s), 499/499 VUs, 1084 complete and 0 interrupted iterations
+sustainedActivities   [  12% ] 499 VUs  0m07.2s/1m0s
+
+running (2m02.9s), 499/499 VUs, 1233 complete and 0 interrupted iterations
+sustainedActivities   [  14% ] 499 VUs  0m08.2s/1m0s
+
+running (2m03.9s), 499/499 VUs, 1389 complete and 0 interrupted iterations
+sustainedActivities   [  15% ] 499 VUs  0m09.1s/1m0s
+
+running (2m04.9s), 499/499 VUs, 1554 complete and 0 interrupted iterations
+sustainedActivities   [  17% ] 499 VUs  0m10.2s/1m0s
+
+running (2m05.9s), 499/499 VUs, 1710 complete and 0 interrupted iterations
+sustainedActivities   [  19% ] 499 VUs  0m11.2s/1m0s
+
+running (2m06.9s), 499/499 VUs, 1863 complete and 0 interrupted iterations
+sustainedActivities   [  20% ] 499 VUs  0m12.2s/1m0s
+
+running (2m07.9s), 499/499 VUs, 2014 complete and 0 interrupted iterations
+sustainedActivities   [  22% ] 499 VUs  0m13.2s/1m0s
+
+running (2m08.9s), 499/499 VUs, 2181 complete and 0 interrupted iterations
+sustainedActivities   [  24% ] 499 VUs  0m14.2s/1m0s
+
+running (2m09.9s), 499/499 VUs, 2333 complete and 0 interrupted iterations
+sustainedActivities   [  25% ] 499 VUs  0m15.2s/1m0s
+
+running (2m10.9s), 499/499 VUs, 2495 complete and 0 interrupted iterations
+sustainedActivities   [  27% ] 499 VUs  0m16.2s/1m0s
+
+running (2m11.9s), 499/499 VUs, 2639 complete and 0 interrupted iterations
+sustainedActivities   [  29% ] 499 VUs  0m17.2s/1m0s
+
+running (2m12.9s), 499/499 VUs, 2792 complete and 0 interrupted iterations
+sustainedActivities   [  30% ] 499 VUs  0m18.2s/1m0s
+
+running (2m13.9s), 499/499 VUs, 2952 complete and 0 interrupted iterations
+sustainedActivities   [  32% ] 499 VUs  0m19.2s/1m0s
+
+running (2m14.9s), 499/499 VUs, 3117 complete and 0 interrupted iterations
+sustainedActivities   [  34% ] 499 VUs  0m20.2s/1m0s
+
+running (2m15.9s), 499/499 VUs, 3275 complete and 0 interrupted iterations
+sustainedActivities   [  35% ] 499 VUs  0m21.2s/1m0s
+
+running (2m16.9s), 499/499 VUs, 3437 complete and 0 interrupted iterations
+sustainedActivities   [  37% ] 499 VUs  0m22.2s/1m0s
+
+running (2m17.9s), 499/499 VUs, 3604 complete and 0 interrupted iterations
+sustainedActivities   [  39% ] 499 VUs  0m23.2s/1m0s
+
+running (2m18.9s), 499/499 VUs, 3763 complete and 0 interrupted iterations
+sustainedActivities   [  40% ] 499 VUs  0m24.2s/1m0s
+
+running (2m19.9s), 499/499 VUs, 3909 complete and 0 interrupted iterations
+sustainedActivities   [  42% ] 499 VUs  0m25.2s/1m0s
+
+running (2m20.9s), 499/499 VUs, 4063 complete and 0 interrupted iterations
+sustainedActivities   [  44% ] 499 VUs  0m26.2s/1m0s
+
+running (2m21.9s), 499/499 VUs, 4213 complete and 0 interrupted iterations
+sustainedActivities   [  45% ] 499 VUs  0m27.1s/1m0s
+
+running (2m22.9s), 499/499 VUs, 4350 complete and 0 interrupted iterations
+sustainedActivities   [  47% ] 499 VUs  0m28.1s/1m0s
+
+running (2m23.9s), 499/499 VUs, 4500 complete and 0 interrupted iterations
+sustainedActivities   [  49% ] 499 VUs  0m29.2s/1m0s
+
+running (2m24.9s), 499/499 VUs, 4661 complete and 0 interrupted iterations
+sustainedActivities   [  50% ] 499 VUs  0m30.2s/1m0s
+
+running (2m25.9s), 499/499 VUs, 4824 complete and 0 interrupted iterations
+sustainedActivities   [  52% ] 499 VUs  0m31.2s/1m0s
+
+running (2m26.9s), 499/499 VUs, 4977 complete and 0 interrupted iterations
+sustainedActivities   [  54% ] 499 VUs  0m32.2s/1m0s
+
+running (2m27.9s), 499/499 VUs, 5143 complete and 0 interrupted iterations
+sustainedActivities   [  55% ] 499 VUs  0m33.2s/1m0s
+
+running (2m28.9s), 499/499 VUs, 5298 complete and 0 interrupted iterations
+sustainedActivities   [  57% ] 499 VUs  0m34.2s/1m0s
+
+running (2m29.9s), 499/499 VUs, 5438 complete and 0 interrupted iterations
+sustainedActivities   [  59% ] 499 VUs  0m35.2s/1m0s
+
+running (2m30.9s), 499/499 VUs, 5593 complete and 0 interrupted iterations
+sustainedActivities   [  60% ] 499 VUs  0m36.2s/1m0s
+
+running (2m31.9s), 499/499 VUs, 5748 complete and 0 interrupted iterations
+sustainedActivities   [  62% ] 499 VUs  0m37.2s/1m0s
+
+running (2m32.9s), 499/499 VUs, 5898 complete and 0 interrupted iterations
+sustainedActivities   [  64% ] 499 VUs  0m38.2s/1m0s
+
+running (2m33.9s), 499/499 VUs, 6056 complete and 0 interrupted iterations
+sustainedActivities   [  65% ] 499 VUs  0m39.2s/1m0s
+
+running (2m34.9s), 499/499 VUs, 6213 complete and 0 interrupted iterations
+sustainedActivities   [  67% ] 499 VUs  0m40.2s/1m0s
+
+running (2m35.9s), 499/499 VUs, 6376 complete and 0 interrupted iterations
+sustainedActivities   [  69% ] 499 VUs  0m41.2s/1m0s
+
+running (2m36.9s), 499/499 VUs, 6536 complete and 0 interrupted iterations
+sustainedActivities   [  70% ] 499 VUs  0m42.2s/1m0s
+
+running (2m37.9s), 499/499 VUs, 6693 complete and 0 interrupted iterations
+sustainedActivities   [  72% ] 499 VUs  0m43.2s/1m0s
+
+running (2m38.9s), 499/499 VUs, 6857 complete and 0 interrupted iterations
+sustainedActivities   [  74% ] 499 VUs  0m44.2s/1m0s
+
+running (2m39.9s), 499/499 VUs, 7008 complete and 0 interrupted iterations
+sustainedActivities   [  75% ] 499 VUs  0m45.2s/1m0s
+
+running (2m40.9s), 499/499 VUs, 7172 complete and 0 interrupted iterations
+sustainedActivities   [  77% ] 499 VUs  0m46.2s/1m0s
+
+running (2m41.9s), 499/499 VUs, 7328 complete and 0 interrupted iterations
+sustainedActivities   [  79% ] 499 VUs  0m47.2s/1m0s
+
+running (2m42.9s), 499/499 VUs, 7465 complete and 0 interrupted iterations
+sustainedActivities   [  80% ] 499 VUs  0m48.2s/1m0s
+
+running (2m43.9s), 499/499 VUs, 7635 complete and 0 interrupted iterations
+sustainedActivities   [  82% ] 499 VUs  0m49.2s/1m0s
+
+running (2m44.9s), 499/499 VUs, 7797 complete and 0 interrupted iterations
+sustainedActivities   [  84% ] 499 VUs  0m50.1s/1m0s
+
+running (2m46.0s), 499/499 VUs, 7958 complete and 0 interrupted iterations
+sustainedActivities   [  85% ] 499 VUs  0m51.2s/1m0s
+
+running (2m46.9s), 499/499 VUs, 8119 complete and 0 interrupted iterations
+sustainedActivities   [  87% ] 499 VUs  0m52.2s/1m0s
+
+running (2m47.9s), 499/499 VUs, 8282 complete and 0 interrupted iterations
+sustainedActivities   [  89% ] 499 VUs  0m53.2s/1m0s
+
+running (2m48.9s), 499/499 VUs, 8445 complete and 0 interrupted iterations
+sustainedActivities   [  90% ] 499 VUs  0m54.2s/1m0s
+
+running (2m49.9s), 499/499 VUs, 8592 complete and 0 interrupted iterations
+sustainedActivities   [  92% ] 499 VUs  0m55.2s/1m0s
+
+running (2m50.9s), 499/499 VUs, 8753 complete and 0 interrupted iterations
+sustainedActivities   [  94% ] 499 VUs  0m56.2s/1m0s
+
+running (2m51.9s), 499/499 VUs, 8906 complete and 0 interrupted iterations
+sustainedActivities   [  95% ] 499 VUs  0m57.2s/1m0s
+
+running (2m52.9s), 499/499 VUs, 9057 complete and 0 interrupted iterations
+sustainedActivities   [  97% ] 499 VUs  0m58.2s/1m0s
+
+running (2m53.9s), 499/499 VUs, 9219 complete and 0 interrupted iterations
+sustainedActivities   [  99% ] 499 VUs  0m59.2s/1m0s
+
+running (2m54.9s), 473/499 VUs, 9378 complete and 0 interrupted iterations
+sustainedActivities ↓ [ 100% ] 499 VUs  1m0s
+
+running (2m55.9s), 314/499 VUs, 9537 complete and 0 interrupted iterations
+sustainedActivities ↓ [ 100% ] 499 VUs  1m0s
+
+running (2m56.9s), 146/499 VUs, 9705 complete and 0 interrupted iterations
+sustainedActivities ↓ [ 100% ] 499 VUs  1m0s
+{
+  "experiment": "SEMANA8-DIAGNOSTICO-ACTIVITIES-HTTP",
+  "workload": {
+    "vus": 499,
+    "duration": "60s",
+    "androidUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "med": 3163.8527,
+      "p(90)": 3470.632,
+      "p(95)": 4393.982,
+      "max": 8120.5953,
+      "avg": 3101.5313736473636,
+      "min": 184.9086
+    },
+    "activity_get_blocked": {
+      "avg": 2.886804273677798,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 1.0062,
+      "max": 188.7995
+    },
+    "activity_get_connecting": {
+      "max": 133.3429,
+      "avg": 2.830125631915539,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 1.00015
+    },
+    "activity_get_sending": {
+      "p(95)": 0.7163999999999999,
+      "max": 47.8645,
+      "avg": 0.18759292457618493,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0
+    },
+    "activity_get_waiting": {
+      "p(95)": 4392.0868,
+      "max": 8120.5953,
+      "avg": 3099.9164974216,
+      "min": 172.9191,
+      "med": 3162.3547,
+      "p(90)": 3468.289
+    },
+    "activity_get_receiving": {
+      "p(95)": 5.02835,
+      "max": 41.4236,
+      "avg": 1.4272833011876942,
+      "min": 0,
+      "med": 0.9937,
+      "p(90)": 3.43
+    },
+    "activity_get_success": {
+      "count": 9851,
+      "rate": 55.42378633029546
+    },
+    "activity_count_ok": {
+      "count": 9851,
+      "rate": 55.42378633029546
+    },
+    "checks": {
+      "fails": 0,
+      "rate": 1,
+      "passes": 19702
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 10350
+    },
+    "http_reqs": {
+      "count": 10350,
+      "rate": 58.23126469582357
+    }
+  }
+}
+
+running (2m57.7s), 000/499 VUs, 9851 complete and 0 interrupted iterations
+sustainedActivities ✓ [ 100% ] 499 VUs  1m0s
