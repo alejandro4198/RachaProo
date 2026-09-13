@@ -1,0 +1,81 @@
+{
+  "experiment": "SEMANA8-DIAGNOSTICO-ACTIVITIES-HTTP",
+  "workload": {
+    "vus": 499,
+    "duration": "60s",
+    "androidUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "max": 8830.4498,
+      "avg": 2999.2749065232456,
+      "min": 99.5177,
+      "med": 3069.9197,
+      "p(90)": 3178.13636,
+      "p(95)": 4234.7424900000005
+    },
+    "activity_get_blocked": {
+      "avg": 0.39329051969741635,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 268.41
+    },
+    "activity_get_connecting": {
+      "avg": 0.34811290893015034,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 65.5304
+    },
+    "activity_get_sending": {
+      "max": 225.4183,
+      "avg": 0.9990485214657601,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0
+    },
+    "activity_get_waiting": {
+      "avg": 2996.9049491109395,
+      "min": 96.9976,
+      "med": 3068.4688,
+      "p(90)": 3176.9642000000003,
+      "p(95)": 4233.9129299999995,
+      "max": 8823.077
+    },
+    "activity_get_receiving": {
+      "p(90)": 3.165420000000001,
+      "p(95)": 4.51565,
+      "max": 29.3157,
+      "avg": 1.3709088908537173,
+      "min": 0,
+      "med": 0.9978
+    },
+    "activity_get_success": {
+      "count": 10179,
+      "rate": 57.336521344559884
+    },
+    "activity_count_ok": {
+      "count": 10179,
+      "rate": 57.336521344559884
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 20358,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 10678
+    },
+    "http_reqs": {
+      "count": 10678,
+      "rate": 60.147300807270895
+    }
+  }
+}
