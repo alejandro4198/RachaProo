@@ -1,0 +1,41 @@
+{
+  "experiment": "EXP-004",
+  "workload": {
+    "vus": 499,
+    "duration": "600s",
+    "androidUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "med": 3076.23545,
+      "p(90)": 4213.041679999999,
+      "p(95)": 4341.843430000001,
+      "max": 12826.7357,
+      "avg": 3142.9589677904364,
+      "min": 110.5711
+    },
+    "activity_get_success": {
+      "count": 95270,
+      "rate": 132.6749627253647
+    },
+    "activity_count_ok": {
+      "count": 95270,
+      "rate": 132.6749627253647
+    },
+    "checks": {
+      "fails": 0,
+      "rate": 1,
+      "passes": 190540
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 95769
+    },
+    "http_reqs": {
+      "rate": 133.3698803951449,
+      "count": 95769
+    }
+  }
+}

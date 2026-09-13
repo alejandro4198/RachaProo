@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import java.io.IOException
+import android.os.SystemClock
+import android.util.Log
 
 class ActivityRepository(
     private val activityDao: ActivityDao,
@@ -445,6 +447,9 @@ class ActivityRepository(
 
     suspend fun fetchRemoteActivities(): RemoteActivitiesResult {
 
+        val startMs = SystemClock.elapsedRealtime()
+        Log.i("RachaProPerf", "ANDROID_ACTIVITY_GET_START")
+
         return try {
 
             val activities =
@@ -470,9 +475,18 @@ class ActivityRepository(
 
             RemoteActivitiesResult.Error
         }
+
+        finally {
+            Log.i(
+                "RachaProPerf",
+                "ANDROID_ACTIVITY_GET durationMs=${SystemClock.elapsedRealtime() - startMs}"
+            )
+        }
     }
 
     suspend fun refreshRemoteActivityStatuses(): RemoteActivitiesResult {
+        val startMs = SystemClock.elapsedRealtime()
+        Log.i("RachaProPerf", "ANDROID_REFRESH_STATUSES_START")
 
         return try {
 
@@ -498,6 +512,13 @@ class ActivityRepository(
         } catch (_: Exception) {
 
             RemoteActivitiesResult.Error
+        }
+
+        finally {
+            Log.i(
+                "RachaProPerf",
+                "ANDROID_REFRESH_STATUSES durationMs=${SystemClock.elapsedRealtime() - startMs}"
+            )
         }
     }
 
