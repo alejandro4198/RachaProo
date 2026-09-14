@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 1,
+    "duration": "3s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest002@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "p(95)": 15.841935,
+      "max": 51.2521,
+      "avg": 13.262872023809521,
+      "min": 10.9174,
+      "med": 12.20495,
+      "p(90)": 13.914140000000002
+    },
+    "activity_get_blocked": {
+      "avg": 0.009298809523809525,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 0.5436
+    },
+    "activity_get_connecting": {
+      "max": 0.507,
+      "avg": 0.003017857142857143,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0
+    },
+    "activity_get_sending": {
+      "avg": 0.00970952380952381,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 0.5954
+    },
+    "activity_get_waiting": {
+      "max": 47.7668,
+      "avg": 11.03079523809524,
+      "min": 8.6646,
+      "med": 10.2823,
+      "p(90)": 11.814390000000001,
+      "p(95)": 14.202165
+    },
+    "activity_get_receiving": {
+      "p(95)": 2.642675,
+      "max": 32.8562,
+      "avg": 2.222367261904762,
+      "min": 0.5518,
+      "med": 2.09045,
+      "p(90)": 2.40639
+    },
+    "activity_get_success": {
+      "count": 168,
+      "rate": 42.78310407616534
+    },
+    "activity_count_ok": {
+      "count": 168,
+      "rate": 42.78310407616534
+    },
+    "checks": {
+      "passes": 336,
+      "fails": 0,
+      "rate": 1
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 169
+    },
+    "http_reqs": {
+      "rate": 43.03776540995203,
+      "count": 169
+    },
+    "iterations": {
+      "count": 168,
+      "rate": 42.78310407616534
+    }
+  }
+}

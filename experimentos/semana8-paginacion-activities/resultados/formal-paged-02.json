@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "paged",
+  "treatment": {
+    "endpoint": "/api/activities/paged?page=0&size=100",
+    "expectedActivityCount": 100
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "avg": 634.1261732521855,
+      "min": 20.7188,
+      "med": 617.4089,
+      "p(90)": 822.1400600000001,
+      "p(95)": 864.61303,
+      "max": 1767.0307
+    },
+    "activity_get_blocked": {
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 415.4653,
+      "avg": 1.0129126359761644
+    },
+    "activity_get_connecting": {
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 415.4653,
+      "avg": 0.9884882100977533,
+      "min": 0,
+      "med": 0
+    },
+    "activity_get_sending": {
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 325.1386,
+      "avg": 0.23277315040607266
+    },
+    "activity_get_waiting": {
+      "med": 617.0964,
+      "p(90)": 821.7426000000005,
+      "p(95)": 864.20937,
+      "max": 1767.0307,
+      "avg": 633.6607977183547,
+      "min": 13.897
+    },
+    "activity_get_receiving": {
+      "avg": 0.2326023834262823,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0.6506400000000052,
+      "p(95)": 1.7139099999999998,
+      "max": 171.9186
+    },
+    "activity_get_success": {
+      "count": 47159,
+      "rate": 268.6664782110244
+    },
+    "activity_count_ok": {
+      "count": 47159,
+      "rate": 268.6664782110244
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 94318,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 47658
+    },
+    "http_reqs": {
+      "count": 47658,
+      "rate": 271.50929872518503
+    },
+    "iterations": {
+      "count": 47159,
+      "rate": 268.6664782110244
+    }
+  }
+}
