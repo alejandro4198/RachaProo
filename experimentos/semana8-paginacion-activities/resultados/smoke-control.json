@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 1,
+    "duration": "5s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest002@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "avg": 13.972823188405794,
+      "min": 11.9052,
+      "med": 13.44285,
+      "p(90)": 15.356349999999999,
+      "p(95)": 17.095149999999997,
+      "max": 27.6357
+    },
+    "activity_get_blocked": {
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 0.5517,
+      "avg": 0.0057384057971014485,
+      "min": 0,
+      "med": 0
+    },
+    "activity_get_connecting": {
+      "max": 0.5517,
+      "avg": 0.0019989130434782607,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0
+    },
+    "activity_get_sending": {
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 0.7409,
+      "avg": 0.014557971014492754,
+      "min": 0,
+      "med": 0
+    },
+    "activity_get_waiting": {
+      "p(95)": 14.857625,
+      "max": 24.9166,
+      "avg": 11.882963043478261,
+      "min": 9.7682,
+      "med": 11.41615,
+      "p(90)": 13.108699999999999
+    },
+    "activity_get_receiving": {
+      "avg": 2.0753021739130446,
+      "min": 1.2595,
+      "med": 2.12705,
+      "p(90)": 2.5004999999999997,
+      "p(95)": 2.70125,
+      "max": 3.6309
+    },
+    "activity_get_success": {
+      "count": 276,
+      "rate": 47.126323852712204
+    },
+    "activity_count_ok": {
+      "count": 276,
+      "rate": 47.126323852712204
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 552,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 277
+    },
+    "http_reqs": {
+      "count": 277,
+      "rate": 47.29707140290319
+    },
+    "iterations": {
+      "count": 276,
+      "rate": 47.126323852712204
+    }
+  }
+}

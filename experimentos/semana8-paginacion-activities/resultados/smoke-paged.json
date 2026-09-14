@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "paged",
+  "treatment": {
+    "endpoint": "/api/activities/paged?page=0&size=100",
+    "expectedActivityCount": 100
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 1,
+    "duration": "5s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest002@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "min": 2.0338,
+      "med": 3.7067,
+      "p(90)": 4.82906,
+      "p(95)": 5.420454999999997,
+      "max": 102.3062,
+      "avg": 4.096236560150381
+    },
+    "activity_get_blocked": {
+      "avg": 0.008581954887218047,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 0.6407
+    },
+    "activity_get_connecting": {
+      "p(95)": 0,
+      "max": 0.6407,
+      "avg": 0.004621522556390978,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0
+    },
+    "activity_get_sending": {
+      "avg": 0.013308834586466166,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 0.7016
+    },
+    "activity_get_waiting": {
+      "avg": 3.797647368421056,
+      "min": 2.0275,
+      "med": 3.52805,
+      "p(90)": 4.431800000000001,
+      "p(95)": 5.124904999999995,
+      "max": 102.3062
+    },
+    "activity_get_receiving": {
+      "avg": 0.28528035714285704,
+      "min": 0,
+      "med": 0.3559,
+      "p(90)": 0.5469,
+      "p(95)": 0.6396449999999999,
+      "max": 2.422
+    },
+    "activity_get_success": {
+      "count": 1064,
+      "rate": 176.03642312716894
+    },
+    "activity_count_ok": {
+      "count": 1064,
+      "rate": 176.03642312716894
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 2128,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 1065
+    },
+    "http_reqs": {
+      "count": 1065,
+      "rate": 176.2018708932659
+    },
+    "iterations": {
+      "count": 1064,
+      "rate": 176.03642312716894
+    }
+  }
+}

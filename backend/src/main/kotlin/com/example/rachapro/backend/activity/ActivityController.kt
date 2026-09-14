@@ -16,6 +16,7 @@ import com.example.rachapro.backend.activity.dto.UpdateActivityRequest
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
 @RequestMapping("/api/activities")
@@ -35,6 +36,32 @@ class ActivityController(
 
         return ResponseEntity.ok(
             activityService.findAllByUserId(userId)
+        )
+    }
+
+    @GetMapping("/paged")
+    fun findPage(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "100") size: Int
+    ): ResponseEntity<List<ActivityResponse>> {
+
+        val userId = jwt.subject
+            ?.toLongOrNull()
+            ?: return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .build()
+
+        if (page < 0 || size !in 1..200) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        return ResponseEntity.ok(
+            activityService.findPageByUserId(
+                userId = userId,
+                page = page,
+                size = size
+            )
         )
     }
 

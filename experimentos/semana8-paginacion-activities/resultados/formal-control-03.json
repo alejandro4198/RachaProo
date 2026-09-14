@@ -1,0 +1,29 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": null,
+    "activity_get_blocked": null,
+    "activity_get_connecting": null,
+    "activity_get_sending": null,
+    "activity_get_waiting": null,
+    "activity_get_receiving": null,
+    "activity_get_success": null,
+    "activity_count_ok": null,
+    "checks": null,
+    "http_req_failed": null,
+    "http_reqs": null,
+    "iterations": null
+  }
+}

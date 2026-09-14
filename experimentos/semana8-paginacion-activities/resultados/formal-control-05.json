@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "avg": 3447.799596622382,
+      "min": 110.9187,
+      "med": 3511.5579,
+      "p(90)": 3940.55433,
+      "p(95)": 4066.016665,
+      "max": 6382.175
+    },
+    "activity_get_blocked": {
+      "avg": 3.0306918712001796,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.5347949999999999,
+      "max": 276.6675
+    },
+    "activity_get_connecting": {
+      "max": 276.6675,
+      "avg": 2.9465962621031307,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0
+    },
+    "activity_get_sending": {
+      "avg": 1.6768503827966674,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.5026849999999932,
+      "max": 413.2311
+    },
+    "activity_get_waiting": {
+      "avg": 3443.4882162913727,
+      "min": 96.207,
+      "med": 3507.10045,
+      "p(90)": 3937.40731,
+      "p(95)": 4063.248574999999,
+      "max": 6381.7958
+    },
+    "activity_get_receiving": {
+      "min": 0,
+      "med": 1.5130499999999998,
+      "p(90)": 5.474830000000002,
+      "p(95)": 7.9148099999999655,
+      "max": 406.0376,
+      "avg": 2.634529948209842
+    },
+    "activity_get_success": {
+      "count": 8882,
+      "rate": 46.80007663789177
+    },
+    "activity_count_ok": {
+      "count": 8882,
+      "rate": 46.80007663789177
+    },
+    "checks": {
+      "fails": 0,
+      "rate": 1,
+      "passes": 17764
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 9381
+    },
+    "http_reqs": {
+      "count": 9381,
+      "rate": 49.42935362982016
+    },
+    "iterations": {
+      "count": 8882,
+      "rate": 46.80007663789177
+    }
+  }
+}

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import com.example.rachapro.backend.activity.dto.UpdateActivityRequest
 import java.time.LocalDate
 import java.time.LocalTime
+import org.springframework.data.domain.PageRequest
 
 @Service
 class ActivityService(
@@ -19,6 +20,23 @@ class ActivityService(
     fun findAllByUserId(userId: Long): List<ActivityResponse> {
         return activityRepository
             .findAllByUserIdAndIsDeletedFalseOrderByDueDateEpochDayAsc(userId)
+            .map { it.toResponse() }
+    }
+
+    @Transactional(readOnly = true)
+    fun findPageByUserId(
+        userId: Long,
+        page: Int,
+        size: Int
+    ): List<ActivityResponse> {
+
+        val pageable = PageRequest.of(page, size)
+
+        return activityRepository
+            .findAllByUserIdAndIsDeletedFalseOrderByDueDateEpochDayAsc(
+                userId,
+                pageable
+            )
             .map { it.toResponse() }
     }
 
