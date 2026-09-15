@@ -4,7 +4,7 @@
 - **Fecha de decisión:** 2026-09-14
 - **Ámbito:** Backend Spring Boot
 - **Relacionada con:** ADR-001
-- **Implementación:** Pendiente
+- **Implementación:** Materializada
 
 ---
 
@@ -570,12 +570,12 @@ ADR-002 se considerará materializado cuando:
 
 **Ownership:** ⚪ CRITERIO DEFINIDO
 
-**Contratos públicos:** 🎯 TO-BE
+**Contratos públicos:** ✅ IMPLEMENTADOS
 
-**Cruces directos actuales:** 🏗 AS-IS
+**Cruces directos identificados:** ✅ ELIMINADOS
 
-**Refactor físico:** 🧪 PENDIENTE
+**Refactor físico:** ✅ IMPLEMENTADO
 
-**Fitness functions:** 🧪 PENDIENTE
+**Fitness functions:** ✅ IMPLEMENTADAS
 
-Este ADR define la regla que deberá materializarse en código. No afirma que los cruces AS-IS ya hayan sido eliminados.
+Este ADR define una regla materializada en código mediante contratos públicos entre módulos y verificada mediante fitness functions con ArchUnit.
