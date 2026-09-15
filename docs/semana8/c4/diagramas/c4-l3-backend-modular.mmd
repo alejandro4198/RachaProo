@@ -1,0 +1,35 @@
+flowchart TB
+    android["Android App"]
+
+    subgraph backend["Backend RachaPro - Spring Boot"]
+        direction TB
+
+        identity["Identity<br/>Auth + User + Security"]
+        activities["Activities<br/>Activity + Category + Subtask<br/>API publica"]
+        focus["Focus<br/>Pomodoro"]
+        progress["Progress<br/>Achievements"]
+        reminders["Reminders"]
+        shared["Shared<br/>Errores comunes"]
+    end
+
+    postgres[("PostgreSQL")]
+
+    android -->|"HTTP / JSON + JWT"| identity
+    android -->|"Activities API"| activities
+    android -->|"Pomodoro API"| focus
+    android -->|"Achievements API"| progress
+    android -->|"Reminders API"| reminders
+
+    identity -->|"DefaultCategoryProvisioning"| activities
+    focus -->|"ActivityLookup"| activities
+    reminders -->|"ActivityLookup"| activities
+
+    activities --> shared
+    identity --> shared
+    progress --> shared
+
+    identity -->|"UserRepository"| postgres
+    activities -->|"Activity / Category / Subtask"| postgres
+    focus -->|"PomodoroSession"| postgres
+    progress -->|"Achievement"| postgres
+    reminders -->|"Reminder"| postgres
