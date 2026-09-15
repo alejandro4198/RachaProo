@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "min": 142.6778,
+      "med": 3594.7856,
+      "p(90)": 4806.52613,
+      "p(95)": 5300.82933,
+      "max": 10336.0702,
+      "avg": 3639.132821256142
+    },
+    "activity_get_blocked": {
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.6672849999999972,
+      "max": 485.305,
+      "avg": 2.2820273962971687,
+      "min": 0
+    },
+    "activity_get_connecting": {
+      "avg": 2.1047116358097053,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 485.305
+    },
+    "activity_get_sending": {
+      "max": 431.676,
+      "avg": 1.1501297164284034,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.5034
+    },
+    "activity_get_waiting": {
+      "max": 10315.1185,
+      "avg": 3636.368925943283,
+      "min": 129.1715,
+      "med": 3592.6248,
+      "p(90)": 4805.23232,
+      "p(95)": 5299.287259999999
+    },
+    "activity_get_receiving": {
+      "max": 173.4612,
+      "avg": 1.6137655964377744,
+      "min": 0,
+      "med": 0.9992,
+      "p(90)": 3.60866,
+      "p(95)": 5.515349999999999
+    },
+    "activity_get_success": {
+      "count": 8534,
+      "rate": 43.897046502806866
+    },
+    "activity_count_ok": {
+      "count": 8534,
+      "rate": 43.897046502806866
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 17068,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "fails": 9033,
+      "rate": 0,
+      "passes": 0
+    },
+    "http_reqs": {
+      "count": 9033,
+      "rate": 46.46379435901739
+    },
+    "iterations": {
+      "count": 8534,
+      "rate": 43.897046502806866
+    }
+  }
+}

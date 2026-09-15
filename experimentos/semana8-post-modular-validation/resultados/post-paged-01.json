@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "paged",
+  "treatment": {
+    "endpoint": "/api/activities/paged?page=0&size=100",
+    "expectedActivityCount": 100
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "p(95)": 1236.6983,
+      "max": 4072.1895,
+      "avg": 866.3660653092489,
+      "min": 28.977,
+      "med": 801.06695,
+      "p(90)": 1086.2532999999999
+    },
+    "activity_get_blocked": {
+      "avg": 3.2909868208224182,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 564.4108
+    },
+    "activity_get_connecting": {
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 445.284,
+      "avg": 3.235239642897826,
+      "min": 0
+    },
+    "activity_get_sending": {
+      "avg": 0.9595556270645866,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 217.446
+    },
+    "activity_get_waiting": {
+      "avg": 864.9390957227349,
+      "min": 28.977,
+      "med": 800.7292,
+      "p(90)": 1085.79125,
+      "p(95)": 1236.327125,
+      "max": 4072.1895
+    },
+    "activity_get_receiving": {
+      "max": 156.6793,
+      "avg": 0.46741395944868275,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0.9391,
+      "p(95)": 1.686075
+    },
+    "activity_get_success": {
+      "rate": 180.25590569968656,
+      "count": 35116
+    },
+    "activity_count_ok": {
+      "rate": 180.25590569968656,
+      "count": 35116
+    },
+    "checks": {
+      "passes": 70232,
+      "fails": 0,
+      "rate": 1
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 35615
+    },
+    "http_reqs": {
+      "count": 35615,
+      "rate": 182.81735053805494
+    },
+    "iterations": {
+      "count": 35116,
+      "rate": 180.25590569968656
+    }
+  }
+}

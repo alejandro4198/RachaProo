@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "avg": 3473.9607814869623,
+      "min": 162.7641,
+      "med": 3553.3248,
+      "p(90)": 4014.30442,
+      "p(95)": 4901.9376,
+      "max": 8839.1065
+    },
+    "activity_get_blocked": {
+      "avg": 1.1416437891381077,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.53638,
+      "max": 712.5866
+    },
+    "activity_get_connecting": {
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 418.1921,
+      "avg": 1.008509381760219,
+      "min": 0,
+      "med": 0
+    },
+    "activity_get_sending": {
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 685.1497,
+      "avg": 3.953358601844476,
+      "min": 0
+    },
+    "activity_get_waiting": {
+      "p(95)": 4901.3705,
+      "max": 8839.1065,
+      "avg": 3468.498410042122,
+      "min": 150.734,
+      "med": 3550.5619,
+      "p(90)": 4002.34456
+    },
+    "activity_get_receiving": {
+      "avg": 1.5090128429921323,
+      "min": 0,
+      "med": 0.9988,
+      "p(90)": 3.624540000000001,
+      "p(95)": 5.206059999999996,
+      "max": 29.6348
+    },
+    "activity_get_success": {
+      "count": 8783,
+      "rate": 45.64715020135213
+    },
+    "activity_count_ok": {
+      "count": 8783,
+      "rate": 45.64715020135213
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 17566,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "fails": 9282,
+      "rate": 0,
+      "passes": 0
+    },
+    "http_reqs": {
+      "count": 9282,
+      "rate": 48.24056110314819
+    },
+    "iterations": {
+      "count": 8783,
+      "rate": 45.64715020135213
+    }
+  }
+}
