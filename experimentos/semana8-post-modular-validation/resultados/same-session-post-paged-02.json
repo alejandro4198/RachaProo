@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "paged",
+  "treatment": {
+    "endpoint": "/api/activities/paged?page=0&size=100",
+    "expectedActivityCount": 100
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "avg": 899.1856580262536,
+      "min": 52.121,
+      "med": 823.4201,
+      "p(90)": 1327.1912,
+      "p(95)": 1522.2258399999996,
+      "max": 3515.2076
+    },
+    "activity_get_blocked": {
+      "avg": 0.6900187224074248,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 157.907
+    },
+    "activity_get_connecting": {
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 155.5647,
+      "avg": 0.6657897768567743,
+      "min": 0,
+      "med": 0
+    },
+    "activity_get_sending": {
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 84.4561,
+      "avg": 0.16027065801723905
+    },
+    "activity_get_waiting": {
+      "min": 51.1197,
+      "med": 822.7978,
+      "p(90)": 1326.86876,
+      "p(95)": 1521.7779599999988,
+      "max": 3515.2076,
+      "avg": 898.633821356278
+    },
+    "activity_get_receiving": {
+      "avg": 0.39156601195302815,
+      "min": 0,
+      "med": 0,
+      "p(90)": 1.0034,
+      "p(95)": 1.5179,
+      "max": 84.5019
+    },
+    "activity_get_success": {
+      "count": 33297,
+      "rate": 155.2641963455182
+    },
+    "activity_count_ok": {
+      "count": 33297,
+      "rate": 155.2641963455182
+    },
+    "checks": {
+      "rate": 1,
+      "passes": 66594,
+      "fails": 0
+    },
+    "http_req_failed": {
+      "rate": 0,
+      "passes": 0,
+      "fails": 33796
+    },
+    "http_reqs": {
+      "count": 33796,
+      "rate": 157.59103762180175
+    },
+    "iterations": {
+      "count": 33297,
+      "rate": 155.2641963455182
+    }
+  }
+}

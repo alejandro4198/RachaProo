@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "control",
+  "treatment": {
+    "endpoint": "/api/activities",
+    "expectedActivityCount": 1000
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "avg": 3940.203422181408,
+      "min": 106.8452,
+      "med": 3641.7364,
+      "p(90)": 5320.7288,
+      "p(95)": 5724.31399,
+      "max": 11655.0729
+    },
+    "activity_get_blocked": {
+      "avg": 1.765004927793261,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.7482899999999895,
+      "max": 643.2162
+    },
+    "activity_get_connecting": {
+      "avg": 1.580728882695718,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0.5037049999999998,
+      "max": 383.4993
+    },
+    "activity_get_sending": {
+      "avg": 3.226573726881174,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 611.4136
+    },
+    "activity_get_waiting": {
+      "p(95)": 5723.000985,
+      "max": 11654.5669,
+      "avg": 3935.143426729155,
+      "min": 105.1582,
+      "med": 3640.14285,
+      "p(90)": 5320.290819999999
+    },
+    "activity_get_receiving": {
+      "p(95)": 6.512745,
+      "max": 267.3218,
+      "avg": 1.833421725361033,
+      "min": 0,
+      "med": 1.00015,
+      "p(90)": 4.22767
+    },
+    "activity_get_success": {
+      "count": 7894,
+      "rate": 36.21387953956222
+    },
+    "activity_count_ok": {
+      "count": 7894,
+      "rate": 36.21387953956222
+    },
+    "checks": {
+      "fails": 0,
+      "rate": 1,
+      "passes": 15788
+    },
+    "http_req_failed": {
+      "passes": 0,
+      "fails": 8393,
+      "rate": 0
+    },
+    "http_reqs": {
+      "count": 8393,
+      "rate": 38.50305180840458
+    },
+    "iterations": {
+      "count": 7894,
+      "rate": 36.21387953956222
+    }
+  }
+}

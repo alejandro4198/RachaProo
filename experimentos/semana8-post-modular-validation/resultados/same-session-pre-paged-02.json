@@ -1,0 +1,91 @@
+{
+  "experiment": "SEMANA8-PAGINACION-ACTIVITIES",
+  "variant": "paged",
+  "treatment": {
+    "endpoint": "/api/activities/paged?page=0&size=100",
+    "expectedActivityCount": 100
+  },
+  "workload": {
+    "executor": "constant-vus",
+    "vus": 499,
+    "duration": "60s",
+    "reservedUser": "loadtest001@rachapro.test",
+    "k6Users": "loadtest002..loadtest500@rachapro.test"
+  },
+  "metrics": {
+    "activity_get_duration": {
+      "min": 18.7219,
+      "med": 701.953,
+      "p(90)": 959.8841800000004,
+      "p(95)": 1023.31911,
+      "max": 2084.626,
+      "avg": 721.4967597215206
+    },
+    "activity_get_blocked": {
+      "avg": 1.3058053283139073,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 519.6045
+    },
+    "activity_get_connecting": {
+      "avg": 1.2778269818287127,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0,
+      "max": 519.6045
+    },
+    "activity_get_sending": {
+      "max": 426.4076,
+      "avg": 0.5758138951229516,
+      "min": 0,
+      "med": 0,
+      "p(90)": 0,
+      "p(95)": 0
+    },
+    "activity_get_waiting": {
+      "max": 2084.626,
+      "avg": 720.6842495740749,
+      "min": 18.7219,
+      "med": 701.5125,
+      "p(90)": 958.22652,
+      "p(95)": 1023.00038
+    },
+    "activity_get_receiving": {
+      "p(90)": 0.9984200000000004,
+      "p(95)": 1.0131199999999996,
+      "max": 36.1437,
+      "avg": 0.2366962523226915,
+      "min": 0,
+      "med": 0
+    },
+    "activity_get_success": {
+      "count": 41439,
+      "rate": 211.94753247860916
+    },
+    "activity_count_ok": {
+      "count": 41439,
+      "rate": 211.94753247860916
+    },
+    "checks": {
+      "passes": 82878,
+      "fails": 0,
+      "rate": 1
+    },
+    "http_req_failed": {
+      "passes": 0,
+      "fails": 41938,
+      "rate": 0
+    },
+    "http_reqs": {
+      "count": 41938,
+      "rate": 214.49976150698402
+    },
+    "iterations": {
+      "count": 41439,
+      "rate": 211.94753247860916
+    }
+  }
+}
