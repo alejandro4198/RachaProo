@@ -1,5 +1,11 @@
 # Fronteras modulares del backend RachaPro
 
+> **Estado del documento: HISTÓRICO / PRE-REFACTOR.**
+> Este documento conserva el diseño y diagnóstico utilizados antes de materializar las fronteras modulares.
+> Las referencias AS-IS y TO-BE contenidas aquí deben interpretarse en ese contexto temporal.
+> El AS-IS vigente post-refactor se encuentra en `docs/semana8/c4/c4-l3-backend-modular.md` y las reglas ejecutables en `ModularArchitectureTest`.
+
+
 ## 1. Propósito
 
 Este documento define las fronteras propuestas para transformar el backend de RachaPro desde su organización AS-IS por paquetes funcionales independientes hacia un monolito modular orientado a capacidades de negocio.
@@ -261,16 +267,25 @@ La modularización se considerará estructuralmente lograda cuando:
 
 ## 14. Estado
 
-Clasificación actual:
+### Estado al momento de definir este documento
 
-🏗 AS-IS:
-las dependencias cruzadas identificadas existen actualmente en el código.
+**AS-IS HISTÓRICO**
 
-🎯 TO-BE:
-monolito modular orientado a capacidades de negocio con fronteras y ownership explícitos.
+Las dependencias cruzadas descritas en las secciones anteriores correspondían al baseline previo al refactor.
 
-⚪ CRITERIO DEFINIDO:
-el acceso directo a repositorios y entidades internas entre módulos deberá eliminarse durante el refactor.
+**TO-BE EN ESE MOMENTO**
 
-🧪 PRUEBA PENDIENTE:
-las reglas todavía no están implementadas ni verificadas mediante ArchUnit.
+Monolito modular orientado a capacidades de negocio con fronteras y ownership explícitos.
+
+**CRITERIO DEFINIDO**
+
+El acceso directo a repositorios y entidades internas entre módulos debía eliminarse durante el refactor.
+
+### Estado posterior de Semana 8
+
+- El refactor físico fue materializado.
+- `ActivityLookup` y `DefaultCategoryProvisioning` fueron utilizados como contratos explícitos entre capacidades.
+- Las reglas de aislamiento y ausencia de ciclos fueron implementadas mediante ArchUnit.
+- La arquitectura post-refactor quedó documentada en `docs/semana8/c4/c4-l3-backend-modular.md`.
+
+Por tanto, este archivo se conserva como **baseline de diseño previo al refactor**, no como descripción canónica del estado actual.

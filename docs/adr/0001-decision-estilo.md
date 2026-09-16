@@ -3,6 +3,8 @@
 - **Estado:** Aceptada
 - **Fecha de decisión:** 2026-09-09
 - **Formalización:** Semana 8
+- **Materialización:** completada durante Semana 8
+- **C4 AS-IS post-refactor:** `docs/semana8/c4/c4-l3-backend-modular.md`
 - **Ámbito:** Backend Spring Boot
 - **Tipo:** Decisión de estilo arquitectónico
 
@@ -464,12 +466,22 @@ El aislamiento de persistencia y los mecanismos públicos entre módulos serán 
 
 **Decisión arquitectónica:** ✅ ACEPTADA
 
-**Arquitectura objetivo:** 🎯 TO-BE
+**Arquitectura modular:** ✅ IMPLEMENTADA
 
-**Fronteras y ownership:** ⚪ CRITERIO DEFINIDO
+**Fronteras y ownership:** ✅ IMPLEMENTADOS
 
-**Refactor físico:** 🧪 PENDIENTE
+**Refactor físico:** ✅ IMPLEMENTADO
 
-**Fitness functions / ArchUnit:** 🧪 PENDIENTE
+**Contratos intermodulares:** ✅ IMPLEMENTADOS
 
-Por tanto, este ADR registra una decisión aceptada, pero no afirma que la arquitectura modular ya se encuentre completamente implementada.
+**Fitness functions / ArchUnit:** ✅ IMPLEMENTADAS Y EJECUTADAS
+
+**C4 post-refactor:** ✅ ACTUALIZADO
+
+**Validación funcional y de rendimiento relevante:** ✅ EJECUTADA CON LAS LIMITACIONES DOCUMENTADAS
+
+La implementación resultante conserva una única aplicación Spring Boot y materializa las fronteras Identity, Activities, Focus, Progress y Reminders.
+
+El aislamiento de persistencia y los contratos públicos se detallan en ADR-002.
+
+La evidencia de cierre se conserva en `docs/semana8/`, `experimentos/` y en el tag `semana8-final-validado`.
