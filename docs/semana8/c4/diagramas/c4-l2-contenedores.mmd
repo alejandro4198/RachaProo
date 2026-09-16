@@ -1,12 +1,12 @@
 flowchart LR
     user["Usuario de RachaPro"]
 
-    android["Android App<br/>Kotlin + Jetpack Compose<br/>Room local, WorkManager y notificaciones"]
+    android["Android App<br/>Kotlin + Jetpack Compose<br/>Room local, AlarmManager y notificaciones"]
 
     backend["Backend RachaPro<br/>Kotlin + Spring Boot<br/>Monolito modular"]
 
     postgres[("PostgreSQL<br/>Persistencia autoritativa del backend")]
 
-    user -->|"Usa la aplicación"| android
+    user -->|"Usa la aplicaciÃ³n"| android
     android -->|"HTTP / JSON<br/>JWT Bearer"| backend
     backend -->|"JPA / Hibernate / JDBC"| postgres
