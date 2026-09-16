@@ -1,0 +1,42 @@
+﻿name: Backend Architecture
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-architecture.yml"
+  push:
+    branches:
+      - master
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-architecture.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  archunit:
+    name: ArchUnit fitness functions
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Run architecture fitness functions
+        run: ./gradlew test --tests "com.example.rachapro.backend.architecture.ModularArchitectureTest" --no-daemon
