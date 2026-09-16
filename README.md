@@ -7,8 +7,8 @@
 | Proyecto | RachaPro — Gestor de Productividad Académica |
 | Integrante | Alejandro Villamizar Rodríguez |
 | Curso | Arquitectura de Software |
-| Estado académico documentado | Semanas 1–7 completadas |
-| Próxima etapa | Semana 8 — ADR y mini-comité arquitectónico |
+| Estado académico documentado | Semanas 1–8 completadas y validadas |
+| Estado de Semana 8 | Cerrada y validada en `semana8-final-validado` |
 | Repositorio | https://github.com/alejandro4198/RachaProo.git |
 
 RachaPro es una aplicación móvil orientada a productividad académica que integra gestión de actividades, subtareas, categorías, recordatorios, sesiones Pomodoro, progreso, rachas y logros.
@@ -39,11 +39,11 @@ La aplicación Android mantiene además componentes locales:
 
 El papel exacto de cada componente y las relaciones verificadas se encuentran documentados en las vistas C4.
 
-La arquitectura objetivo seleccionada durante Semana 7 es un:
+La arquitectura seleccionada durante Semana 7 y materializada durante Semana 8 es un:
 
 **Monolito modular**
 
-con los módulos conceptuales:
+con los módulos implementados:
 
     Identity
     Activities
@@ -51,7 +51,7 @@ con los módulos conceptuales:
     Progress
     Reminders
 
-Este diseño se considera TO-BE y no se presenta como si ya estuviera completamente implementado.
+Esta arquitectura se encuentra materializada en el backend. Sus fronteras se protegen mediante fitness functions con ArchUnit y su representación C4 post-refactor se mantiene en `docs/semana8/c4/`.
 
 ---
 
@@ -66,6 +66,7 @@ Este diseño se considera TO-BE y no se presenta como si ya estuviera completame
 | Semana 5 | Arquitectura C4 Nivel 1 y Nivel 2. | `dossier/05-c4-contexto.md`, `dossier/06-c4-contenedores.md` |
 | Semana 6 | Arquitectura C4 Nivel 3 y verificación de componentes. | `dossier/07-c4-componentes.md` |
 | Semana 7 | Comparación de estilos, decisión arquitectónica, mapa modular y crítica de IA. | `dossier/08-decision-estilo-arquitectonico.md` |
+| Semana 8 | Materialización del monolito modular, ADR, ArchUnit, C4 post-refactor, rendimiento, regresión funcional y hardening. | `docs/semana8/`, `docs/adr/`, `experimentos/semana8-regresion-funcional/` |
 
 Los documentos de semanas anteriores pueden contener estados o pendientes que eran válidos en el momento en que fueron escritos. Cuando existe evidencia posterior, debe interpretarse junto con los documentos más recientes y no como una descripción del estado vigente.
 
@@ -75,12 +76,16 @@ Los documentos de semanas anteriores pueden contener estados o pendientes que er
 
 Para conocer el estado actual del sistema se debe consultar, en este orden:
 
-1. `dossier/05-c4-contexto.md` — C4 Nivel 1.
-2. `dossier/06-c4-contenedores.md` — C4 Nivel 2.
-3. `dossier/07-c4-componentes.md` — C4 Nivel 3.
-4. `dossier/08-decision-estilo-arquitectonico.md` — decisión TO-BE de Semana 7.
+1. `dossier/05-c4-contexto.md` — C4 Nivel 1 y contexto del sistema.
+2. `docs/semana8/c4/c4-l2-contenedores.md` — C4 Nivel 2 AS-IS post-refactor.
+3. `docs/semana8/c4/c4-l3-backend-modular.md` — C4 Nivel 3 AS-IS del backend modular.
+4. `docs/adr/0001-decision-estilo.md` — decisión de monolito modular y estado de materialización.
+5. `docs/adr/0002-aislamiento-persistencia.md` — aislamiento de persistencia y contratos intermodulares.
 
 Los siguientes documentos se conservan como trazabilidad histórica y **no deben utilizarse por sí solos como representación del AS-IS vigente**:
+- `dossier/06-c4-contenedores.md` — baseline anterior a la materialización de Semana 8.
+- `dossier/07-c4-componentes.md` — C4 Nivel 3 histórico de Semana 6.
+- `dossier/08-decision-estilo-arquitectonico.md` — decisión TO-BE previa a su materialización.
 
 - `docs/architecture/current/architecture-current.md`
 - `docs/architecture/comparison-historical-current.md`
@@ -205,13 +210,11 @@ Tampoco debe interpretarse un documento histórico como descripción automática
 
 ---
 
-## 9. Estado al cierre de Semana 7
+## 9. Estado al cierre de Semana 8
 
-El equipo ha definido como arquitectura objetivo:
+Semana 8 materializó la decisión arquitectónica tomada durante Semana 7.
 
-**Monolito modular**
-
-con cinco módulos principales:
+El backend mantiene una única aplicación Spring Boot y una única unidad de despliegue, organizada como monolito modular con las capacidades:
 
 - Identity;
 - Activities;
@@ -219,6 +222,23 @@ con cinco módulos principales:
 - Progress;
 - Reminders.
 
-Las reglas técnicas exactas para imponer los límites entre módulos, los mecanismos de comunicación interna y la estrategia de migración quedan como decisiones posteriores y podrán formalizarse mediante ADR.
+Las interacciones que atraviesan fronteras utilizan contratos explícitos como `ActivityLookup` y `DefaultCategoryProvisioning`.
 
-El siguiente bloque académico corresponde a Semana 8.
+Las fronteras arquitectónicas se protegen mediante fitness functions con ArchUnit.
+
+La validación de Semana 8 incluye:
+
+- compilación y pruebas aplicables del backend;
+- verificación arquitectónica con ArchUnit;
+- C4 post-refactor;
+- experimentos de rendimiento PRE/POST;
+- regresión funcional Android;
+- corrección de RF-01 y RF-03;
+- hardening de sincronización Room mediante `@Upsert`, transacción y marcado lógico;
+- eliminación del polling remoto periódico para el cambio visual PENDING/OVERDUE.
+
+La referencia técnica congelada del cierre es:
+
+`semana8-final-validado`
+
+Los documentos anteriores continúan en el repositorio como trazabilidad histórica y deben interpretarse de acuerdo con la fecha y baseline que representan.

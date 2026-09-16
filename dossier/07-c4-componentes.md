@@ -1,16 +1,18 @@
-# C4 Nivel 3 — Componentes de RachaPro
+# C4 Nivel 3 — Componentes de RachaPro (baseline histórico de Semana 6)
 
 ## 1. Identificación de la evidencia
 
 - **Sistema:** RachaPro — Gestor de Productividad Académica.
 - **Vista:** C4 Nivel 3 — Componentes.
-- **Estado representado:** arquitectura actual (*as-is*) observada en el repositorio.
+- **Estado representado:** arquitectura AS-IS histórica observada durante Semana 6.
 - **Fecha de auditoría original:** 04 de septiembre de 2026.
 - **Fecha de actualización:** 05 de septiembre de 2026.
 - **Repositorio:** <https://github.com/alejandro4198/RachaProo>
 - **Línea base auditada:** commit `126555982b011d31cb800c776ac1866d7296903e` de `master`.
 
-La revisión posterior entre la línea base auditada y el estado actual no mostró cambios en `app/`, `backend/` ni `infra/`, por lo que las anclas arquitectónicas utilizadas en esta vista continúan siendo aplicables.
+Esta afirmación correspondía al estado verificado durante Semana 6. La materialización del monolito modular en Semana 8 modificó la estructura del backend, por lo que esta vista se conserva como baseline histórico y no como C4 canónico vigente.
+
+**Vista C4 Nivel 3 vigente:** `docs/semana8/c4/c4-l3-backend-modular.md`.
 
 ---
 
@@ -226,7 +228,7 @@ La tabla utiliza la estructura solicitada:
 - La API backend y PostgreSQL poseen código y configuración reproducibles.
 - PostgreSQL es un contenedor separado de la API backend; el backend accede a él mediante JPA.
 - La presencia de JWT representa autenticación y autorización basada en tokens; no se afirma que el contenido del JWT esté cifrado.
-- La vista describe la arquitectura *as-is* y no incorpora elementos futuros sin evidencia.
+- La vista describe la arquitectura *as-is* del baseline de Semana 6 y no debe utilizarse como representación canónica del backend posterior al refactor de Semana 8.
 - Los resultados de rendimiento de `/experimentos` constituyen evidencia complementaria de ejecución, pero no sustituyen las anclas estructurales del código.
 - La vista Android se conserva como evidencia complementaria y no cambia la decisión de que C-04 API backend sea el contenedor crítico seleccionado para Semana 6.
 
