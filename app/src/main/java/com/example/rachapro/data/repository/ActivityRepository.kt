@@ -449,23 +449,9 @@ class ActivityRepository(
         userId: Long,
         activities: List<ActivityEntity>
     ) {
-
-        if (activities.isEmpty()) {
-            activityDao.deleteActivitiesForUser(
-                userId = userId
-            )
-            return
-        }
-
-        activityDao.upsertActivities(
-            activities = activities
-        )
-
-        activityDao.deleteActivitiesNotIn(
+        activityDao.syncActivitySnapshot(
             userId = userId,
-            remoteIds = activities.map { activity ->
-                activity.id
-            }
+            activities = activities
         )
     }
 

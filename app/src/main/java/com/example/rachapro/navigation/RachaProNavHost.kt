@@ -497,6 +497,12 @@ fun RachaProNavHost() {
                         .refreshStatuses()
                 },
 
+                onLocalActivityStatusesTick = {
+
+                    activitiesViewModel
+                        .refreshLocalStatuses()
+                },
+
                 pomodoroUiState =
                     pomodoroUiState,
 

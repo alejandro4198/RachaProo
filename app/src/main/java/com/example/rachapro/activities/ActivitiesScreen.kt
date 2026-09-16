@@ -74,14 +74,15 @@ fun ActivitiesScreen(
     onFilterSelected: (ActivityFilter) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onRefreshStatuses: () -> Unit,
+    onLocalStatusesTick: () -> Unit,
     onResetActionState: () -> Unit
 ) {
 
     LaunchedEffect(Unit) {
 
-        while (true) {
+        onRefreshStatuses()
 
-            onRefreshStatuses()
+        while (true) {
 
             val millisUntilNextMinute =
                 60_000L -
@@ -90,6 +91,8 @@ fun ActivitiesScreen(
             delay(
                 millisUntilNextMinute + 250L
             )
+
+            onLocalStatusesTick()
         }
     }
 

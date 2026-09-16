@@ -70,6 +70,9 @@ class ActivitiesViewModel(
     val searchQuery: StateFlow<String> =
         _searchQuery.asStateFlow()
 
+    private val _clockTick =
+        MutableStateFlow(0L)
+
     private var loadJob: Job? = null
 
     init {
@@ -94,6 +97,11 @@ class ActivitiesViewModel(
 
         _searchQuery.value =
             query
+    }
+
+    fun refreshLocalStatuses() {
+        _clockTick.value =
+            _clockTick.value + 1L
     }
 
     fun refreshStatuses() {
@@ -589,12 +597,18 @@ class ActivitiesViewModel(
 
                     combine(
                         _selectedFilter,
-                        _searchQuery
-                    ) { selectedFilter, searchQuery ->
+                        _searchQuery,
+                        _clockTick
+                    ) { selectedFilter, searchQuery, _ ->
+
+                        val effectiveActivities =
+                            applyEffectiveStatuses(
+                                activities = activities
+                            )
 
                         val filteredByStatus =
                             filterActivities(
-                                activities = activities,
+                                activities = effectiveActivities,
                                 filter = selectedFilter
                             )
 
@@ -612,7 +626,7 @@ class ActivitiesViewModel(
                         ActivitiesUiState.Success(
                             userId = userId,
                             categories = categories,
-                            activities = activities,
+                            activities = effectiveActivities,
                             filteredActivities = filteredActivities,
                             selectedFilter = selectedFilter,
                             searchQuery = searchQuery
@@ -669,6 +683,66 @@ class ActivitiesViewModel(
             isDeleted = isDeleted,
             deletedAt = null
         )
+    }
+
+    private fun applyEffectiveStatuses(
+        activities: List<ActivityEntity>
+    ): List<ActivityEntity> {
+
+        val todayEpochDay =
+            LocalDate.now().toEpochDay()
+
+        val now =
+            LocalTime.now()
+
+        val currentTimeMinutes =
+            now.hour * 60 + now.minute
+
+        return activities.map { activity ->
+
+            if (
+                activity.status ==
+                    ActivityStatus.COMPLETED
+            ) {
+                activity
+            } else {
+
+                val effectiveStatus =
+                    when {
+
+                        activity.dueDateEpochDay <
+                            todayEpochDay -> {
+                            ActivityStatus.OVERDUE
+                        }
+
+                        activity.dueDateEpochDay >
+                            todayEpochDay -> {
+                            ActivityStatus.PENDING
+                        }
+
+                        activity.dueTimeMinutes != null &&
+                            activity.dueTimeMinutes <
+                                currentTimeMinutes -> {
+                            ActivityStatus.OVERDUE
+                        }
+
+                        else -> {
+                            ActivityStatus.PENDING
+                        }
+                    }
+
+                if (
+                    activity.status ==
+                        effectiveStatus
+                ) {
+                    activity
+                } else {
+                    activity.copy(
+                        status = effectiveStatus
+                    )
+                }
+            }
+        }
     }
 
     private fun filterActivities(
