@@ -22,6 +22,36 @@ interface ActivityDao {
         activity: ActivityEntity
     ): Long
 
+
+    @Insert(
+        onConflict = OnConflictStrategy.REPLACE
+    )
+    suspend fun upsertActivities(
+        activities: List<ActivityEntity>
+    )
+
+    @Query(
+        """
+        DELETE FROM activities
+        WHERE userId = :userId
+        AND id NOT IN (:remoteIds)
+        """
+    )
+    suspend fun deleteActivitiesNotIn(
+        userId: Long,
+        remoteIds: List<Long>
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM activities
+        WHERE userId = :userId
+        """
+    )
+    suspend fun deleteActivitiesForUser(
+        userId: Long
+    ): Int
+
     @Query(
         """
         SELECT *

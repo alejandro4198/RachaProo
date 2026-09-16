@@ -39,6 +39,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -78,7 +79,18 @@ fun ActivitiesScreen(
 
     LaunchedEffect(Unit) {
 
-        onRefreshStatuses()
+        while (true) {
+
+            onRefreshStatuses()
+
+            val millisUntilNextMinute =
+                60_000L -
+                    (System.currentTimeMillis() % 60_000L)
+
+            delay(
+                millisUntilNextMinute + 250L
+            )
+        }
     }
 
     LaunchedEffect(actionState) {

@@ -581,6 +581,12 @@ class ActivitiesViewModel(
                             )
                         }
 
+                    activityRepository
+                        .syncCachedActivities(
+                            userId = userId,
+                            activities = activities
+                        )
+
                     combine(
                         _selectedFilter,
                         _searchQuery
