@@ -1,8 +1,8 @@
-# C4 L2 â€” Diagrama de contenedores AS-IS
+# C4 L2 — Diagrama de contenedores AS-IS
 
-## 1. PropÃ³sito
+## 1. Propósito
 
-Este documento describe el nivel 2 del modelo C4 de RachaPro despuÃ©s de la materializaciÃ³n del monolito modular de Semana 8.
+Este documento describe el nivel 2 del modelo C4 de RachaPro después de la materialización del monolito modular de Semana 8.
 
 Estado representado:
 
@@ -24,6 +24,6 @@ flowchart LR
 
     postgres[("PostgreSQL<br/>Persistencia autoritativa del backend")]
 
-    user -->|"Usa la aplicaciÃ³n"| android
+    user -->|"Usa la aplicación"| android
     android -->|"HTTP / JSON<br/>JWT Bearer"| backend
     backend -->|"JPA / Hibernate / JDBC"| postgres

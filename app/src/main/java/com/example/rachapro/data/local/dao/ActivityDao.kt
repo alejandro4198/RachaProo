@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.example.rachapro.data.local.entity.ActivityEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -23,34 +25,37 @@ interface ActivityDao {
     ): Long
 
 
-    @Insert(
-        onConflict = OnConflictStrategy.REPLACE
-    )
+    @Upsert
     suspend fun upsertActivities(
         activities: List<ActivityEntity>
     )
 
     @Query(
         """
-        DELETE FROM activities
-        WHERE userId = :userId
-        AND id NOT IN (:remoteIds)
-        """
-    )
-    suspend fun deleteActivitiesNotIn(
-        userId: Long,
-        remoteIds: List<Long>
-    ): Int
-
-    @Query(
-        """
-        DELETE FROM activities
+        UPDATE activities
+        SET isDeleted = 1
         WHERE userId = :userId
         """
     )
-    suspend fun deleteActivitiesForUser(
+    suspend fun markActivitiesDeletedForUser(
         userId: Long
     ): Int
+
+    @Transaction
+    suspend fun syncActivitySnapshot(
+        userId: Long,
+        activities: List<ActivityEntity>
+    ) {
+        markActivitiesDeletedForUser(
+            userId = userId
+        )
+
+        if (activities.isNotEmpty()) {
+            upsertActivities(
+                activities = activities
+            )
+        }
+    }
 
     @Query(
         """

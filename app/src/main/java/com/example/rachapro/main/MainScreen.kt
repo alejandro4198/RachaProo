@@ -91,6 +91,7 @@ fun MainScreen(
     onActivityFilterSelected: (ActivityFilter) -> Unit,
     onActivitySearchQueryChange: (String) -> Unit,
     onRefreshActivityStatuses: () -> Unit,
+    onLocalActivityStatusesTick: () -> Unit,
     pomodoroUiState: PomodoroUiState,
     pomodoroActionState: PomodoroActionState,
     onStartPomodoro: () -> Unit,
@@ -204,6 +205,7 @@ fun MainScreen(
                         onFilterSelected = onActivityFilterSelected,
                         onSearchQueryChange = onActivitySearchQueryChange,
                         onRefreshStatuses = onRefreshActivityStatuses,
+                        onLocalStatusesTick = onLocalActivityStatusesTick,
                     )
 
                     MainTab.Pomodoro -> PomodoroScreen(

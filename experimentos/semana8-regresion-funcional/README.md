@@ -50,8 +50,9 @@ Clasificación:
 
 Corrección:
 
-- se agregó actualización periódica mientras `ActivitiesScreen` permanece compuesto;
+- se agregó actualización local periódica mientras `ActivitiesScreen` permanece compuesto;
 - la actualización se alinea con el cambio de minuto;
+- al entrar se mantiene una sincronización remota inicial y los ticks posteriores se resuelven con el reloj local;
 - el efecto se cancela al abandonar la pantalla.
 
 Validación:
@@ -132,6 +133,7 @@ Corrección:
 - se agregó sincronización Backend → Room;
 - las respuestas remotas se convierten a `ActivityEntity`;
 - Room mantiene una copia coherente de las actividades del usuario;
+- el snapshot se sincroniza mediante marcado lógico y `@Upsert` dentro de una transacción, sin borrado físico;
 - Progreso continúa observando Room mediante `Flow`.
 
 Validación:
