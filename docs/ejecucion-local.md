@@ -68,13 +68,83 @@ Copy-Item .\backend\.env.example .\backend\.env
 ```
 
 ## 7. Iniciar el backend
-Las variables definidas en `backend/.env` deben cargarse en la misma terminal desde la cual se iniciará Spring Boot.
 
-Desde la raíz del repositorio, ingresar al directorio del backend:
+El backend debe ejecutarse desde el directorio `backend`.
+
+Desde la raíz del repositorio:
 
 ```powershell
 cd .\backend
 ```
+
+### 7.1 Configurar Java 25
+
+En el entorno utilizado para la verificación, Java 25 se encuentra en el runtime de Android Studio.
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio1\jbr"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+```
+
+La ruta de `JAVA_HOME` puede variar entre equipos y debe apuntar a una instalación válida de Java 25.
+
+### 7.2 Cargar la configuración de PostgreSQL
+
+La configuración del contenedor PostgreSQL se obtiene del archivo local:
+
+`infra/postgres/.env`
+
+Desde el directorio `backend`:
+
+```powershell
+$config=@{}
+
+Get-Content ..\infra\postgres\.env |
+    Where-Object { $_ -match '^[^#].*=' } |
+    ForEach-Object {
+        $key,$value=$_ -split '=',2
+        $config[$key.Trim()]=$value.Trim()
+    }
+```
+
+A partir de esa configuración se preparan las variables requeridas por Spring Boot:
+
+```powershell
+$env:RACHAPRO_DB_URL="jdbc:postgresql://127.0.0.1:$($config['POSTGRES_PORT'])/$($config['POSTGRES_DB'])"
+$env:RACHAPRO_DB_USER=$config['POSTGRES_USER']
+$env:RACHAPRO_DB_PASSWORD=$config['POSTGRES_PASSWORD']
+```
+
+### 7.3 Cargar el secreto JWT
+
+El secreto JWT se obtiene del archivo local `backend/.env`.
+
+```powershell
+$jwtLine =
+    Get-Content .\.env |
+    Where-Object {
+        $_ -match '^RACHAPRO_JWT_SECRET='
+    }
+
+$env:RACHAPRO_JWT_SECRET =
+    ($jwtLine -split '=',2)[1].Trim()
+```
+
+El valor real de `RACHAPRO_JWT_SECRET` no debe imprimirse, documentarse ni versionarse.
+
+### 7.4 Iniciar Spring Boot
+
+Con las variables cargadas en la misma terminal:
+
+```powershell
+.\gradlew.bat bootRun
+```
+
+Durante la verificación del 17/09/2026 este procedimiento inició correctamente el backend con Java 25.0.2 y Spring Boot 4.1.1, estableció conexión con PostgreSQL 17.11 y dejó Tomcat disponible mediante HTTP en el puerto 8080.
+
+La terminal donde se ejecuta `bootRun` debe permanecer abierta mientras el backend esté en uso.
+
+No debe iniciarse una segunda instancia simultánea en el mismo puerto. Si el puerto 8080 ya está ocupado por otra instancia de RachaPro, un segundo `bootRun` finalizará indicando que el puerto se encuentra en uso.
 
 ## 8. Verificar el backend
 Con el backend en ejecución, verificar su estado desde una segunda terminal de PowerShell:
