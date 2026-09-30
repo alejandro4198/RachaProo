@@ -1,0 +1,97 @@
+﻿asyncapi: '3.1.0'
+info:
+  title: RachaPro Internal Events
+  version: '1.0.0'
+  description: >
+    Contrato versionado de los eventos internos evaluados en RachaPro.
+    UserRegisteredV1 es actualmente un Spring ApplicationEvent en proceso;
+    este documento no implica la existencia de Kafka, RabbitMQ ni otro broker externo.
+
+defaultContentType: application/json
+
+channels:
+  userRegistered:
+    address: null
+    title: UserRegisteredV1
+    description: >
+      Canal lógico que representa el evento interno UserRegisteredV1.
+      La implementación actual utiliza ApplicationEventPublisher de Spring
+      dentro del mismo backend y no posee una dirección de broker.
+    messages:
+      UserRegisteredV1:
+        $ref: '#/components/messages/UserRegisteredV1'
+
+operations:
+  publishUserRegisteredV1:
+    action: send
+    title: Identity publica UserRegisteredV1
+    summary: Publicación del hecho de registro de un usuario.
+    description: >
+      UserService publica UserRegisteredV1 como parte del flujo de registro.
+      El consumidor está configurado para ejecutarse AFTER_COMMIT.
+    channel:
+      $ref: '#/channels/userRegistered'
+    messages:
+      - $ref: '#/channels/userRegistered/messages/UserRegisteredV1'
+
+  receiveUserRegisteredV1:
+    action: receive
+    title: Activities consume UserRegisteredV1
+    summary: Aprovisionamiento de categorías por defecto para el usuario registrado.
+    description: >
+      UserRegisteredV1Listener recibe el evento mediante
+      TransactionalEventListener con fase AFTER_COMMIT y ejecución Async.
+      Después delega en DefaultCategoryProvisioning.
+    channel:
+      $ref: '#/channels/userRegistered'
+    messages:
+      - $ref: '#/channels/userRegistered/messages/UserRegisteredV1'
+
+components:
+  messages:
+    UserRegisteredV1:
+      name: UserRegisteredV1
+      title: Usuario registrado V1
+      summary: Informa que Identity confirmó el registro de un usuario.
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - userId
+          - occurredAt
+        properties:
+          userId:
+            type: integer
+            format: int64
+            description: Identificador persistido del usuario registrado.
+          occurredAt:
+            type: string
+            format: date-time
+            description: Instante en el que se construyó el evento.
+      examples:
+        - name: UserRegisteredV1Example
+          summary: Ejemplo estructural del evento.
+          payload:
+            userId: 1512
+            occurredAt: '2026-09-30T22:00:00Z'
+
+x-rachapro-transport:
+  implementation: Spring ApplicationEventPublisher
+  scope: in-process
+  durable: false
+  externalBroker: false
+
+x-rachapro-consumer:
+  module: Activities
+  listener: UserRegisteredV1Listener
+  transactionPhase: AFTER_COMMIT
+  asynchronous: true
+  delegate: DefaultCategoryProvisioning
+
+x-rachapro-spike2:
+  result: >
+    En las condiciones del Spike 2 no se observó retry automático
+    después del fallo ni replay después del reinicio del backend.
+  limitation: >
+    El resultado se limita a las ventanas y condiciones experimentales ejecutadas.

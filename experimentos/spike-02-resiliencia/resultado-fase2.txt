@@ -1,0 +1,27 @@
+﻿SPIKE 2 - FASE 2
+Prueba de recuperacion despues de reinicio
+
+User ID experimental: 1512
+
+Estado inmediatamente antes del reinicio:
+usuario=1
+categorias=0
+
+Estado despues del reinicio:
+usuario=1
+categorias=0
+
+Ventana de observacion post-arranque:
+5 segundos
+
+Recuperacion observada:
+NO
+
+Procesamiento relacionado con el usuario observado en el nuevo proceso:
+NO
+
+Nota metodologica:
+El primer intento de reinicio utilizo incorrectamente :backend:bootRun
+desde el proyecto Gradle raiz y fallo antes de iniciar la aplicacion.
+El backend fue posteriormente iniciado desde el proyecto Gradle backend.
+No se creo un nuevo usuario experimental entre ambos intentos.
