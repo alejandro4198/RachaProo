@@ -1,18 +1,20 @@
 package com.example.rachapro.backend.identity.user
 
-import com.example.rachapro.backend.activities.api.DefaultCategoryProvisioning
-import com.example.rachapro.backend.shared.error.ConflictException
+import com.example.rachapro.backend.identity.api.UserRegisteredV1
 import com.example.rachapro.backend.identity.user.dto.CreateUserRequest
+import com.example.rachapro.backend.identity.user.dto.UpdateUserRequest
 import com.example.rachapro.backend.identity.user.dto.UserResponse
+import com.example.rachapro.backend.shared.error.ConflictException
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import com.example.rachapro.backend.identity.user.dto.UpdateUserRequest
+import java.time.Instant
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
     private val passwordHasher: PasswordHasher,
-    private val defaultCategoryProvisioning: DefaultCategoryProvisioning
+    private val eventPublisher: ApplicationEventPublisher
 ) {
 
     @Transactional
@@ -47,7 +49,12 @@ class UserService(
         val savedUser =
             userRepository.save(user)
 
-        defaultCategoryProvisioning.createDefaultsForUser(savedUser.id)
+        eventPublisher.publishEvent(
+            UserRegisteredV1(
+                userId = savedUser.id,
+                occurredAt = Instant.now()
+            )
+        )
 
         return savedUser.toResponse()
     }
