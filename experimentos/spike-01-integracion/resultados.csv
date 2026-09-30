@@ -1,0 +1,5 @@
+Run,UserId,HttpStatus,HttpMs,EventElapsedMs,CategoriesExact,EventUnder2000,Result,Notes
+1,1508,201,,28,PASS,PASS,PASS,"HTTP no comparable por confirmacion interactiva de Invoke-WebRequest"
+2,1509,201,884,65,PASS,PASS,PASS,""
+3,1510,201,893,36,PASS,PASS,PASS,""
+4,1511,201,875,32,PASS,PASS,PASS,""

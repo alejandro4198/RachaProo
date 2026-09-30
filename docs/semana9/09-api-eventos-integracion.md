@@ -1,4 +1,4 @@
-﻿# Semana 9 — API, eventos e integración entre contextos
+# Semana 9 — API, eventos e integración entre contextos
 
 ## 1. Propósito
 
@@ -590,7 +590,7 @@ Se propone realizar al menos tres ejecuciones válidas del flujo principal.
 
 El Spike 1 se ejecutará en una rama separada:
 
-`spike/01-user-registered-integracion`
+`exp/spike-01-integracion-eventos`
 
 La evidencia se conservará en:
 
@@ -671,7 +671,7 @@ No se adopta todavía una arquitectura orientada a eventos.
 - conservar las integraciones síncronas vigentes;
 - experimentar únicamente con el flujo Identity -> Activities.
 
-### Hipótesis pendiente de prueba
+### Hipótesis probada en Spike 1
 
 `UserRegisteredV1` podría reducir la dependencia directa de Identity hacia Activities sin deteriorar el comportamiento esperado.
 
@@ -681,4 +681,14 @@ No se adopta todavía una arquitectura orientada a eventos.
 
 ### Decisión definitiva
 
-Pendiente del resultado del Spike 1 de Semana 10.
+El Spike 1 fue ejecutado el 30/09/2026.
+
+**Veredicto experimental: VALIDADA.**
+
+En las cuatro ejecuciones observadas, `UserRegisteredV1` permitió conservar el registro del usuario y crear las categorías predeterminadas dentro del umbral experimental de 2000 ms. Los tiempos observados del evento fueron 28 ms, 65 ms, 36 ms y 32 ms, con mediana de 34 ms.
+
+ArchUnit y la suite completa del backend finalizaron correctamente.
+
+La evidencia reproducible y las limitaciones del experimento se conservan en `experimentos/spike-01-integracion/`.
+
+Este resultado valida la hipótesis únicamente bajo las condiciones probadas y no implica adoptar CQRS, microservicios ni mensajería externa.
