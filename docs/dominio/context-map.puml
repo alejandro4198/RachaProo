@@ -1,0 +1,61 @@
+@startuml
+title RachaPro - Context Map
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+rectangle "Activities\n<<Bounded Context>>" as Activities {
+}
+
+rectangle "Focus\n<<Bounded Context>>" as Focus {
+}
+
+rectangle "Reminders\n<<Bounded Context>>" as Reminders {
+}
+
+rectangle "Progress\n<<Bounded Context>>" as Progress {
+}
+
+' =========================================================
+' Relaciones sustentadas por evidencia
+' =========================================================
+
+Focus --> Activities : consulta y valida referencia opcional a Activity\ncuando existe activityId
+
+Reminders --> Activities : consulta y valida referencia opcional a Activity\nmediante ActivityLookup cuando existe activityId
+
+Progress --> Activities : consume hechos y agregados de completitud producidos por Activities\n(días y cantidades de Activities completadas)
+
+Progress --> Focus : consume hechos y agregados de completitud producidos por Focus\n(días, cantidades y duración agregada de sesiones FOCUS)
+
+' =========================================================
+' Convenciones del mapa
+' =========================================================
+
+legend right
+  |= Convención |= Significado |
+  | A --> B | A consume o referencia información de B |
+
+  Cada flecha representa una dependencia de información
+  sustentada por la evidencia disponible.
+
+  La dirección de la flecha indica quién consume
+  información de quién.
+
+  Consumir o referenciar información
+  NO transfiere ownership.
+
+  Este mapa NO decide todavía:
+  - REST o APIs definitivas
+  - eventos
+  - comunicación síncrona o asíncrona
+  - ACL
+  - Published Language
+  - Shared Kernel
+  - despliegue en servicios independientes
+
+  Achievement no se representa como bounded context
+  porque su ownership permanece NO DECIDIDO.
+endlegend
+
+@enduml
