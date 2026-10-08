@@ -10,19 +10,31 @@
 - Arquitectura vigente: monolito modular
 - Aplicación observada: Android
 - Capacidad observada: Progress
-- Rama prevista: `exp/spike-03-streak-characterization`
+- Rama de preregistro definitivo: `docs/spike-03-preregistro-definitivo`
+- Documento complementario: `condiciones.md`
 
-Este documento define el protocolo experimental antes de implementar el harness y antes de realizar mediciones formales.
+Este documento define el protocolo experimental de SPIKE-03 antes de implementar el harness y antes de realizar cualquier medición formal.
 
-El experimento solo se considerará formalmente preregistrado cuando este documento y `condiciones.md` formen parte de un commit anterior a:
+El objetivo del spike es caracterizar el comportamiento temporal de la ruta actual utilizada para calcular la racha de Progress.
+
+SPIKE-03 no parte de la afirmación de que exista un problema de rendimiento.
+
+Tampoco parte de una solución arquitectónica previamente elegida.
+
+El experimento solo se considerará formalmente preregistrado cuando esta versión de:
+
+- `00-preregistro.md`
+- `condiciones.md`
+
+forme parte de un commit anterior a:
 
 - la implementación del harness
-- la instrumentación experimental
-- la ejecución formal
-- la obtención de resultados
+- el commit experimental
+- las mediciones formales
+- los resultados
 - el veredicto
 
-Hasta que exista dicho commit, el estado correcto del experimento es:
+Hasta que exista dicho commit, el estado correcto es:
 
 `LISTO PARA PRERREGISTRO — NO EJECUTADO`
 
@@ -30,77 +42,80 @@ Hasta que exista dicho commit, el estado correcto del experimento es:
 
 ## 2. Evidencia de partida
 
-La inspección del código actual de RachaPro demostró que Progress no realiza todas sus estadísticas cargando colecciones completas y agregándolas posteriormente en Kotlin.
+La inspección de la implementación actual de Progress muestra que sus métricas no siguen todas la misma ruta de cálculo.
 
-En Activities existen consultas Room especializadas para:
+Activities dispone de consultas Room especializadas para operaciones como:
 
 - contar Activities completadas
-- contar Activities completadas dentro de un rango
+- contar Activities completadas dentro de un intervalo
 - agrupar Activities completadas por día
 
-Estas consultas utilizan directamente operaciones como:
+Estas operaciones utilizan mecanismos de agregación directamente en persistencia, incluyendo:
 
 - `COUNT`
 - `BETWEEN`
 - `GROUP BY`
 
-En Focus existen consultas especializadas para:
+Focus dispone igualmente de consultas especializadas para operaciones como:
 
 - contar sesiones FOCUS completadas
 - sumar segundos de sesiones FOCUS completadas
-- contar sesiones dentro de un rango
-- sumar segundos dentro de un rango
+- contar sesiones dentro de intervalos
+- sumar segundos dentro de intervalos
 - agrupar estadísticas por día
 
-Estas consultas utilizan:
+Estas consultas utilizan mecanismos como:
 
 - `COUNT`
 - `SUM`
 - `BETWEEN`
 - `GROUP BY`
 
-Por tanto, la evidencia actual no permite afirmar que Progress, en general, necesite una representación de lectura adicional.
+Por tanto, la evidencia actual no permite afirmar que Progress, en general, cargue todos los registros para realizar posteriormente todas sus agregaciones en Kotlin.
 
-La ruta de cálculo de streak sí presenta un comportamiento diferente.
+La ruta de cálculo de streak presenta un comportamiento diferente.
 
-`ProgressViewModel` obtiene los días completados provenientes de Activities y Focus mediante:
+`ProgressViewModel` obtiene los días completados provenientes de Activities y Focus.
 
-`ActivityRepository.observeCompletedDays(userId)`
-
-y:
-
-`PomodoroRepository.observeCompletedFocusDays(userId)`
-
-Posteriormente combina ambas colecciones mediante:
+Posteriormente combina las colecciones y realiza una normalización equivalente a:
 
 `activityDays + pomodoroDays`
 
-y aplica:
+↓
 
 `distinct()`
 
+↓
+
 `sorted()`
 
-El resultado se entrega a:
+El resultado es entregado a:
 
-`StreakCalculator.calculate()`
+`StreakCalculator.calculate(...)`
 
-A su vez, `StreakCalculator` vuelve a ejecutar:
+Dentro de `StreakCalculator` se realizan nuevamente operaciones relacionadas con:
 
-`filter`
+- filtrado
+- eliminación de duplicados
+- ordenamiento
+- recorrido de los días válidos
 
-`distinct`
-
-`sorted`
-
-y recorre los días para producir:
+para producir:
 
 - `currentStreak`
 - `bestStreak`
 
-La evidencia del código permite afirmar que esta ruta procesa una colección histórica cuyo tamaño depende de la cantidad de días históricos distintos que llegan al cálculo.
+Por tanto, esta ruta opera sobre una colección histórica cuyo tamaño depende de la cantidad de días distintos entregados al cálculo.
 
-La evidencia actual no demuestra que esta ruta sea lenta ni que represente un problema de rendimiento.
+La evidencia disponible todavía no demuestra:
+
+- que la ruta sea lenta
+- que constituya un cuello de botella
+- que afecte perceptiblemente al usuario
+- que requiera optimización
+- que requiera modificar la arquitectura
+
+SPIKE-03 se crea precisamente para obtener evidencia experimental antes de realizar cualquiera de esas afirmaciones.
 
 ---
 
@@ -110,19 +125,11 @@ SPIKE-03 se relaciona con el atributo de calidad:
 
 `Rendimiento`
 
-Rendimiento ha sido priorizado previamente dentro de los atributos de calidad del proyecto.
+Rendimiento ha sido priorizado previamente dentro de los atributos de calidad del proyecto RachaPro.
 
 Sin embargo, este spike no parte de una violación demostrada de un escenario temporal existente.
 
-El propósito es producir evidencia experimental sobre una operación concreta antes de determinar si existe un problema que amerite una intervención posterior.
-
-Por tanto, SPIKE-03 es un experimento de:
-
-`caracterización`
-
-y no un experimento de:
-
-`optimización`
+El propósito es caracterizar una operación concreta de la implementación vigente.
 
 La secuencia metodológica será:
 
@@ -134,23 +141,31 @@ La secuencia metodológica será:
 
 ↓
 
-`evaluar magnitud`
+`analizar magnitud`
 
 ↓
 
-`solo si existe evidencia suficiente, considerar otro experimento`
+`determinar si existe evidencia suficiente para estudiar posteriormente una intervención`
+
+Por tanto, SPIKE-03 es un experimento de:
+
+`caracterización`
+
+No es todavía un experimento de:
+
+`optimización`
 
 ---
 
-## 4. Comparabilidad con evidencia previa
+## 4. Comparabilidad con evidencia experimental previa
 
-RachaPro dispone de evidencia experimental previa.
+RachaPro dispone de experimentos anteriores relacionados con rendimiento.
 
 ### EXP-001
 
-EXP-001 evaluó carga de Activities en Android y Room.
+EXP-001 observó la carga de Activities en Android y Room.
 
-La variable observada fue:
+Su intervalo de medición fue aproximadamente:
 
 `inicio de loadData()`
 
@@ -158,14 +173,14 @@ hasta:
 
 `ActivitiesUiState.Success`
 
-La ampliación histórica documentó:
+Entre los resultados históricos documentados se encuentran aproximadamente:
 
-- mediana aproximada de 1325 ms
-- P95 aproximado de 1621 ms
-- mínimo aproximado de 1305 ms
-- máximo aproximado de 1666 ms
+- mediana: 1325 ms
+- P95: 1621 ms
+- mínimo: 1305 ms
+- máximo: 1666 ms
 
-EXP-001 no mide la ruta aislada de cálculo de streak.
+Esta variable no corresponde a la ruta aislada de cálculo de streak.
 
 Por tanto:
 
@@ -175,7 +190,7 @@ Por tanto:
 
 ### EXP-002
 
-EXP-002 evaluó:
+EXP-002 observó:
 
 `POST /api/activities`
 
@@ -183,14 +198,14 @@ mediante la métrica:
 
 `activity_create_duration`
 
-Sus resultados históricos incluyen:
+Entre los resultados históricos documentados se encuentran aproximadamente:
 
-- promedio aproximado de 11.16 ms
-- mediana aproximada de 8.48 ms
-- P95 aproximado de 31.50 ms
-- máximo aproximado de 46.02 ms
+- promedio: 11.16 ms
+- mediana: 8.48 ms
+- P95: 31.50 ms
+- máximo: 46.02 ms
 
-EXP-002 tampoco mide el cálculo de streak.
+Esta operación tampoco corresponde al cálculo de streak.
 
 Por tanto:
 
@@ -200,19 +215,17 @@ Por tanto:
 
 ### Otros experimentos
 
-Otros experimentos y pruebas posteriores han utilizado variables como:
+Otros experimentos del proyecto han utilizado variables relacionadas con:
 
 - cantidad de Activities
-- usuarios
-- solicitudes
+- cantidad de usuarios
+- solicitudes HTTP
 - concurrencia
-- operaciones HTTP
+- carga del backend
 
 Estas variables tampoco equivalen a:
 
-`cantidad de días históricos distintos`
-
-que es la entrada relevante para el cálculo estudiado en SPIKE-03.
+`cantidad de días históricos distintos procesados por la ruta de streak`
 
 ---
 
@@ -222,13 +235,13 @@ Para SPIKE-03:
 
 `NO EXISTE UNA LÍNEA BASE DIRECTAMENTE COMPARABLE`
 
-La evidencia previa se utilizará como:
+La evidencia experimental anterior se conservará como:
 
 `ANTECEDENTE METODOLÓGICO`
 
-y no como referencia numérica directa.
+No se utilizará como baseline numérica directa.
 
-SPIKE-03 pretende producir la primera baseline controlada de esta operación específica.
+SPIKE-03 pretende crear una primera caracterización controlada de esta operación específica.
 
 ---
 
@@ -238,7 +251,7 @@ La arquitectura vigente de RachaPro continúa siendo:
 
 `monolito modular`
 
-Los contextos principales documentados incluyen:
+Los contextos principales identificados incluyen:
 
 - Identity
 - Activities
@@ -246,7 +259,7 @@ Los contextos principales documentados incluyen:
 - Progress
 - Reminders
 
-La convención del Context Map es:
+La convención utilizada en el Context Map es:
 
 `A → B`
 
@@ -254,7 +267,7 @@ significa:
 
 `A consume o referencia información proveniente de B`
 
-Para Progress se mantienen conceptualmente las relaciones:
+Para Progress se mantienen conceptualmente:
 
 `Progress → Activities`
 
@@ -263,33 +276,31 @@ Para Progress se mantienen conceptualmente las relaciones:
 Estas relaciones no implican automáticamente:
 
 - transferencia de ownership
-- HTTP
-- eventos
+- REST
 - asincronía
+- eventos
 - microservicios
 - CQRS
 - Event Sourcing
 
 SPIKE-03 no modifica el Context Map.
 
-Las decisiones ADR previas continúan vigentes.
+Las decisiones arquitectónicas previas continúan vigentes.
 
-En particular, SPIKE-03 no modifica:
+En particular, este experimento no modifica:
 
-- la decisión de monolito modular
-- las fronteras de persistencia
-- las relaciones intermodulares existentes
+- la decisión de utilizar monolito modular
+- las fronteras de persistencia existentes
+- los contratos intermodulares existentes
 - ADR-003 relacionado con el caso específico de `UserRegisteredV1`
 
-La evaluación arquitectónica previa concluyó:
+Las conclusiones actuales respecto a patrones avanzados continúan siendo:
 
 `CQRS → NO JUSTIFICADO TODAVÍA POR LA EVIDENCIA DISPONIBLE`
 
-y:
-
 `Event Sourcing → NO JUSTIFICADO TODAVÍA POR LA EVIDENCIA DISPONIBLE`
 
-SPIKE-03 no intenta justificar ninguno de estos patrones.
+SPIKE-03 no evalúa ni intenta justificar dichos patrones.
 
 ---
 
@@ -299,11 +310,11 @@ En la implementación actual de Progress, el cálculo de la racha utiliza los d�
 
 `ProgressViewModel` combina ambas colecciones y realiza operaciones de unión, eliminación de duplicados y ordenamiento antes de entregar el resultado a `StreakCalculator`.
 
-A su vez, `StreakCalculator` vuelve a filtrar, eliminar duplicados y ordenar los días antes de recorrerlos para obtener la racha actual y la mejor racha.
+A su vez, `StreakCalculator` vuelve a procesar la colección mediante operaciones de filtrado, eliminación de duplicados y ordenamiento antes de recorrer los días necesarios para obtener la racha actual y la mejor racha.
 
-La evidencia del código permite comprobar que esta ruta procesa una colección cuyo tamaño depende de la cantidad de días históricos distintos registrados para el usuario.
+La evidencia del código permite comprobar que esta ruta procesa una colección cuyo tamaño depende de la cantidad de días históricos distintos entregados al cálculo.
 
-Sin embargo, actualmente no existe una medición experimental que permita determinar cómo cambia el tiempo de ejecución de esta operación cuando aumenta el número de días históricos distintos.
+Sin embargo, actualmente no existe una medición experimental específica que permita determinar cómo cambia el tiempo de ejecución de esta ruta cuando aumenta el número de días históricos distintos.
 
 Por tanto, todavía no está demostrado que el cálculo actual de streak represente un problema de rendimiento ni que requiera algún cambio en su implementación.
 
@@ -313,15 +324,16 @@ Por tanto, todavía no está demostrado que el cálculo actual de streak represe
 
 > ¿Cómo cambia el tiempo de ejecución de la implementación actual del cálculo de `currentStreak` y `bestStreak` a medida que aumenta la cantidad de días históricos distintos que debe procesar?
 
-Esta pregunta busca caracterizar el comportamiento actual.
+La pregunta busca caracterizar el comportamiento actual.
 
 No presupone:
 
 - degradación relevante
 - cuello de botella
 - necesidad de optimización
-- necesidad de CQRS
 - necesidad de una proyección
+- necesidad de CQRS
+- necesidad de Event Sourcing
 - necesidad de modificar la arquitectura
 
 ---
@@ -330,7 +342,7 @@ No presupone:
 
 > Bajo las mismas condiciones de ejecución, al aumentar la entrada desde 30 hasta 10000 días históricos distintos, la mediana del tiempo de ejecución de la ruta actual de cálculo de streak será mayor para 10000 días que para 30 días en al menos dos de tres corridas formales independientes.
 
-Las condiciones de ejecución mencionadas en esta hipótesis corresponden exactamente a las definidas en:
+Las condiciones de ejecución mencionadas en esta hipótesis corresponden exactamente a las fijadas en:
 
 `condiciones.md`
 
@@ -342,9 +354,15 @@ No evalúa:
 
 `relevancia arquitectónica del crecimiento`
 
-Una diferencia positiva mínima puede respaldar formalmente la hipótesis.
+Por tanto, una diferencia positiva pequeña puede respaldar formalmente la hipótesis.
 
-Eso no significa que exista un problema de rendimiento.
+Esto no significa automáticamente que:
+
+- exista un problema de rendimiento
+- el impacto sea relevante
+- el usuario pueda percibirlo
+- se necesite una optimización
+- se necesite una modificación arquitectónica
 
 ---
 
@@ -367,13 +385,10 @@ Los valores evaluados serán:
 
 Únicamente:
 
-`30`
+- 30
+- 10000
 
-y:
-
-`10000`
-
-participarán en la regla formal de respaldo o refutación.
+participarán en la regla formal de respaldo o refutación de la hipótesis.
 
 Los valores:
 
@@ -384,18 +399,19 @@ Los valores:
 
 serán exclusivamente descriptivos.
 
+Estos valores podrán utilizarse para:
+
+- observar la forma de la curva
+- visualizar comportamiento intermedio
+- contextualizar la magnitud
+- complementar el análisis descriptivo
+
 No podrán utilizarse posteriormente para:
 
 - cambiar el veredicto
 - redefinir la hipótesis
+- sustituir los extremos preregistrados
 - reinterpretar retrospectivamente la regla de decisión
-
-Su finalidad será:
-
-- mostrar la forma de la curva
-- contextualizar el comportamiento
-- identificar tendencias intermedias
-- apoyar análisis descriptivo
 
 ---
 
@@ -405,19 +421,19 @@ La variable dependiente será:
 
 `tiempo de ejecución de la ruta actual de cálculo de streak`
 
-La unidad cruda será:
+La unidad cruda utilizada será:
 
 `nanosegundos`
 
-El reloj utilizado será:
+El reloj de medición será:
 
 `System.nanoTime()`
 
 ---
 
-## 10. Operación observada y T0 / T1
+## 10. Operación observada y frontera temporal
 
-La operación medida incluirá exactamente:
+La operación temporal observada será exactamente:
 
 `activityDays + pomodoroDays`
 
@@ -437,6 +453,8 @@ La operación medida incluirá exactamente:
 
 `StreakResult`
 
+La intención es reproducir la transformación relevante de la ruta actual y no medir únicamente `StreakCalculator` de forma aislada.
+
 ---
 
 ### T0
@@ -447,17 +465,17 @@ se capturará mediante:
 
 `System.nanoTime()`
 
-inmediatamente antes de ejecutar:
+inmediatamente antes de iniciar:
 
 `activityDays + pomodoroDays`
 
 Antes de T0:
 
-- `activityDays` ya deberá existir
-- `pomodoroDays` ya deberá existir
-- ambas listas deberán estar completamente construidas
-- ambas listas deberán estar en el orden preregistrado
-- no deberá ejecutarse generación de datos dentro del intervalo
+- `activityDays` deberá existir completamente
+- `pomodoroDays` deberá existir completamente
+- ambas listas deberán estar construidas
+- ambas listas deberán utilizar el orden preregistrado
+- la generación de datos deberá haber terminado
 
 ---
 
@@ -477,7 +495,7 @@ retorne un:
 
 `StreakResult`
 
-La secuencia formal será:
+La secuencia será:
 
 `T0`
 
@@ -511,13 +529,13 @@ La secuencia formal será:
 
 ↓
 
-`registro de resultados`
+`registro de evidencia`
 
 ---
 
-### Operaciones fuera de T0–T1
+### Fuera de T0–T1
 
-Quedarán fuera del intervalo temporal:
+Quedarán fuera del intervalo medido:
 
 - generación del dataset
 - construcción inicial de listas
@@ -541,10 +559,7 @@ Se realizarán:
 
 `3 corridas formales independientes`
 
-Cada corrida producirá una mediana para:
-
-- 30 días
-- 10000 días
+Cada corrida producirá una mediana para cada volumen.
 
 La hipótesis quedará:
 
@@ -562,20 +577,21 @@ También se calculará:
 
 `growthFactor = median_10000 / median_30`
 
-El `growthFactor` será descriptivo.
+El `growthFactor` será una métrica descriptiva.
 
 Un:
 
 `growthFactor > 1.0`
 
-puede respaldar la dirección de crecimiento prevista.
+puede respaldar formalmente la dirección prevista.
 
 No demuestra por sí mismo:
 
-- degradación relevante
-- problema de rendimiento
+- relevancia práctica
+- degradación problemática
+- violación de un escenario de calidad
 - necesidad de optimización
-- necesidad de modificar arquitectura
+- necesidad de una intervención arquitectónica
 
 ---
 
@@ -587,7 +603,7 @@ La hipótesis quedará:
 
 si existen tres corridas formales válidas y en al menos:
 
-`2 de 3`
+`2 de 3 corridas`
 
 se cumple:
 
@@ -606,8 +622,9 @@ Una hipótesis refutada permitirá concluir únicamente:
 No permitirá concluir que:
 
 - la implementación sea óptima
-- el algoritmo sea de costo constante
-- no pueda existir una alternativa más eficiente
+- el algoritmo tenga costo constante
+- nunca pueda existir una alternativa más eficiente
+- no exista ningún otro problema de rendimiento
 
 ---
 
@@ -619,9 +636,9 @@ Se realizarán:
 
 `3 corridas formales independientes`
 
-En SPIKE-03 una corrida independiente significa:
+En SPIKE-03, una corrida independiente significa:
 
-`un proceso JVM nuevo`
+`una ejecución completa dentro de un proceso JVM nuevo`
 
 Cada corrida seguirá:
 
@@ -633,7 +650,7 @@ Cada corrida seguirá:
 
 ↓
 
-`medición de overhead del reloj`
+`medición del overhead del reloj`
 
 ↓
 
@@ -651,37 +668,37 @@ Cada corrida seguirá:
 
 `fin JVM`
 
-La siguiente corrida se ejecutará mediante:
-
-`un nuevo proceso JVM`
+La corrida siguiente deberá comenzar mediante un nuevo proceso JVM.
 
 ---
 
 ### Warm-up
 
-Para cada volumen se ejecutarán:
+Para cada volumen se realizarán:
 
 `50 invocaciones de warm-up`
 
 Estas invocaciones:
 
-- no participarán en mediana
-- no participarán en P95
+- no participarán en la mediana
+- no participarán en el P95
 - no participarán en mínimo
 - no participarán en máximo
 - no participarán en el veredicto
 
-Su finalidad será reducir efectos iniciales asociados a:
+Su finalidad será reducir el efecto inicial relacionado con:
 
 - carga de clases
-- JIT
+- compilación JIT
 - inicialización del runtime
+
+El número de invocaciones permanecerá fijo durante SPIKE-03.
 
 ---
 
 ### Observaciones formales
 
-Por cada:
+Por cada combinación:
 
 `corrida + volumen`
 
@@ -689,11 +706,11 @@ se ejecutarán:
 
 `100 observaciones formales`
 
-Por corrida:
+Por cada corrida:
 
-`6 volúmenes × 100 observaciones = 600 observaciones`
+`6 × 100 = 600 observaciones`
 
-En las tres corridas:
+En tres corridas:
 
 `1800 observaciones formales`
 
@@ -703,13 +720,13 @@ antes de considerar invalidaciones.
 
 ### Mediana
 
-Con 100 observaciones válidas ordenadas:
+Con 100 observaciones temporalmente válidas y ordenadas:
 
 `mediana = (posición 50 + posición 51) / 2`
 
-Las posiciones se numeran desde 1.
+Las posiciones se numerarán desde 1.
 
-La mediana será el estadístico utilizado por la hipótesis.
+La mediana será el estadístico utilizado para el veredicto de la hipótesis.
 
 ---
 
@@ -731,9 +748,9 @@ se obtiene:
 
 Por tanto:
 
-`P95 = observación ordenada en posición 95`
+`P95 = observación ordenada en la posición 95`
 
-P95 no podrá sustituir a la mediana como criterio de veredicto.
+P95 no podrá sustituir posteriormente a la mediana como criterio de decisión.
 
 ---
 
@@ -748,45 +765,47 @@ como métricas descriptivas.
 
 ---
 
-### Orden de volúmenes
+### Orden de ejecución
 
-La corrida 1 ejecutará:
+La corrida 1 utilizará:
 
 `30 → 365 → 1000 → 2500 → 5000 → 10000`
 
-La corrida 2 ejecutará:
+La corrida 2 utilizará:
 
 `10000 → 5000 → 2500 → 1000 → 365 → 30`
 
-La corrida 3 ejecutará:
+La corrida 3 utilizará:
 
 `30 → 365 → 1000 → 2500 → 5000 → 10000`
 
-El orden queda fijado antes de medir.
+El orden queda fijado antes de las mediciones formales.
+
+No podrá modificarse después de observar resultados.
 
 ---
 
 ### Resultado inconcluso
 
-El resultado será:
+El resultado podrá clasificarse como:
 
 `INCONCLUSO`
 
-únicamente cuando no exista evidencia válida suficiente para aplicar las reglas de respaldo o refutación.
+únicamente cuando no exista evidencia formal válida suficiente para aplicar las reglas de respaldo o refutación.
 
-Esto podrá ocurrir por:
+Esto podrá ocurrir cuando:
 
-- error de instrumentación
-- dataset incorrecto
-- corrida incompleta
-- modificación del objeto medido
-- entorno no comparable
-- resolución temporal insuficiente
-- otro incumplimiento documentado del protocolo
+- exista un error de instrumentación
+- exista un dataset incorrecto
+- una corrida quede incompleta
+- se modifique accidentalmente el objeto medido
+- las condiciones entre corridas dejen de ser comparables
+- exista resolución temporal insuficiente
+- ocurra otro incumplimiento documentado del protocolo
 
 `INCONCLUSO`
 
-no podrá utilizarse para evitar una refutación obtenida mediante datos válidos.
+no podrá utilizarse para evitar una refutación obtenida con datos válidos.
 
 ---
 
@@ -796,11 +815,11 @@ La variable controlada será:
 
 `cantidad de días históricos distintos`
 
-No se utilizará como variable principal:
+No se utilizará como variable experimental:
 
 `cantidad bruta de Activities`
 
-Para cada valor `N`, la unión de las fuentes deberá contener exactamente:
+Para cada valor `N`, la unión lógica de las fuentes deberá contener exactamente:
 
 `N días distintos`
 
@@ -808,13 +827,15 @@ Para cada valor `N`, la unión de las fuentes deberá contener exactamente:
 
 ### Patrón temporal
 
-Los días serán consecutivos.
+Los días utilizados serán consecutivos.
 
-Para un:
+Se utilizará un:
 
 `referenceEpochDay`
 
-fijo, la unión abarcará:
+fijo.
+
+Para cada volumen `N`, la secuencia abarcará desde:
 
 `referenceEpochDay - (N - 1)`
 
@@ -824,19 +845,23 @@ hasta:
 
 inclusive.
 
+El valor concreto de `referenceEpochDay` se encuentra fijado en:
+
+`condiciones.md`
+
 ---
 
-### Distribución entre fuentes
+### Distribución entre Activities y Focus
 
 La distribución lógica será aproximadamente:
 
-- 40 % de días solo en Activities
-- 40 % de días solo en Focus
-- 20 % de días presentes en ambas fuentes
+- 40 % solo Activities
+- 40 % solo Focus
+- 20 % presente en ambas fuentes
 
-La asignación será determinista mediante el índice de cada día.
+La asignación será completamente determinista.
 
-Para cada día de la secuencia:
+Para cada posición `index` de la secuencia:
 
 `index % 5 == 0`
 
@@ -864,13 +889,15 @@ Esta regla garantiza:
 - solapamiento controlado
 - determinismo
 - aproximadamente 40 / 40 / 20
-- unión total equivalente a `N`
+- unión lógica igual a `N`
 
-Las diferencias producidas por volúmenes no divisibles entre cinco serán como máximo de un día en cada distribución parcial.
+Para volúmenes no divisibles exactamente entre cinco, las diferencias parciales serán como máximo de un día respecto a la distribución ideal.
+
+No se utilizará aleatoriedad.
 
 ---
 
-### Orden de las listas
+### Orden interno de las listas
 
 Antes de T0:
 
@@ -888,15 +915,15 @@ es decir:
 
 `día más antiguo → día más reciente`
 
-El orden será idéntico entre corridas equivalentes.
+El orden permanecerá idéntico para datasets equivalentes.
 
 ---
 
 ### Regeneración entre procesos JVM
 
-Cada corrida JVM regenerará sus propias listas mediante el mismo generador determinista.
+Cada proceso JVM regenerará sus propias listas mediante el mismo generador determinista.
 
-La equivalencia estará definida por:
+La equivalencia lógica se define mediante:
 
 `mismo referenceEpochDay`
 
@@ -916,15 +943,15 @@ La equivalencia estará definida por:
 
 `mismas listas lógicas`
 
-No se utilizarán archivos serializados como fuente de datos.
+No se utilizarán archivos serializados para cargar la semilla.
 
-La generación ocurrirá antes de T0.
+La generación de datos ocurrirá antes de T0.
 
 ---
 
 ### Resultado funcional esperado
 
-Debido a que los días forman una secuencia consecutiva que termina en `referenceEpochDay`:
+Como los días forman una secuencia consecutiva que termina en `referenceEpochDay`, para cada volumen se espera:
 
 `current = N`
 
@@ -940,50 +967,54 @@ y:
 
 `best == N`
 
-Si cualquiera falla:
+Si alguna de estas condiciones falla:
 
 `FUNCTIONAL_RESULT = FAIL`
 
 La observación:
 
 - se conservará
-- aparecerá en datos crudos
-- no participará en estadísticos temporales válidos
+- permanecerá en los datos crudos
+- no participará en los estadísticos temporales válidos
 
 Además:
 
 `cualquier FUNCTIONAL_FAIL`
 
-dentro de una corrida formal hará que:
+dentro de una corrida formal invalidará:
 
-`la corrida completa sea INVALIDA`
+`la corrida formal completa`
 
-La corrida inválida deberá:
+La corrida inválida:
 
-- conservarse
-- registrar el motivo
-- no participar en el veredicto
-- repetirse completamente en una JVM nueva
+- se conservará
+- tendrá una causa documentada
+- no participará en el veredicto
+- deberá repetirse completamente mediante un nuevo proceso JVM
 
 ---
 
 ### Medición del overhead del reloj
 
-Cada proceso JVM ejecutará antes de las mediciones formales:
+Cada proceso JVM realizará antes de las mediciones formales:
 
-`10000 mediciones de overhead`
+`10000 mediciones`
 
-mediante:
+del overhead de:
 
-`T0 = System.nanoTime()`
+`System.nanoTime()`
+
+Cada medición utilizará:
+
+`clockT0 = System.nanoTime()`
 
 seguido inmediatamente por:
 
-`T1 = System.nanoTime()`
+`clockT1 = System.nanoTime()`
 
-Para cada medición:
+y:
 
-`clockOverheadNs = T1 - T0`
+`clockOverheadNs = clockT1 - clockT0`
 
 Se calculará:
 
@@ -991,16 +1022,13 @@ Se calculará:
 
 Esta medición no forma parte de la hipótesis.
 
-Su función es detectar una posible falta de separación entre:
-
-- el costo del fenómeno medido
-- el costo del reloj utilizado
+Se utilizará únicamente como control de resolución de la instrumentación.
 
 ---
 
 ### Criterio de resolución insuficiente
 
-Se considerará que la medición de 30 días tiene separación insuficiente respecto al overhead del reloj si, en al menos dos de las tres corridas válidas, se cumple:
+Se considerará que el escenario de 30 días presenta separación temporal insuficiente respecto al overhead del reloj cuando, en al menos dos de las tres corridas válidas, se cumpla:
 
 `median_30 <= 10 × medianClockOverheadNs`
 
@@ -1008,13 +1036,15 @@ En ese caso:
 
 `SPIKE-03 = INCONCLUSO POR RESOLUCIÓN INSUFICIENTE`
 
-Esta regla es un criterio experimental preregistrado para SPIKE-03.
+El factor diez constituye:
 
-No se presenta como una regla universal sobre microbenchmarks.
+`una regla experimental preregistrada específicamente para SPIKE-03`
+
+No se presenta como una regla universal de microbenchmarking.
 
 ---
 
-### Volúmenes extremos
+### Volúmenes de estrés
 
 Los escenarios:
 
@@ -1024,11 +1054,9 @@ Los escenarios:
 
 se consideran:
 
-`estrés algorítmico`
+`escenarios de estrés algorítmico`
 
-No se presentarán como:
-
-`uso habitual esperado de RachaPro`
+No se presentarán como representación de un historial habitual de un usuario de RachaPro.
 
 ---
 
@@ -1038,27 +1066,27 @@ SPIKE-03 incluye exclusivamente:
 
 - construir un harness experimental
 - generar datasets deterministas
-- reproducir la ruta actual:
-  - merge
-  - `distinct`
-  - `sorted`
-  - `StreakCalculator.calculate`
-- instrumentar mediante `System.nanoTime()`
-- medir overhead del reloj
-- ejecutar warm-up
+- reproducir la ruta actual de cálculo seleccionada
+- combinar `activityDays` y `pomodoroDays`
+- ejecutar `distinct()`
+- ejecutar `sorted()`
+- invocar `StreakCalculator.calculate(...)`
+- medir mediante `System.nanoTime()`
+- medir el overhead del reloj
+- realizar warm-up
 - ejecutar observaciones formales
-- verificar `current`
-- verificar `best`
+- validar `current`
+- validar `best`
 - registrar datos crudos
-- calcular:
-  - mínimo
-  - mediana
-  - P95
-  - máximo
-  - `growthFactor`
+- conservar evidencia funcional
+- calcular mínimo
+- calcular mediana
+- calcular P95
+- calcular máximo
+- calcular `growthFactor`
 - aplicar las reglas preregistradas
 - documentar limitaciones
-- producir veredicto
+- producir un veredicto experimental
 
 ---
 
@@ -1067,25 +1095,25 @@ SPIKE-03 incluye exclusivamente:
 SPIKE-03 no incluye:
 
 - optimizar `StreakCalculator`
-- eliminar `distinct`
-- eliminar `sorted`
-- modificar la semántica de streak
-- mover cálculo a SQL
-- modificar consultas Room
+- eliminar `distinct()`
+- eliminar `sorted()`
+- modificar la semántica funcional de streak
+- mover el cálculo a SQL
+- modificar consultas Room productivas
 - crear consultas productivas nuevas
 - crear caché
+- crear una proyección de lectura
 - mover Progress al backend
 - crear `/api/progress`
-- crear una proyección
 - adoptar CQRS
 - adoptar Event Sourcing
-- utilizar Kafka
-- utilizar RabbitMQ
-- utilizar Google Pub/Sub
+- adoptar Kafka
+- adoptar RabbitMQ
+- adoptar Google Pub/Sub
 - migrar a microservicios
-- modificar persistencia productiva
-- modificar Activities funcionalmente
-- modificar Focus funcionalmente
+- cambiar el modelo de persistencia
+- modificar funcionalmente Activities
+- modificar funcionalmente Focus
 - modificar Reminders
 - decidir ownership de Achievement
 - medir Room
@@ -1095,6 +1123,8 @@ SPIKE-03 no incluye:
 - medir red
 - medir Compose
 - medir rendimiento end-to-end de Progress
+
+Cualquier posible intervención deberá evaluarse posteriormente mediante otra decisión o experimento.
 
 ---
 
@@ -1106,19 +1136,19 @@ La JVM puede modificar el comportamiento de las primeras ejecuciones.
 
 Control:
 
-- 50 warm-ups por volumen
+- 50 invocaciones de warm-up por volumen
 - nuevo proceso JVM por corrida formal
 
 ---
 
 ### R-02 — Ruido del sistema
 
-Otros procesos del sistema operativo pueden introducir variabilidad.
+Otros procesos del sistema operativo pueden introducir variabilidad temporal.
 
 Control:
 
 - mismo equipo
-- mismas condiciones conocidas
+- mismas condiciones documentadas
 - tres corridas independientes
 - conservación de mínimo, mediana, P95 y máximo
 
@@ -1126,41 +1156,41 @@ Control:
 
 ### R-03 — Costo del reloj
 
-Una operación muy rápida puede quedar demasiado cerca del costo de `System.nanoTime()`.
+Una operación muy corta puede encontrarse demasiado cerca del costo de la propia instrumentación.
 
 Control:
 
-- 10000 mediciones de overhead por JVM
+- 10000 mediciones de overhead en cada JVM
 - cálculo de `medianClockOverheadNs`
-- criterio:
+- aplicación del criterio:
   `median_30 <= 10 × medianClockOverheadNs`
 
 ---
 
 ### R-04 — Semilla incorrecta
 
-Una gran cantidad de Activities concentradas en pocos días no ejercitaría la variable estudiada.
+Una gran cantidad de registros concentrados en pocos días no ejercitaría correctamente la variable elegida.
 
 Control:
 
-- controlar `N días distintos`
-- verificar la unión exacta antes de medir
+- controlar días históricos distintos
+- verificar exactamente `N` días en la unión
 
 ---
 
 ### R-05 — Solapamiento variable
 
-Cambiar la cantidad de días compartidos entre Activities y Focus alteraría el trabajo de `distinct()`.
+Cambiar el solapamiento entre Activities y Focus puede alterar el trabajo realizado por `distinct()`.
 
 Control:
 
-- regla fija `index % 5`
+- distribución fija mediante `index % 5`
 
 ---
 
-### R-06 — Orden variable
+### R-06 — Orden de entrada variable
 
-Cambiar el orden de entrada podría alterar el costo de `sorted()`.
+Modificar el orden de las listas puede alterar el trabajo necesario para `sorted()`.
 
 Control:
 
@@ -1168,58 +1198,61 @@ Control:
 
 ---
 
-### R-07 — Regeneración diferente
+### R-07 — Regeneración inconsistente
 
-Generadores diferentes entre JVM podrían producir entradas distintas.
+Generadores distintos entre procesos JVM podrían producir entradas diferentes.
 
 Control:
 
 - mismo algoritmo determinista
 - mismo `referenceEpochDay`
-- misma regla de asignación
+- misma regla `index % 5`
+- mismo orden
 
 ---
 
-### R-08 — Medición accidental de tareas externas
+### R-08 — Contaminación del intervalo
 
-Generación, logging o validación podrían contaminar T0–T1.
+Generación, logging, validación u otras operaciones podrían incluirse accidentalmente dentro de T0–T1.
 
 Control:
 
-- generación previa
-- logging posterior
-- validación posterior a T1
+- generación antes de T0
+- validación después de T1
+- escritura de evidencia después de T1
+- frontera temporal fija
 
 ---
 
 ### R-09 — Fallo funcional
 
-Una medición rápida podría corresponder a un resultado incorrecto.
+Un tiempo aparentemente favorable podría corresponder a un resultado incorrecto.
 
 Control:
 
-- verificar `current == N`
-- verificar `best == N`
-- invalidar corrida completa ante cualquier `FUNCTIONAL_FAIL`
+- comprobar `current == N`
+- comprobar `best == N`
+- registrar `FUNCTIONAL_FAIL`
+- invalidar la corrida completa ante cualquier fallo funcional
 
 ---
 
 ### R-10 — Interpretación excesiva
 
-Una diferencia positiva podría presentarse incorrectamente como problema arquitectónico.
+Una diferencia positiva podría presentarse incorrectamente como evidencia de un problema arquitectónico.
 
 Control:
 
-- hipótesis solo direccional
-- sin umbral de relevancia
+- hipótesis exclusivamente direccional
+- ausencia de umbral de relevancia arquitectónica
 - `growthFactor` descriptivo
-- no derivar automáticamente optimización
+- separación entre caracterización y decisión posterior
 
 ---
 
 ### R-11 — Escenarios extremos
 
-10000 días no representan necesariamente uso habitual.
+10000 días no representan necesariamente un historial habitual.
 
 Control:
 
@@ -1231,53 +1264,58 @@ Control:
 
 Se asume que:
 
-- las listas generadas representan adecuadamente la semántica de días recibidos por Progress
-- la ruta reproducida conserva la semántica observada en `ProgressViewModel`
-- `StreakCalculator` permanece sin cambios funcionales
-- el mismo equipo se utilizará en las tres corridas
-- la misma JVM será utilizada
-- el mismo commit experimental será utilizado
+- las listas generadas representan adecuadamente la semántica de los días que llegan a la ruta estudiada
+- el harness conservará la transformación funcional observada
+- `StreakCalculator` permanecerá funcionalmente sin cambios
+- se utilizará el mismo equipo
+- se utilizará el mismo sistema operativo
+- se utilizará la misma JVM
+- se utilizará el mismo Gradle
+- se utilizará el mismo commit experimental
 - `referenceEpochDay` permanecerá fijo
 - el mismo generador será utilizado
 - el orden de las listas permanecerá fijo
-- los datos se generarán antes de T0
-- `System.nanoTime()` será utilizado de manera idéntica
+- los datasets se generarán antes de T0
+- `System.nanoTime()` se utilizará de manera idéntica en todas las corridas
 
 ---
 
 ## 18. Evidencia a conservar
 
-Se conservará como mínimo:
+SPIKE-03 conservará como mínimo:
 
 - `00-preregistro.md`
 - `condiciones.md`
-- commit base
-- commit de preregistro
+- commit histórico del borrador
+- commit base del preregistro definitivo
+- commit definitivo de preregistro
 - commit experimental
 - código del harness
 - generador de datos
-- scripts de análisis
+- scripts utilizados para análisis
 - datos crudos
 - mediciones de overhead
+- resultados por observación
+- resultados funcionales
 - estadísticas por corrida
 - estadísticas por volumen
-- resultados funcionales
+- `growthFactor`
 - registros de `FUNCTIONAL_FAIL`
-- evidencia de corridas inválidas
+- corridas inválidas
 - causas de invalidación
 - logs necesarios
-- `growthFactor`
 - limitaciones
 - resultado de la hipótesis
-- veredicto
+- veredicto final
 
-Una corrida inválida no se eliminará.
+Una corrida inválida no será eliminada.
 
-Se conservará con:
+Su evidencia deberá conservar:
 
 - identificador
-- causa
-- evidencia asociada
+- causa de invalidación
+- resultados obtenidos
+- relación con su repetición posterior
 
 ---
 
@@ -1289,10 +1327,12 @@ No existen todavía resultados formales de SPIKE-03.
 
 Esta sección no deberá completarse antes de:
 
-- commit de preregistro
-- implementación del harness
-- commit experimental
-- ejecución formal
+- existir el commit definitivo de preregistro
+- existir la implementación del harness
+- existir el commit experimental
+- ejecutar las corridas formales
+
+No deberán registrarse aquí mediciones exploratorias como si fueran evidencia formal del spike.
 
 ---
 
@@ -1318,7 +1358,7 @@ en al menos:
 
 `2 de 3 corridas válidas`
 
-y no aplica la condición de resolución insuficiente.
+y no aplica el criterio de resolución insuficiente.
 
 ### REFUTADA
 
@@ -1330,53 +1370,175 @@ en al menos:
 
 `2 de 3 corridas válidas`
 
-y no aplica la condición de resolución insuficiente.
+y no aplica el criterio de resolución insuficiente.
 
 ### INCONCLUSA
 
-Si:
+Únicamente cuando:
 
-- no existen suficientes corridas válidas
-- existe un incumplimiento del protocolo que impide comparar
-- aplica el criterio de resolución insuficiente
-- otra condición documentada impide aplicar correctamente las reglas
+- no existan suficientes corridas válidas
+- un incumplimiento del protocolo impida aplicar las reglas
+- aplique el criterio de resolución insuficiente
+- otra condición documentada invalide la comparación
 
-Un veredicto RESPALDADA no significa:
+Los volúmenes:
 
-- problema de rendimiento
-- necesidad de optimización
-- necesidad de CQRS
-- necesidad de Event Sourcing
+- 365
+- 1000
+- 2500
+- 5000
 
-Un veredicto REFUTADA no significa:
+serán descriptivos.
 
-- implementación óptima
-- costo constante
-- imposibilidad de mejora
+No podrán modificar ni reinterpretar retrospectivamente el veredicto.
+
+---
+
+### Límites de interpretación
+
+Un resultado:
+
+`RESPALDADA`
+
+no significa automáticamente:
+
+- que exista un problema de rendimiento
+- que exista una violación de un escenario de calidad
+- que sea necesaria una optimización
+- que CQRS quede justificado
+- que Event Sourcing quede justificado
+- que sea necesaria una proyección
+- que deba modificarse la arquitectura
+
+Un resultado:
+
+`REFUTADA`
+
+no significa:
+
+- que la implementación sea óptima
+- que su costo sea constante
+- que no pueda existir una implementación alternativa
+- que no exista ningún otro problema de rendimiento
+
+Un resultado:
+
+`INCONCLUSA`
+
+no podrá utilizarse para evitar una refutación producida mediante evidencia válida.
 
 ---
 
 ## 21. Trazabilidad Git
 
-La secuencia obligatoria será:
+SPIKE-03 conserva explícitamente la diferencia entre:
 
-`master vigente`
+- borrador histórico
+- base del preregistro definitivo
+- commit definitivo de preregistro
+- commit experimental
+- resultados
+
+---
+
+### Borrador histórico
+
+El commit:
+
+`63d0db27dc3d0b02bc1320b5be09339283fd9fcd`
+
+corresponde al borrador previo de SPIKE-03.
+
+Mensaje:
+
+`docs(spike-03): agrega borrador de caracterizacion de racha`
+
+Este commit fue posteriormente integrado en `master` mediante el PR #46.
+
+No se reinterpretará retrospectivamente como el preregistro definitivo.
+
+---
+
+### Master base de la frontera definitiva
+
+La rama:
+
+`docs/spike-03-preregistro-definitivo`
+
+fue creada desde:
+
+`1536d331e96d7f73dfb477252a2a336bff8b6347`
+
+correspondiente al `origin/master` actualizado después de integrar el borrador histórico.
+
+Este commit constituye:
+
+`la base Git de la versión definitiva del preregistro`
+
+No constituye todavía:
+
+`el commit formal de preregistro`
+
+---
+
+### Commit definitivo de preregistro
+
+El commit que incorpore esta versión revisada de:
+
+- `00-preregistro.md`
+- `condiciones.md`
+
+constituirá:
+
+`la frontera formal de preregistro de SPIKE-03`
+
+Su hash será registrado posteriormente dentro de la evidencia de trazabilidad del experimento.
+
+No se modificarán retrospectivamente las decisiones preregistradas únicamente para incorporar dicho hash.
+
+---
+
+### Commit experimental
+
+Actualmente:
+
+`TODAVÍA NO EXISTE`
+
+El commit experimental deberá ser posterior al commit definitivo de preregistro.
+
+Contendrá el harness utilizado para ejecutar las mediciones formales.
+
+---
+
+### Secuencia obligatoria
+
+La secuencia temporal será:
+
+`63d0db2`
 
 ↓
 
-`rama exp/spike-03-streak-characterization`
+`borrador histórico de SPIKE-03`
 
 ↓
 
-`00-preregistro.md`
-
-+
-
-`condiciones.md`
+`1536d33`
 
 ↓
 
-`commit de preregistro`
+`master base del preregistro definitivo`
+
+↓
+
+`rama docs/spike-03-preregistro-definitivo`
+
+↓
+
+`00-preregistro.md + condiciones.md`
+
+↓
+
+`commit definitivo de preregistro`
 
 ↓
 
@@ -1406,26 +1568,21 @@ La secuencia obligatoria será:
 
 `commit de resultados`
 
-No podrán existir mediciones formales previas al commit de preregistro.
-
-El commit base deberá registrarse en `condiciones.md`.
-
-El commit experimental deberá ser posterior al commit de preregistro.
-
-El commit de resultados deberá ser posterior a la ejecución.
+No podrán existir mediciones formales de SPIKE-03 anteriores al commit definitivo de preregistro.
 
 La frontera temporal deberá poder demostrarse mediante Git.
 
-El estado actual es:
+---
+
+## Estado previo al commit definitivo
+
+El estado metodológico actual es:
 
 `LISTO PARA PRERREGISTRO — NO EJECUTADO`
 
-Solo después de que exista el commit correspondiente podrá cambiarse metodológicamente a:
-
-`PRERREGISTRADO — NO EJECUTADO`
-
 Todavía no existen:
 
+- commit definitivo de preregistro
 - harness formal
 - commit experimental
 - mediciones formales
@@ -1433,4 +1590,4 @@ Todavía no existen:
 - veredicto
 - decisión de optimización
 
-SPIKE-03 permanece bloqueado para ejecución hasta que se complete y versione el preregistro.
+SPIKE-03 permanece bloqueado para ejecución hasta que exista el commit definitivo de preregistro.
