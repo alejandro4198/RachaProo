@@ -347,3 +347,16 @@ Estas correcciones no deciden Identity, Achievement ni otras decisiones
 arquitectónicas pendientes.
 
 <!-- M5:FINAL-AUDIT-CORRECTIONS:END -->
+
+## Auditoría complementaria M5
+
+La revisión complementaria posterior al cierre de M5 verifica consistencia
+transversal, trazabilidad, temporalidad y suficiencia de evidencia sin
+reescribir las decisiones arquitectónicas históricas.
+
+- Índice y metodología: `docs/m5/auditoria-complementaria/README.md`
+- Cierre de la auditoría: `docs/m5/auditoria-complementaria/cierre-auditoria-complementaria.md`
+
+La auditoría se encuentra cerrada sin correcciones arquitectónicas obligatorias.
+Las decisiones que permanecen pendientes continúan abiertas y no son resueltas
+por este cierre.
