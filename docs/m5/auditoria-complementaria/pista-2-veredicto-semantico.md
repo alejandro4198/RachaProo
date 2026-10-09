@@ -235,7 +235,7 @@ SPIKE-03 no causa decisiones arquitectónicas anteriores.
 
 ---
 
-### T2-S10 — Event Sourcing
+### T2-AS-10 — Event Sourcing
 
 **Estado:** `NO ADOPTADO`
 
@@ -248,7 +248,7 @@ La ausencia de adopción actual no equivale a una prohibición permanente.
 
 ---
 
-### T2-S11 — Achievement
+### T2-AS-11 — Achievement
 
 **Estado:** `DECISIÓN PENDIENTE`
 
@@ -267,7 +267,7 @@ La evidencia disponible no cierra su ownership como:
 
 ---
 
-### T2-S12 — ActivityLookup naming
+### T2-AS-12 — ActivityLookup naming
 
 **Estado:** `VALIDADO — DECISIÓN ABIERTA`
 
@@ -281,7 +281,7 @@ La posible ambigüedad del término `active` no obliga por sí sola al renombre.
 
 ---
 
-### T2-S13 — Progress → Activities / Progress → Focus
+### T2-AS-13 — Progress → Activities / Progress → Focus
 
 **Estado:** `VALIDADO — COBERTURA TÉCNICA PARCIAL`
 

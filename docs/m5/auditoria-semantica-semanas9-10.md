@@ -1,4 +1,4 @@
-# Paquete de evidencia para auditoría semántica — S1 a S15
+# Paquete de evidencia para auditoría semántica — Semanas 9 y 10
 
 HEAD auditado:
 
@@ -12,7 +12,14 @@ fix/m5-correcciones-documentales
 
 Este archivo es un **paquete de evidencia**, no el veredicto de la auditoría.
 
-Su función es reunir fragmentos y trazas relevantes para S1–S15 de forma
+> **Contexto temporal:** esta auditoría y su paquete de evidencia corresponden
+> al trabajo realizado durante las **Semanas 9 y 10** del proyecto.
+> Los identificadores `AS-01` a `AS-15` representan controles internos de la
+> auditoría semántica y **no corresponden a semanas académicas**.
+> El proyecto no ha alcanzado todavía las Semanas 11 a 15.
+
+
+Su función es reunir fragmentos y trazas relevantes para AS-01–S15 de forma
 reproducible. La aparición de una línea en este archivo no implica que la
 afirmación haya sido aceptada, refutada o corregida.
 
@@ -36,7 +43,7 @@ No reutiliza como veredicto automático los estados de auditorías previas.
 
 No modifica decisiones arquitectónicas pendientes.
 
-## S1 — Dominio y fronteras
+## AS-01 — Dominio y fronteras
 
 ### docs/dominio/subdominios.md
 L1: # Subdominios y bounded contexts
@@ -142,8 +149,7 @@ L500: → Focus se mantiene como bounded context independiente.
 L508: responsabilidad de Focus.
 
 
-
-## S2 — Context Map y relaciones
+## AS-02 — Context Map y relaciones
 
 L7: rectangle "Activities\n<<Bounded Context>>" as Activities {
 L10: rectangle "Focus\n<<Bounded Context>>" as Focus {
@@ -159,15 +165,15 @@ L45:   Consumir o referenciar información
 L57:   Achievement no se representa como bounded context
 
 
-## S3 — ActivityLookup y contratos
+## AS-03 — ActivityLookup y contratos
 
 ### docs/integracion/contrato-api.md
 L1: # Contrato de API intermodular de Activities para Focus y Reminders
-L3: <!-- M5:ACTIVITYLOOKUP-CONSUMERS:BEGIN -->
+L3:
 L7: En el estado actual observado del backend, `ActivityLookup` es consumido por al
 L10: - Focus;
 L11: - Reminders.
-L19: <!-- M5:ACTIVITYLOOKUP-CONSUMERS:END -->
+L19:
 L25: bounded context Activities ofrece a Focus una capacidad de validación de
 L49: Focus → Activities
 L58: Focus
@@ -214,7 +220,7 @@ L553:   cuya interpretación exija modificar Focus.
 L555: - exigir a Focus conocer detalles internos de Activities.
 
 ### docs/dominio/evidencia/activities.md
-L3: <!-- M5:ACTIVITYLOOKUP-SEMANTICS:BEGIN -->
+L3:
 L5: ## Actualización posterior — semántica de ActivityLookup
 L7: La tensión registrada originalmente alrededor del término `active` fue
 L12: Para el contrato vigente documentado, `active` no significa exclusivamente
@@ -222,7 +228,7 @@ L18: - pertenece al usuario indicado;
 L19: - no está eliminada.
 L21: El backend muestra consumidores actuales de `ActivityLookup` en Focus y
 L22: Reminders.
-L27: <!-- M5:ACTIVITYLOOKUP-SEMANTICS:END -->
+L27:
 L97: - `isActive`
 L140: - la prioridad debe pertenecer a `LOW`, `MEDIUM` o `HIGH`
 L142: - la Category debe pertenecer al usuario
@@ -369,8 +375,7 @@ L684: Tanto `ReminderRepository` como `ReminderScheduler` comprueban el valor de
 L728: En `ReminderService` del backend inspeccionado, los métodos:
 
 
-
-## S4 — UserRegisteredV1 y AsyncAPI
+## AS-04 — UserRegisteredV1 y AsyncAPI
 
 ### docs/integracion/eventos-candidatos.md
 L5: ## Actualización posterior — estado de UserRegisteredV1
@@ -527,8 +532,7 @@ L1132: 2. restablecer una invocación síncrona mediante una API pública de Act
 L1133: 3. volver a conectar Identity con el mecanismo equivalente a `DefaultCategoryProvisioning`;
 
 
-
-## S5 — ADR-003 y evidencia previa
+## AS-05 — ADR-003 y evidencia previa
 
 L4: - **Fecha de decisión:** 2026-09-30
 L7: - **Evidencia principal:** `experimentos/spike-01-integracion/`
@@ -612,7 +616,7 @@ L823: El AsyncAPI mejora la trazabilidad y explicitud del contrato existente, pe
 L827: ### 21.5 Evidencia posterior de resiliencia — SPIKE-02
 
 
-## S6 — SPIKE-01
+## AS-06 — SPIKE-01
 
 ### experimentos/spike-01-integracion/README.md
 L13: ## 2. Hipótesis
@@ -648,8 +652,7 @@ L4: 3,1510,201,893,36,PASS,PASS,PASS,""
 L5: 4,1511,201,875,32,PASS,PASS,PASS,""
 
 
-
-## S7 — SPIKE-02
+## AS-07 — SPIKE-02
 
 ### experimentos/spike-02-resiliencia/README.md
 L5: Evaluar experimentalmente qué ocurre cuando el consumidor de `UserRegisteredV1` falla después de que la transacción que registra al usuario ya fue confirmada.
@@ -703,8 +706,7 @@ L24: El primer intento de reinicio utilizo incorrectamente :backend:bootRun
 L25: desde el proyecto Gradle raiz y fallo antes de iniciar la aplicacion.
 
 
-
-## S8 — SPIKE-03
+## AS-08 — SPIKE-03
 
 ### experimentos/spike-03-caracterizacion-racha/00-preregistro.md
 L1: # SPIKE-03 — Caracterización de escalabilidad del cálculo de streak en Progress
@@ -888,11 +890,10 @@ L497: Resultado:
 L505: El mínimo preregistrado era:
 
 
-
-## S9 — CQRS / Event Sourcing
+## AS-09 — CQRS / Event Sourcing
 
 L1: # Aplicabilidad de CQRS y Event Sourcing
-L3: <!-- M5:SPIKE03-CQRS-UPDATE:BEGIN -->
+L3:
 L5: ## Actualización posterior — SPIKE-03
 L8: SPIKE-03.
 L13: Posteriormente, SPIKE-03 caracterizó específicamente el cálculo de:
@@ -901,7 +902,7 @@ L26: SPIKE-03 dejó la decisión arquitectónica como:
 L28: `NO DETERMINADA`
 L34: - no se ha demostrado Event Sourcing;
 L39: - `experimentos/spike-03-caracterizacion-racha/`
-L41: <!-- M5:SPIKE03-CQRS-UPDATE:END -->
+L41:
 L46: Este documento analiza CQRS y Event Sourcing como opciones arquitectónicas para
 L54: información adicional sería necesaria antes de justificar su adopción.
 L68: ¿qué problema verificable de RachaPro justificaría introducirlo?
@@ -993,7 +994,7 @@ L1546: Para Event Sourcing:
 L1561: de reconstrucción mediante replay
 
 
-## S10 — Temporalidad Git
+## AS-10 — Temporalidad Git
 
 305dd61 | 2026-10-08T20:42:59-05:00 | docs(readme): enlazar revision externa post-freeze
 4576e73 | 2026-10-08T20:42:57-05:00 | docs(m5): registrar correcciones posteriores al freeze
@@ -1009,7 +1010,7 @@ c6ae059 | 2026-09-30T17:41:34-05:00 | docs(semana10): registra ADR-003 de integr
 59fdb47 | 2026-09-30T16:20:52-05:00 | docs(semana9): define integracion API eventos y Spike 1
 
 
-## S11 — Coherencia entre fuentes primarias
+## AS-11 — Coherencia entre fuentes primarias
 
 ### ActivityLookup consumidores
 - docs/integracion/contrato-api.md: ActivityLookup, Focus, Reminders
@@ -1027,8 +1028,7 @@ c6ae059 | 2026-09-30T17:41:34-05:00 | docs(semana10): registra ADR-003 de integr
 - docs/adr/0003-integracion-eventos-internos.md: CQRS, Event Sourcing
 
 
-
-## S12 — Afirmaciones potencialmente más fuertes que la evidencia
+## AS-12 — Afirmaciones potencialmente más fuertes que la evidencia
 
 ### docs/adr/0003-integracion-eventos-internos.md
 L359: El Spike 1 no demuestra una necesidad de adoptar CQRS.
@@ -1153,8 +1153,7 @@ L2285: mecanismo de integración definitivo
 L2289: información sustentadas por evidencia, no una arquitectura física definitiva del
 
 
-
-## S13 — Pendientes auténticos
+## AS-13 — Pendientes auténticos
 
 ### docs/dominio/subdominios.md
 L36: - posibilidad de evolución independiente mientras se mantengan los contratos necesarios con otras capacidades.
@@ -1211,8 +1210,7 @@ L545: necesidad de escalar lecturas y escrituras de manera independiente
 L1472: La decisión de publicar eventos entre módulos es independiente de decidir que
 
 
-
-## S14 — Navegación y fuentes canónicas
+## AS-14 — Navegación y fuentes canónicas
 
 L20: ## 2. Estado actual de la arquitectura
 L70: | Semana 9 | Evaluación de integración mediante contratos síncronos y evento interno; preregistro y ejecución de SPIKE-01. | `docs/semana9/`, `experimentos/spike-01-integracion/` |
@@ -1238,7 +1236,7 @@ L298: ## Auditoría externa post-freeze
 L306: - `docs/m5/correcciones-post-freeze.md`
 
 
-## S15 — Insumos para veredicto metodológico final
+## AS-15 — Insumos para veredicto metodológico final
 
 Este archivo NO contiene un veredicto arquitectónico automático.
 

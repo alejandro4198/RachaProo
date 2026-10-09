@@ -1,6 +1,6 @@
 # Evidencia de dominio — Activities
 
-<!-- M5:ACTIVITYLOOKUP-SEMANTICS:BEGIN -->
+
 
 ## Actualización posterior — semántica de ActivityLookup
 
@@ -24,7 +24,7 @@ Reminders.
 Esta actualización conserva el registro histórico de la tensión original y
 remite al contrato vigente.
 
-<!-- M5:ACTIVITYLOOKUP-SEMANTICS:END -->
+
 
 
 ## 1. Responsabilidad observada
@@ -442,7 +442,7 @@ La existencia actual del listener está demostrada.
 
 Lo que debe mantenerse separado es:
 
-- qué mecanismo pertenecía al baseline S8
+- qué mecanismo pertenecía al baseline AS-08
 - qué mecanismo fue introducido posteriormente durante M5 / Spike
 
 Por tanto, no debe reconstruirse retrospectivamente `UserRegisteredV1Listener`

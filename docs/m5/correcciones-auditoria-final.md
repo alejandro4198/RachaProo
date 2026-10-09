@@ -23,7 +23,7 @@ Estas correcciones son posteriores a:
 
 - freeze original;
 - auditoría externa;
-- auditoría semántica S1–S15;
+- auditoría semántica de Semanas 9 y 10;
 - PR #51.
 
 No reescriben retrospectivamente esos artefactos.

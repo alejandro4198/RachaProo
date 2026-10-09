@@ -148,7 +148,7 @@ Artefactos documentales identificados: **131**.
 
 - `docs/m5/auditoria-externa-post-freeze.md`
 - `docs/m5/auditoria-final.md`
-- `docs/m5/auditoria-semantica-s1-s15.md`
+- `docs/m5/auditoria-semantica-semanas9-10.md`
 - `docs/m5/cierre-pista2.md`
 - `docs/m5/correcciones-auditoria-final.md`
 - `docs/m5/correcciones-post-freeze.md`

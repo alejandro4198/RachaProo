@@ -6,13 +6,13 @@ Branch:
 
 fix/m5-correcciones-documentales
 
-HEAD utilizado para generar el paquete S1–S15:
+HEAD utilizado para generar el paquete de auditoría semántica de Semanas 9 y 10:
 
 305dd61465c7a7e53fd7e1fdab76e73cd575bc72
 
 Paquete de evidencia:
 
-`docs/m5/auditoria-semantica-s1-s15.md`
+`docs/m5/auditoria-semantica-semanas9-10.md`
 
 Esta revisión es posterior al freeze y a la auditoría externa ya registrada.
 
@@ -32,12 +32,12 @@ La revisión semántica distingue:
 La presencia de una palabra o cadena en un artefacto no se utiliza por sí sola
 como veredicto.
 
-## 3. S1 — Dominio y fronteras
+## 3. AS-01 — Dominio y fronteras
 
 Las fronteras confirmadas de Activities, Focus, Reminders y Progress están
 documentadas mediante responsabilidades, reglas, lenguaje y ownership.
 
-No se encontró en el paquete S1–S15 evidencia suficiente para concluir que
+No se encontró en el paquete de auditoría semántica de Semanas 9 y 10 evidencia suficiente para concluir que
 Achievement deba asignarse automáticamente a uno de esos contextos.
 
 Estado de Achievement:
@@ -46,7 +46,7 @@ Estado de Achievement:
 
 La revisión no decide el alcance de Identity dentro del Context Map.
 
-## 4. S2 — Context Map
+## 4. AS-02 — Context Map
 
 La convención documentada del mapa es:
 
@@ -66,7 +66,7 @@ ownership siga sin decidir.
 
 Esta revisión no incorpora Identity automáticamente.
 
-## 5. S3 — ActivityLookup
+## 5. AS-03 — ActivityLookup
 
 La evidencia revisada permite sostener que `ActivityLookup` comprueba
 actualmente que la Activity:
@@ -101,7 +101,7 @@ Commit:
 El eventual renombre de `ActivityLookup` continúa siendo una decisión
 contractual pendiente y no se realiza automáticamente.
 
-## 6. S4 — UserRegisteredV1 y AsyncAPI
+## 6. AS-04 — UserRegisteredV1 y AsyncAPI
 
 Las fuentes revisadas son coherentes en que:
 
@@ -117,7 +117,7 @@ Precisión importante:
 afirmar que la llamada que publica el evento se invoca necesariamente después
 del commit.
 
-## 7. S5 — ADR-003
+## 7. AS-05 — ADR-003
 
 La cronología revisada conserva:
 
@@ -135,7 +135,7 @@ existía antes de ADR-003.
 
 La evidencia posterior no se interpreta como causa retrospectiva de la decisión.
 
-## 8. S6 — SPIKE-01
+## 8. AS-06 — SPIKE-01
 
 Se observaron cuatro corridas con tiempos de evento:
 
@@ -159,7 +159,7 @@ SPIKE-01 no demuestra:
 - necesidad de broker externo;
 - conveniencia de convertir todas las relaciones a eventos.
 
-## 9. S7 — SPIKE-02
+## 9. AS-07 — SPIKE-02
 
 Bajo el fallo inducido revisado:
 
@@ -174,7 +174,7 @@ condición.
 
 Tampoco determina por sí solo que ADR-003 deba sustituirse.
 
-## 10. S8 — SPIKE-03
+## 10. AS-08 — SPIKE-03
 
 La secuencia Git revisada conserva:
 
@@ -195,7 +195,7 @@ preregistradas.
 
 El propio experimento separa resultado experimental de decisión arquitectónica.
 
-## 11. S9 — CQRS y Event Sourcing
+## 11. AS-09 — CQRS y Event Sourcing
 
 SPIKE-03 aporta evidencia directa sobre el comportamiento de una operación de
 Progress, pero no demuestra por sí solo una necesidad de separar modelos de
@@ -215,7 +215,7 @@ Estado de Event Sourcing:
 
 Esto no constituye una prohibición futura.
 
-## 12. S10 — Temporalidad
+## 12. AS-10 — Temporalidad
 
 La evidencia Git revisada conserva las relaciones temporales relevantes y
 permite distinguir:
@@ -228,7 +228,7 @@ permite distinguir:
 
 No se utiliza un documento posterior como causa de una decisión anterior.
 
-## 13. S11 — Coherencia entre fuentes
+## 13. AS-11 — Coherencia entre fuentes
 
 Las fuentes revisadas convergen en los elementos principales de:
 
@@ -240,7 +240,7 @@ Las fuentes revisadas convergen en los elementos principales de:
 La coincidencia de términos entre documentos no se considera por sí sola prueba
 de coherencia; se contrastó además su función documental y temporalidad.
 
-## 14. S12 — Fuerza de las afirmaciones
+## 14. AS-12 — Fuerza de las afirmaciones
 
 ### H-SEM-02
 
@@ -265,7 +265,7 @@ Estado:
 ADR-003 no se modifica, porque la precisión se registra después del freeze y no
 debe reescribir la historia del documento.
 
-## 15. S13 — Pendientes auténticos
+## 15. AS-13 — Pendientes auténticos
 
 Permanecen como asuntos que requieren decisión explícita del equipo:
 
@@ -276,7 +276,7 @@ Permanecen como asuntos que requieren decisión explícita del equipo:
 
 La auditoría no los resuelve.
 
-## 16. S14 — Navegación
+## 16. AS-14 — Navegación
 
 El README actual conduce hacia:
 
@@ -291,12 +291,12 @@ El README actual conduce hacia:
 
 Después de este cierre deberá enlazar también:
 
-- paquete de evidencia S1–S15;
+- paquete de evidencia de Semanas 9 y 10;
 - este veredicto semántico final.
 
 ## 17. H-SEM-03 — separación evidencia / veredicto
 
-El archivo generado automáticamente para S1–S15 no debe presentarse como si
+El archivo generado automáticamente para AS-01–S15 no debe presentarse como si
 fuera por sí solo una auditoría semántica concluida.
 
 Estado:

@@ -1,6 +1,6 @@
 # Aplicabilidad de CQRS y Event Sourcing
 
-<!-- M5:SPIKE03-CQRS-UPDATE:BEGIN -->
+
 
 ## Actualización posterior — SPIKE-03
 
@@ -38,7 +38,7 @@ Evidencia:
 
 - `experimentos/spike-03-caracterizacion-racha/`
 
-<!-- M5:SPIKE03-CQRS-UPDATE:END -->
+
 
 
 ## 1. Propósito

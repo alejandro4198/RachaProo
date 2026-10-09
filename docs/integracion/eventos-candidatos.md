@@ -1,6 +1,6 @@
 # Eventos candidatos de integración
 
-<!-- M5:USERREGISTERED-STATUS:BEGIN -->
+
 
 ## Actualización posterior — estado de UserRegisteredV1
 
@@ -32,7 +32,7 @@ El payload implementado contiene:
 
 Esta actualización no reescribe la clasificación histórica original.
 
-<!-- M5:USERREGISTERED-STATUS:END -->
+
 
 
 ## 1. Propósito
@@ -2258,7 +2258,7 @@ La fase de generación y filtrado de eventos candidatos queda cerrada.
 
 Los candidatos aceptados continúan a evaluación arquitectónica y no se consideran automáticamente eventos de integración adoptados.
 
-<!-- M5:FINAL-AUDIT-USERREGISTERED-PRODUCER:BEGIN -->
+
 
 ## Aclaración posterior — trazabilidad del productor de UserRegisteredV1
 
@@ -2288,5 +2288,3 @@ mientras que:
 Esta aclaración actualiza la lectura temporal del catálogo sin convertir el
 estado posterior en evidencia causal retrospectiva de las clasificaciones
 originales.
-
-<!-- M5:FINAL-AUDIT-USERREGISTERED-PRODUCER:END -->

@@ -59,7 +59,7 @@ decisión arquitectónica nueva.
 
 Este README es un índice y no sustituye los documentos fuente.
 
-<!-- M5:SYNC-ASYNC-COVERAGE:BEGIN -->
+
 
 ## Cobertura transversal de interacciones
 
@@ -69,5 +69,3 @@ específica y cuáles no, consultar:
 `docs/integracion/cobertura-interacciones-sync-async.md`
 
 La matriz es de cobertura documental y no adopta mecanismos nuevos por sí sola.
-
-<!-- M5:SYNC-ASYNC-COVERAGE:END -->

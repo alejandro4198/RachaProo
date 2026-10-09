@@ -264,7 +264,7 @@ posterior alteraría la trazabilidad.
 
 ---
 
-### P1-S10 — “MECANISMO ACTUAL VALIDADO”
+### P1-AS-10 — “MECANISMO ACTUAL VALIDADO”
 
 **Estado:** `VALIDADO — ACLARADO POSTERIORMENTE`
 

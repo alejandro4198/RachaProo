@@ -1,6 +1,6 @@
 # Contrato de API intermodular de Activities para Focus y Reminders
 
-<!-- M5:ACTIVITYLOOKUP-CONSUMERS:BEGIN -->
+
 
 ## Consumidores actuales observados
 
@@ -16,9 +16,9 @@ pública expuesta por Activities.
 Que ambos consuman el contrato no implica que tengan el mismo flujo funcional
 ni decide automáticamente otro mecanismo de integración.
 
-<!-- M5:ACTIVITYLOOKUP-CONSUMERS:END -->
 
-<!-- M5:ACTIVITYLOOKUP-SHARED-SCOPE:BEGIN -->
+
+
 
 ## Alcance semántico compartido y flujos específicos por consumidor
 
@@ -44,7 +44,7 @@ flujo funcional.
 Compartir `ActivityLookup` no implica que Focus y Reminders posean el mismo
 flujo de negocio, ni transfiere a ninguno de ellos ownership sobre Activity.
 
-<!-- M5:ACTIVITYLOOKUP-SHARED-SCOPE:END -->
+
 
 
 ## 1. Propósito y alcance
