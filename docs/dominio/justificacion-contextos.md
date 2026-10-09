@@ -1,56 +1,5 @@
 # Justificación de bounded contexts
 
-<!-- PISTA2:IDENTITY-DECISION:BEGIN -->
-
-## Decisión posterior — inclusión de Identity en el Context Map
-
-**Estado:** `DECIDIDO`
-
-Identity se incorpora al Context Map vigente de RachaPro.
-
-### Justificación
-
-La decisión se adopta porque:
-
-- Identity posee una responsabilidad diferenciada sobre registro, autenticación y datos de usuario;
-- existe una integración intercontexto materializada entre Identity y Activities;
-- ADR-003 formalizó el flujo post-registro mediante `UserRegisteredV1`;
-- omitir Identity del mapa vigente dejaría sin representar una dependencia arquitectónica materializada.
-
-### Convención de dirección
-
-En el Context Map vigente:
-
-`A → B`
-
-significa que A consume, referencia o depende conceptualmente de información o capacidad de B.
-
-Por tanto, la relación conceptual se representa como:
-
-`Activities → Identity`
-
-Esto no debe confundirse con la dirección técnica de publicación del evento:
-
-- Identity publica `UserRegisteredV1`;
-- Activities consume `UserRegisteredV1`.
-
-La inclusión de Identity en el Context Map no implica por sí sola:
-
-- broker externo;
-- outbox;
-- retry;
-- replay;
-- despliegue independiente;
-- microservicios;
-- Shared Kernel;
-- ACL;
-- patrón Customer/Supplier.
-
-Esas decisiones requieren evidencia y cierre independiente.
-
-<!-- PISTA2:IDENTITY-DECISION:END -->
-
-
 ## 1. Propósito del documento
 
 Este documento justifica las fronteras de bounded context definidas para RachaPro

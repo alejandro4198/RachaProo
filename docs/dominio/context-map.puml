@@ -59,15 +59,3 @@ legend right
 endlegend
 
 @enduml
-
-' PISTA2:IDENTITY-CONTEXTMAP:BEGIN
-' Identity incorporado por decisión posterior de Pista 2.
-' Convención del mapa:
-' A --> B significa que A consume / depende conceptualmente de B.
-'
-' Flujo técnico UserRegisteredV1:
-' Identity publica -> Activities consume
-'
-' Dependencia conceptual representada:
-' Activities --> Identity
-' PISTA2:IDENTITY-CONTEXTMAP:END
