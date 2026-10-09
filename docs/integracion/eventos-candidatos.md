@@ -2255,3 +2255,36 @@ AchievementUnlocked
 La fase de generación y filtrado de eventos candidatos queda cerrada.
 
 Los candidatos aceptados continúan a evaluación arquitectónica y no se consideran automáticamente eventos de integración adoptados.
+
+<!-- M5:FINAL-AUDIT-USERREGISTERED-PRODUCER:BEGIN -->
+
+## Aclaración posterior — trazabilidad del productor de UserRegisteredV1
+
+En el corte original del catálogo existían apartados en los que la trazabilidad
+del productor conceptual de `UserRegisteredV1` todavía aparecía como pendiente.
+
+Ese estado histórico no se reescribe.
+
+Posteriormente, la implementación, ADR-003 y el contrato AsyncAPI permitieron
+trazar el flujo vigente de forma explícita:
+
+`Identity`
+→ `UserService`
+→ publica `UserRegisteredV1`
+→ Activities consume mediante `UserRegisteredV1Listener`
+
+Por tanto:
+
+`productor pendiente`
+→ describe el corte histórico de análisis en el que fue escrito ese apartado
+
+mientras que:
+
+`Identity / UserService`
+→ corresponde al estado posterior materializado y documentado.
+
+Esta aclaración actualiza la lectura temporal del catálogo sin convertir el
+estado posterior en evidencia causal retrospectiva de las clasificaciones
+originales.
+
+<!-- M5:FINAL-AUDIT-USERREGISTERED-PRODUCER:END -->
