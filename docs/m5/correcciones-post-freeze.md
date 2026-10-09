@@ -89,3 +89,88 @@ demostrado en las fuentes revisadas.
 
 Todo hallazgo posterior al freeze debe incorporarse como evolución posterior y
 no como reescritura del estado histórico congelado.
+
+## Auditoría semántica posterior — H-SEM
+
+Después de la auditoría externa post-freeze se realizó una lectura semántica
+S1–S15 sobre fuentes primarias, experimentos y temporalidad Git.
+
+Paquete de evidencia:
+
+`docs/m5/auditoria-semantica-s1-s15.md`
+
+Veredicto:
+
+`docs/m5/veredicto-semantico-final.md`
+
+### H-SEM-01 — alcance semántico de ActivityLookup
+
+Estado:
+
+`CORREGIDO`
+
+Aunque el título del contrato ya mencionaba Focus y Reminders, parte sustancial
+del cuerpo describía exclusivamente el flujo de Focus.
+
+Se añadió una precisión que distingue:
+
+- semántica compartida del contrato;
+- flujo específico de Focus;
+- uso del mismo contrato por Reminders cuando existe `activityId`.
+
+No se modificó código ni el mecanismo de integración.
+
+Commit:
+
+739fa7a836546852badfaa833f3cfff9ea8c2c0d
+
+### H-SEM-02 — fuerza de las afirmaciones sobre resiliencia
+
+Estado:
+
+`ACLARADO POSTERIORMENTE`
+
+Las expresiones `no se requiere` utilizadas en la revisión posterior de ADR-003
+deben interpretarse de acuerdo con la evidencia que las acompaña:
+
+`no se encontró en las fuentes revisadas un requisito explícito que obligue a
+incorporar la capacidad evaluada`.
+
+Esta precisión evita convertir ausencia de requisito encontrado en una
+afirmación universal.
+
+ADR-003 permanece sin modificación.
+
+### H-SEM-03 — evidencia versus veredicto
+
+Estado:
+
+`CORREGIDO`
+
+La extracción automática S1–S15 se registra como paquete de evidencia.
+
+El juicio semántico se registra separadamente en:
+
+`docs/m5/veredicto-semantico-final.md`
+
+Esto evita atribuir a la extracción automatizada un alcance metodológico que no
+tiene por sí sola.
+
+Commit del paquete y veredicto:
+
+4dc0f903f8758ce94900042d1b587651794ed7d6
+
+### Decisiones no cerradas
+
+Esta revisión no decide:
+
+- Identity en Context Map;
+- Achievement ownership;
+- renombre de ActivityLookup;
+- política de `.idea`;
+- adopción futura de CQRS;
+- Event Sourcing;
+- retry;
+- replay;
+- Outbox;
+- broker externo.
