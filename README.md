@@ -321,3 +321,29 @@ Artefactos:
 
 El paquete S1–S15 no debe confundirse con el veredicto: extracción de evidencia y
 juicio semántico se mantienen separados.
+
+<!-- M5:FINAL-AUDIT-CORRECTIONS:BEGIN -->
+
+## Correcciones posteriores a la auditoría final
+
+Después del merge del PR #51 se realizó una revisión adicional de método,
+trazabilidad y completitud documental.
+
+El registro de esta evolución se encuentra en:
+
+- `docs/m5/correcciones-auditoria-final.md`;
+- `docs/integracion/cobertura-interacciones-sync-async.md`.
+
+Entre las precisiones incorporadas se encuentran:
+
+- referencia explícita al preregistro histórico de SPIKE-01;
+- análisis de las corridas 2–4 para el criterio de descarte de la primera;
+- actualización temporal del productor de `UserRegisteredV1`;
+- cobertura explícita de las interacciones sync/async;
+- distinción entre módulos/capacidades implementadas y bounded contexts
+  formalmente cerrados.
+
+Estas correcciones no deciden Identity, Achievement ni otras decisiones
+arquitectónicas pendientes.
+
+<!-- M5:FINAL-AUDIT-CORRECTIONS:END -->
