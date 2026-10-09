@@ -18,6 +18,34 @@ ni decide automáticamente otro mecanismo de integración.
 
 <!-- M5:ACTIVITYLOOKUP-CONSUMERS:END -->
 
+<!-- M5:ACTIVITYLOOKUP-SHARED-SCOPE:BEGIN -->
+
+## Alcance semántico compartido y flujos específicos por consumidor
+
+`ActivityLookup` es una capacidad pública de Activities utilizada actualmente
+por Focus y Reminders.
+
+La semántica observable compartida del contrato consiste en comprobar que la
+Activity consultada:
+
+- existe;
+- pertenece al usuario indicado;
+- no está eliminada.
+
+Las secciones de este documento que describen `PomodoroSession`, creación de
+sesiones o decisiones específicas de Focus deben interpretarse como el flujo
+particular de ese consumidor y no como una restricción que limite el contrato
+exclusivamente a Focus.
+
+Reminders utiliza el mismo contrato cuando existe una referencia opcional
+`activityId` y necesita validar dicha referencia antes de continuar con su propio
+flujo funcional.
+
+Compartir `ActivityLookup` no implica que Focus y Reminders posean el mismo
+flujo de negocio, ni transfiere a ninguno de ellos ownership sobre Activity.
+
+<!-- M5:ACTIVITYLOOKUP-SHARED-SCOPE:END -->
+
 
 ## 1. Propósito y alcance
 
