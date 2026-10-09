@@ -1,5 +1,30 @@
 # Responsabilidades por bounded context
 
+<!-- PISTA2:IDENTITY-RESPONSABILIDAD:BEGIN -->
+
+## Actualización posterior — Identity
+
+**Estado:** `DECIDIDO`
+
+Identity se reconoce como contexto incluido en el Context Map vigente.
+
+Responsabilidades principales documentadas:
+
+- registro de usuario;
+- autenticación;
+- gestión de identidad y datos propios del usuario.
+
+Relación conceptual relevante:
+
+`Activities → Identity`
+
+La relación indica que Activities consume o depende de información originada en Identity para el flujo post-registro.
+
+El mecanismo técnico actualmente adoptado para ese caso específico es `UserRegisteredV1`, según ADR-003.
+
+<!-- PISTA2:IDENTITY-RESPONSABILIDAD:END -->
+
+
 ## 1. Propósito del documento
 
 Este documento compara las responsabilidades de los bounded contexts ya definidos para RachaPro, haciendo explícito qué conceptos y reglas posee cada contexto, qué información consume o referencia de otras capacidades y qué responsabilidades deben permanecer fuera de su frontera.
