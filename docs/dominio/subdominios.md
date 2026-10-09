@@ -1,5 +1,25 @@
 # Subdominios y bounded contexts
 
+<!-- PISTA2:IDENTITY-SUBDOMAIN:BEGIN -->
+
+## Actualización posterior — Identity
+
+**Estado:** `DECIDIDO`
+
+Identity queda incluido dentro del modelado vigente de contextos de RachaPro.
+
+La decisión se apoya en:
+
+- responsabilidad diferenciada;
+- ownership propio de información de identidad;
+- interacción materializada con Activities;
+- existencia de decisión arquitectónica posterior en ADR-003.
+
+Esta actualización no modifica las decisiones abiertas de otros contextos o capacidades.
+
+<!-- PISTA2:IDENTITY-SUBDOMAIN:END -->
+
+
 ## 1. Propósito del documento
 
 Este documento consolida las fronteras de dominio identificadas para RachaPro a partir de la evidencia observada en el repositorio y de las decisiones de modelado tomadas por el equipo durante la semana 9.
