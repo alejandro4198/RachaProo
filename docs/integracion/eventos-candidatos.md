@@ -1,5 +1,40 @@
 # Eventos candidatos de integración
 
+<!-- M5:USERREGISTERED-STATUS:BEGIN -->
+
+## Actualización posterior — estado de UserRegisteredV1
+
+La clasificación `ACEPTAR` conservada en este análisis corresponde al estado
+del candidato en el corte temporal original y no debe reinterpretarse
+retroactivamente como una adopción ya decidida en ese momento.
+
+Posteriormente, ADR-003 adoptó `UserRegisteredV1` específicamente para la
+integración post-registro entre Identity y Activities.
+
+Para el estado posterior documentado:
+
+- `UserRegisteredV1`: adoptado e implementado para ese caso específico;
+- `ActivityCompleted`: candidato aceptado para evaluación, no adoptado;
+- `PomodoroSessionCompleted`: candidato aceptado para evaluación, no adoptado.
+
+Decisión arquitectónica:
+
+- `docs/adr/0003-integracion-eventos-internos.md`
+
+Contrato técnico:
+
+- `docs/asyncapi/rachapro-events-v1.yaml`
+
+El payload implementado contiene:
+
+- `userId`;
+- `occurredAt`.
+
+Esta actualización no reescribe la clasificación histórica original.
+
+<!-- M5:USERREGISTERED-STATUS:END -->
+
+
 ## 1. Propósito
 
 Este documento consolida los eventos candidatos identificados durante el análisis
