@@ -1,5 +1,24 @@
 # Contrato de API intermodular Activities → Focus
 
+<!-- M5:ACTIVITYLOOKUP-CONSUMERS:BEGIN -->
+
+## Consumidores actuales observados
+
+En el estado actual observado del backend, `ActivityLookup` es consumido por al
+menos:
+
+- Focus;
+- Reminders.
+
+La semántica contractual documentada en este archivo corresponde a la capacidad
+pública expuesta por Activities.
+
+Que ambos consuman el contrato no implica que tengan el mismo flujo funcional
+ni decide automáticamente otro mecanismo de integración.
+
+<!-- M5:ACTIVITYLOOKUP-CONSUMERS:END -->
+
+
 ## 1. Propósito y alcance
 
 Este documento formaliza el contrato público intermodular mediante el cual el
