@@ -236,3 +236,21 @@ general, tolerancia universal a fallos, CQRS, mensajería externa ni convenienci
 de transformar todas las integraciones en eventos.
 
 <!-- M5:FINAL-AUDIT-SPIKE01:END -->
+
+<!-- M5:SPIKE01-DELEGACION-IA-POSTERIOR:BEGIN -->
+
+## Aclaración posterior sobre trazabilidad de delegación de IA
+
+Durante la verificación final de los entregables de M5 no se recuperó evidencia
+suficiente para demostrar un **registro formal contemporáneo de delegación de
+IA específico para SPIKE-01**.
+
+Esta ausencia no modifica el preregistro, la implementación, las mediciones ni
+el veredicto experimental. Tampoco se reconstruye retrospectivamente un prompt
+o una delegación como si hubieran quedado registrados antes del experimento.
+
+La limitación y la evidencia histórica revisada se documentan en:
+
+- [`nota-trazabilidad-delegacion-ia.md`](./nota-trazabilidad-delegacion-ia.md)
+
+<!-- M5:SPIKE01-DELEGACION-IA-POSTERIOR:END -->
