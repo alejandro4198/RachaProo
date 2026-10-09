@@ -1,5 +1,29 @@
 # Semana 9 — API, eventos e integración entre contextos
 
+<!-- M5:SEMANA9-TEMPORALIDAD:BEGIN -->
+
+> **DOCUMENTO EVOLUTIVO DE SEMANA 9**
+>
+> Este archivo contiene material producido en momentos distintos de Semana 9.
+>
+> Parte de su contenido fue preregistrado antes de SPIKE-01 y otras secciones
+> fueron completadas después de ejecutar el experimento.
+>
+> La secuencia histórica relevante se conserva en Git:
+>
+> - preregistro: `59fdb47`;
+> - implementación y resultados: `597e9c7`;
+> - decisión arquitectónica posterior: ADR-003, `c6ae059`.
+>
+> Expresiones históricas como `pendiente`, `no implementado` o equivalentes
+> deben interpretarse según el corte temporal en que fueron escritas.
+>
+> Este archivo no debe utilizarse aisladamente para reconstruir el estado
+> posterior a ADR-003.
+
+<!-- M5:SEMANA9-TEMPORALIDAD:END -->
+
+
 ## 1. Propósito
 
 Definir cómo se relacionan los contextos de negocio de RachaPro después de la materialización del monolito modular de Semana 8.
