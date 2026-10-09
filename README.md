@@ -307,3 +307,17 @@ Fuentes vigentes de esta evolución:
 
 Estas fuentes no reescriben retrospectivamente el freeze original; documentan
 evolución posterior.
+
+## Auditoría semántica S1–S15
+
+Después de ordenar y congelar la documentación se realizó una revisión semántica
+posterior basada en fuentes primarias, evidencia experimental y temporalidad Git.
+
+Artefactos:
+
+- `docs/m5/auditoria-semantica-s1-s15.md` — paquete reproducible de evidencia;
+- `docs/m5/veredicto-semantico-final.md` — juicio semántico y límites de inferencia;
+- `docs/m5/correcciones-post-freeze.md` — registro cronológico de H-EXT y H-SEM.
+
+El paquete S1–S15 no debe confundirse con el veredicto: extracción de evidencia y
+juicio semántico se mantienen separados.
