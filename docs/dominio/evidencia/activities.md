@@ -1,5 +1,32 @@
 # Evidencia de dominio — Activities
 
+<!-- M5:ACTIVITYLOOKUP-SEMANTICS:BEGIN -->
+
+## Actualización posterior — semántica de ActivityLookup
+
+La tensión registrada originalmente alrededor del término `active` fue
+formalizada posteriormente en:
+
+- `docs/integracion/contrato-api.md`
+
+Para el contrato vigente documentado, `active` no significa exclusivamente
+estado `PENDING` y no excluye por sí mismo `COMPLETED` u `OVERDUE`.
+
+La operación observada comprueba que la actividad:
+
+- existe;
+- pertenece al usuario indicado;
+- no está eliminada.
+
+El backend muestra consumidores actuales de `ActivityLookup` en Focus y
+Reminders.
+
+Esta actualización conserva el registro histórico de la tensión original y
+remite al contrato vigente.
+
+<!-- M5:ACTIVITYLOOKUP-SEMANTICS:END -->
+
+
 ## 1. Responsabilidad observada
 
 ### HECHO DEL REPOSITORIO
