@@ -1696,6 +1696,8 @@ reacción concreta
 
 El productor conceptual requiere todavía trazabilidad explícita.
 
+> **Nota temporal:** este estado de productor pendiente corresponde al corte histórico original de esta sección. Para el estado posterior materializado de `UserRegisteredV1`, consulte la aclaración posterior del productor incluida más adelante en este mismo documento.
+
 No debe fijarse únicamente a partir del nombre del evento.
 
 ### Interesado demostrado
