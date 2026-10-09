@@ -1,4 +1,4 @@
-# Contrato de API intermodular Activities → Focus
+# Contrato de API intermodular de Activities para Focus y Reminders
 
 <!-- M5:ACTIVITYLOOKUP-CONSUMERS:BEGIN -->
 
