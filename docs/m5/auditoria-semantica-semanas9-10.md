@@ -19,7 +19,7 @@ Este archivo es un **paquete de evidencia**, no el veredicto de la auditoría.
 > El proyecto no ha alcanzado todavía las Semanas 11 a 15.
 
 
-Su función es reunir fragmentos y trazas relevantes para AS-01–S15 de forma
+Su función es reunir fragmentos y trazas relevantes para AS-01–AS-15 de forma
 reproducible. La aparición de una línea en este archivo no implica que la
 afirmación haya sido aceptada, refutada o corregida.
 
