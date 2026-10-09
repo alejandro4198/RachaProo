@@ -161,3 +161,78 @@ La hipótesis experimental queda validada dentro de las condiciones probadas.
 `UserRegisteredV1` permitió desacoplar el flujo experimental entre Identity y Activities, conservar el registro del usuario, crear correctamente las categorías predeterminadas y cumplir el umbral local de 2000 ms en las cuatro ejecuciones observadas.
 
 Este veredicto corresponde exclusivamente al Spike 1 y no implica por sí mismo la adopción de mensajería externa, microservicios, CQRS ni eventos para todas las relaciones entre módulos.
+
+<!-- M5:FINAL-AUDIT-SPIKE01:BEGIN -->
+
+## Aclaración metodológica posterior — preregistro y tratamiento de corridas
+
+Esta sección es posterior a la ejecución histórica de SPIKE-01 y no modifica
+retroactivamente su hipótesis, datos crudos ni veredicto original.
+
+### Trazabilidad del preregistro
+
+La fuente preregistrada utilizada antes de implementar y medir SPIKE-01 quedó
+versionada en la documentación de Semana 9.
+
+Secuencia Git relevante:
+
+`59fdb47`
+→ preregistro / definición previa del experimento
+
+`597e9c7`
+→ implementación y resultados
+
+`c6ae059`
+→ ADR-003
+
+Por tanto, el preregistro existía antes de la implementación, las mediciones y
+la decisión arquitectónica posterior.
+
+Esta referencia se incorpora aquí para que el paquete experimental sea
+autosuficiente en términos de navegación, sin duplicar ni reescribir el
+preregistro histórico.
+
+### Tratamiento estadístico para el criterio de descarte de la primera corrida
+
+Los datos crudos históricos se conservan sin modificación:
+
+| Corrida | Evento |
+|---|---:|
+| 1 | 28 ms |
+| 2 | 65 ms |
+| 3 | 36 ms |
+| 4 | 32 ms |
+
+El resumen histórico de las cuatro corridas también permanece registrado por
+trazabilidad.
+
+Para la evaluación de M5 bajo el criterio que exige descartar la primera corrida
+antes de calcular la estadística decisora, el conjunto considerado es:
+
+`65, 36, 32 ms`
+
+Resultado:
+
+- corridas consideradas: 3;
+- mediana: 36 ms;
+- corridas dentro del umbral de 2000 ms: 3/3.
+
+Esta aclaración no elimina la primera medición ni modifica el CSV original.
+
+Distingue:
+
+`datos crudos históricos`
+→ cuatro corridas conservadas
+
+de:
+
+`estadística primaria bajo el criterio de descarte`
+→ corridas 2–4
+→ mediana 36 ms
+→ 3/3 bajo 2000 ms
+
+La aclaración tampoco convierte este resultado en evidencia de escalabilidad
+general, tolerancia universal a fallos, CQRS, mensajería externa ni conveniencia
+de transformar todas las integraciones en eventos.
+
+<!-- M5:FINAL-AUDIT-SPIKE01:END -->
