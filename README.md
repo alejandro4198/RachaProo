@@ -143,7 +143,7 @@ Documentos anteriores como `01-contexto-y-drivers.md`, `02-escenarios-de-calidad
 
 ## 6. Evidencia experimental
 
-<!-- M5:EVIDENCIA-EXPERIMENTAL:BEGIN -->
+
 
 > **Alcance de esta sección**
 >
@@ -161,7 +161,7 @@ Documentos anteriores como `01-contexto-y-drivers.md`, `02-escenarios-de-calidad
 > decisión arquitectónica nueva. Sus resultados deben interpretarse junto con
 > sus prerregistros, limitaciones, veredictos y ADR relacionados.
 
-<!-- M5:EVIDENCIA-EXPERIMENTAL:END -->
+
 
 ### EXP-001 — Línea base Android
 
@@ -308,21 +308,23 @@ Fuentes vigentes de esta evolución:
 Estas fuentes no reescriben retrospectivamente el freeze original; documentan
 evolución posterior.
 
-## Auditoría semántica S1–S15
+## Auditoría semántica de Semanas 9 y 10
 
 Después de ordenar y congelar la documentación se realizó una revisión semántica
 posterior basada en fuentes primarias, evidencia experimental y temporalidad Git.
 
+> **Alcance temporal:** esta revisión documenta trabajo realizado durante las **Semanas 9 y 10**. Los identificadores `AS-01` a `AS-15` son controles internos de auditoría y no corresponden a Semanas 11 a 15.
+
 Artefactos:
 
-- `docs/m5/auditoria-semantica-s1-s15.md` — paquete reproducible de evidencia;
+- `docs/m5/auditoria-semantica-semanas9-10.md` — paquete reproducible de evidencia;
 - `docs/m5/veredicto-semantico-final.md` — juicio semántico y límites de inferencia;
 - `docs/m5/correcciones-post-freeze.md` — registro cronológico de H-EXT y H-SEM.
 
-El paquete S1–S15 no debe confundirse con el veredicto: extracción de evidencia y
+El paquete de auditoría semántica de Semanas 9 y 10 no debe confundirse con el veredicto: extracción de evidencia y
 juicio semántico se mantienen separados.
 
-<!-- M5:FINAL-AUDIT-CORRECTIONS:BEGIN -->
+
 
 ## Correcciones posteriores a la auditoría final
 
@@ -346,7 +348,7 @@ Entre las precisiones incorporadas se encuentran:
 Estas correcciones no deciden Identity, Achievement ni otras decisiones
 arquitectónicas pendientes.
 
-<!-- M5:FINAL-AUDIT-CORRECTIONS:END -->
+
 
 ## Auditoría complementaria M5
 

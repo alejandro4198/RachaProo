@@ -93,11 +93,11 @@ no como reescritura del estado histórico congelado.
 ## Auditoría semántica posterior — H-SEM
 
 Después de la auditoría externa post-freeze se realizó una lectura semántica
-S1–S15 sobre fuentes primarias, experimentos y temporalidad Git.
+AS-01–S15 sobre fuentes primarias, experimentos y temporalidad Git.
 
 Paquete de evidencia:
 
-`docs/m5/auditoria-semantica-s1-s15.md`
+`docs/m5/auditoria-semantica-semanas9-10.md`
 
 Veredicto:
 
@@ -147,7 +147,7 @@ Estado:
 
 `CORREGIDO`
 
-La extracción automática S1–S15 se registra como paquete de evidencia.
+La extracción automática de la auditoría de Semanas 9 y 10 se registra como paquete de evidencia.
 
 El juicio semántico se registra separadamente en:
 

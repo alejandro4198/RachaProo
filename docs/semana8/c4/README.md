@@ -1,6 +1,6 @@
 # C4 — RachaPro Semana 8
 
-<!-- M5:C4-CORTE-TEMPORAL:BEGIN -->
+
 
 > **CORTE TEMPORAL — AS-IS AL CIERRE DE SEMANA 8**
 >
@@ -20,7 +20,7 @@
 > Las relaciones originales de Semana 8 se conservan sin reescritura
 > retroactiva por trazabilidad histórica.
 
-<!-- M5:C4-CORTE-TEMPORAL:END -->
+
 
 
 Estado:

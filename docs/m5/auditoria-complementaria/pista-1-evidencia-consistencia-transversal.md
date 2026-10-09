@@ -387,7 +387,7 @@ Coincidencias encontradas: **500**.
 - L38: \| A05 Identity \| DECISION PENDIENTE \| No se detecta cierre automatico. La evidencia existe, pero el alcance permanece abierto. \|
 - L61: - alcance de Identity en el Context Map;
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L42: L1: # Subdominios y bounded contexts
 - L43: L7: Su propósito es sintetizar las responsabilidades protegidas, conceptos principales, ownership, dependencias y exclusiones de los bounded contexts identificados, sin repetir el detalle técnico completo registrado en los documentos auxiliares de evidencia.
@@ -415,7 +415,7 @@ Coincidencias encontradas: **500**.
 - L133: L330: del bounded context corresponde a una decisión de modelado basada en
 - L135: L340: Activities como bounded context = DECIDIDO
 - L141: L500: → Focus se mantiene como bounded context independiente.
-- L146: ## S2 — Context Map y relaciones
+- L146: ## AS-02 — Context Map y relaciones
 - L148: L7: rectangle "Activities\n<<Bounded Context>>" as Activities {
 - L149: L10: rectangle "Focus\n<<Bounded Context>>" as Focus {
 - L150: L13: rectangle "Reminders\n<<Bounded Context>>" as Reminders {
@@ -528,7 +528,7 @@ Coincidencias encontradas: **500**.
 #### `docs/m5/veredicto-semantico-final.md`
 
 - L47: La revisión no decide el alcance de Identity dentro del Context Map.
-- L49: ## 4. S2 — Context Map
+- L49: ## 4. AS-02 — Context Map
 - L64: Achievement continúa fuera del mapa como bounded context confirmado mientras su
 - L67: Esta revisión no incorpora Identity automáticamente.
 - L108: - Identity produce 'UserRegisteredV1';
@@ -714,10 +714,10 @@ Coincidencias encontradas: **210**.
 
 #### `docs/dominio/evidencia/activities.md`
 
-- L3: <!-- M5:ACTIVITYLOOKUP-SEMANTICS:BEGIN -->
+- L3:
 - L5: ## Actualización posterior — semántica de ActivityLookup
 - L21: El backend muestra consumidores actuales de 'ActivityLookup' en Focus y
-- L27: <!-- M5:ACTIVITYLOOKUP-SEMANTICS:END -->
+- L27:
 - L511: 'ActivityLookup'
 - L515: 'existsActiveActivityForUser(activityId, userId)'
 - L519: 'ActivityLookupService.existsActiveActivityForUser(...)'
@@ -801,13 +801,13 @@ Coincidencias encontradas: **210**.
 
 #### `docs/integracion/contrato-api.md`
 
-- L3: <!-- M5:ACTIVITYLOOKUP-CONSUMERS:BEGIN -->
+- L3:
 - L7: En el estado actual observado del backend, 'ActivityLookup' es consumido por al
-- L19: <!-- M5:ACTIVITYLOOKUP-CONSUMERS:END -->
-- L21: <!-- M5:ACTIVITYLOOKUP-SHARED-SCOPE:BEGIN -->
+- L19:
+- L21:
 - L25: 'ActivityLookup' es una capacidad pública de Activities utilizada actualmente
 - L44: Compartir 'ActivityLookup' no implica que Focus y Reminders posean el mismo
-- L47: <!-- M5:ACTIVITYLOOKUP-SHARED-SCOPE:END -->
+- L47:
 - L152: ActivityLookup.activityId
 - L165: interface ActivityLookup {
 - L166: fun existsActiveActivityForUser(
@@ -852,13 +852,13 @@ Coincidencias encontradas: **210**.
 - L40: \| A07 ActivityLookup \| BIEN \| Semantica documentada y consumidores Focus/Reminders trazables. \|
 - L63: - eventual renombre contractual de ActivityLookup;
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L153: L25: Reminders --> Activities : consulta y valida referencia opcional a Activity\nmediante ActivityLookup cuando existe activityId
-- L162: ## S3 — ActivityLookup y contratos
-- L166: L3: <!-- M5:ACTIVITYLOOKUP-CONSUMERS:BEGIN -->
+- L162: ## AS-03 — ActivityLookup y contratos
+- L166: L3:
 - L167: L7: En el estado actual observado del backend, 'ActivityLookup' es consumido por al
-- L170: L19: <!-- M5:ACTIVITYLOOKUP-CONSUMERS:END -->
+- L170: L19:
 - L180: L124: ActivityLookup.activityId
 - L182: L137: interface ActivityLookup {
 - L183: L138:     fun existsActiveActivityForUser(
@@ -868,10 +868,10 @@ Coincidencias encontradas: **210**.
 - L193: L218: → Focus puede invocar ActivityLookup
 - L205: L425: - no invocar 'ActivityLookup' cuando no existe 'activityId'.
 - L208: L482: → invoca ActivityLookup
-- L217: L3: <!-- M5:ACTIVITYLOOKUP-SEMANTICS:BEGIN -->
+- L217: L3:
 - L218: L5: ## Actualización posterior — semántica de ActivityLookup
 - L223: L21: El backend muestra consumidores actuales de 'ActivityLookup' en Focus y
-- L225: L27: <!-- M5:ACTIVITYLOOKUP-SEMANTICS:END -->
+- L225: L27:
 - L244: L511: 'ActivityLookup'
 - L245: L515: 'existsActiveActivityForUser(activityId, userId)'
 - L246: L519: 'ActivityLookupService.existsActiveActivityForUser(...)'
@@ -926,7 +926,7 @@ Coincidencias encontradas: **210**.
 
 #### `docs/m5/veredicto-semantico-final.md`
 
-- L69: ## 5. S3 — ActivityLookup
+- L69: ## 5. AS-03 — ActivityLookup
 - L71: La evidencia revisada permite sostener que 'ActivityLookup' comprueba
 - L101: El eventual renombre de 'ActivityLookup' continúa siendo una decisión
 - L235: - consumidores de ActivityLookup;
@@ -1135,9 +1135,9 @@ Coincidencias encontradas: **226**.
 
 - L41: \| A08 UserRegisteredV1 \| BIEN \| Estado posterior y payload userId/occurredAt son trazables. \|
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
-- L373: ## S4 — UserRegisteredV1 y AsyncAPI
+- L373: ## AS-04 — UserRegisteredV1 y AsyncAPI
 - L376: L5: ## Actualización posterior — estado de UserRegisteredV1
 - L377: L11: Posteriormente, ADR-003 adoptó 'UserRegisteredV1' específicamente para la
 - L379: L16: - 'UserRegisteredV1': adoptado e implementado para ese caso específico;
@@ -1230,7 +1230,7 @@ Coincidencias encontradas: **226**.
 
 #### `docs/m5/veredicto-semantico-final.md`
 
-- L104: ## 6. S4 — UserRegisteredV1 y AsyncAPI
+- L104: ## 6. AS-04 — UserRegisteredV1 y AsyncAPI
 - L108: - Identity produce 'UserRegisteredV1';
 - L236: - UserRegisteredV1;
 
@@ -1446,7 +1446,7 @@ Coincidencias encontradas: **152**.
 
 - L36: Sin embargo, el título seguía expresando únicamente Activities → Focus.
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L86: L30: \| Progress \| Interpretar y agregar los resultados producidos por otras capacidades del sistema para medir y representar el avance del usuario mediante rachas y métricas de progreso. \| Interpretación de progreso, racha actual, mejor racha y métricas agregadas. \| Hechos producidos por Activities y Focus. \| 'Activity', 'PomodoroSession', 'Reminde […]
 - L99: L209: Sin embargo, esta evidencia no permite concluir todavía que Achievement constituya un bounded context independiente ni que deba pertenecer a Activities, Focus o Progress.
@@ -1620,7 +1620,7 @@ Coincidencias encontradas: **56**.
 
 - L140: Reminders → Activities
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L93: L125: La consulta de Activity no transfiere ownership sobre Activities a Reminders.
 - L153: L25: Reminders --> Activities : consulta y valida referencia opcional a Activity\nmediante ActivityLookup cuando existe activityId
@@ -1772,7 +1772,7 @@ Coincidencias encontradas: **58**.
 - L480: No se concluye todavía que la relación Activities → Progress deba implementarse
 - L1430: Progress agrega información proveniente de Activities y Focus.
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L86: L30: \| Progress \| Interpretar y agregar los resultados producidos por otras capacidades del sistema para medir y representar el avance del usuario mediante rachas y métricas de progreso. \| Interpretación de progreso, racha actual, mejor racha y métricas agregadas. \| Hechos producidos por Activities y Focus. \| 'Activity', 'PomodoroSession', 'Reminde […]
 - L99: L209: Sin embargo, esta evidencia no permite concluir todavía que Achievement constituya un bounded context independiente ni que deba pertenecer a Activities, Focus o Progress.
@@ -1901,7 +1901,7 @@ Coincidencias encontradas: **71**.
 - L1430: Progress agrega información proveniente de Activities y Focus.
 - L2058: Progress consume información agregada de sesiones de Focus.
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L86: L30: \| Progress \| Interpretar y agregar los resultados producidos por otras capacidades del sistema para medir y representar el avance del usuario mediante rachas y métricas de progreso. \| Interpretación de progreso, racha actual, mejor racha y métricas agregadas. \| Hechos producidos por Activities y Focus. \| 'Activity', 'PomodoroSession', 'Reminde […]
 - L99: L209: Sin embargo, esta evidencia no permite concluir todavía que Achievement constituya un bounded context independiente ni que deba pertenecer a Activities, Focus o Progress.
@@ -1985,9 +1985,9 @@ Coincidencias encontradas: **147**.
 #### `docs/integracion/aplicabilidad-cqrs-event-sourcing.md`
 
 - L1: # Aplicabilidad de CQRS y Event Sourcing
-- L3: <!-- M5:SPIKE03-CQRS-UPDATE:BEGIN -->
+- L3:
 - L24: constituye por sí sola una justificación de CQRS.
-- L41: <!-- M5:SPIKE03-CQRS-UPDATE:END -->
+- L41:
 - L46: Este documento analiza CQRS y Event Sourcing como opciones arquitectónicas para
 - L163: directamente CQRS ni Event Sourcing.
 - L224: Esta diferencia por sí sola no demuestra que CQRS sea necesario.
@@ -2043,16 +2043,16 @@ Coincidencias encontradas: **147**.
 
 - L46: \| A13 CQRS \| NO ADOPTADO / NO DETERMINADO \| SPIKE-03 reconocido sin convertirlo en decision automatica. \|
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L498: L363: La introducción de 'UserRegisteredV1' resuelve un caso específico de integración entre módulos y no constituye por sí sola CQRS.
 - L556: L363: La introducción de 'UserRegisteredV1' resuelve un caso específico de integración entre módulos y no constituye por sí sola CQRS.
 - L641: L163: Este veredicto corresponde exclusivamente al Spike 1 y no implica por sí mismo la adopción de mensajería externa, microservicios, CQRS ni eventos para todas las relaciones entre módulos.
-- L892: ## S9 — CQRS / Event Sourcing
+- L892: ## AS-09 — CQRS / Event Sourcing
 - L894: L1: # Aplicabilidad de CQRS y Event Sourcing
-- L895: L3: <!-- M5:SPIKE03-CQRS-UPDATE:BEGIN -->
+- L895: L3:
 - L899: L24: constituye por sí sola una justificación de CQRS.
-- L904: L41: <!-- M5:SPIKE03-CQRS-UPDATE:END -->
+- L904: L41:
 - L905: L46: Este documento analiza CQRS y Event Sourcing como opciones arquitectónicas para
 - L912: L163: directamente CQRS ni Event Sourcing.
 - L913: L224: Esta diferencia por sí sola no demuestra que CQRS sea necesario.
@@ -2120,7 +2120,7 @@ Coincidencias encontradas: **147**.
 #### `docs/m5/veredicto-semantico-final.md`
 
 - L158: - necesidad de CQRS;
-- L198: ## 11. S9 — CQRS y Event Sourcing
+- L198: ## 11. AS-09 — CQRS y Event Sourcing
 - L204: Estado de CQRS:
 - L238: - estado no adoptado de CQRS / Event Sourcing.
 - L329: - que CQRS, Event Sourcing, retry, replay, Outbox o broker estén prohibidos.
@@ -2244,9 +2244,9 @@ Coincidencias encontradas: **125**.
 
 - L47: \| A14 Event Sourcing \| NO ADOPTADO \| No se detecta adopcion automatica. \|
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
-- L892: ## S9 — CQRS / Event Sourcing
+- L892: ## AS-09 — CQRS / Event Sourcing
 - L894: L1: # Aplicabilidad de CQRS y Event Sourcing
 - L902: L34: - no se ha demostrado Event Sourcing;
 - L905: L46: Este documento analiza CQRS y Event Sourcing como opciones arquitectónicas para
@@ -2313,7 +2313,7 @@ Coincidencias encontradas: **125**.
 
 #### `docs/m5/veredicto-semantico-final.md`
 
-- L198: ## 11. S9 — CQRS y Event Sourcing
+- L198: ## 11. AS-09 — CQRS y Event Sourcing
 - L210: Event Sourcing.
 - L212: Estado de Event Sourcing:
 - L238: - estado no adoptado de CQRS / Event Sourcing.
@@ -2419,7 +2419,7 @@ Coincidencias encontradas: **143**.
 - L134: - Outbox;
 - L135: - broker externo;
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L518: L863: no se observó replay de UserRegisteredV1
 - L641: L163: Este veredicto corresponde exclusivamente al Spike 1 y no implica por sí mismo la adopción de mensajería externa, microservicios, CQRS ni eventos para todas las relaciones entre módulos.
@@ -2607,7 +2607,7 @@ Coincidencias encontradas: **188**.
 - L43: \| A10 Temporalidad SPIKE-01 / ADR-003 \| BIEN \| Preregistro -> resultados -> ADR-003 mantiene orden temporal. \|
 - L48: \| A15 Evidencia experimental \| BIEN \| SPIKE-01, SPIKE-02 y SPIKE-03 contienen artefactos. \|
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L505: L603: SPIKE-01 evaluó si el registro podía desacoplar la dependencia directa de Identity hacia Activities mediante:
 - L534: L7: - **Evidencia principal:** 'experimentos/spike-01-integracion/'
@@ -2631,7 +2631,7 @@ Coincidencias encontradas: **188**.
 - L599: L676: git merge-base --is-ancestor 8d23268 c6ae059
 - L600: L683: git merge-base --is-ancestor c6ae059 8d23268
 - L604: L694: experimentos/spike-01-integracion/
-- L615: ## S6 — SPIKE-01
+- L615: ## AS-06 — SPIKE-01
 - L617: ### experimentos/spike-01-integracion/README.md
 - L625: L58: '28, 65, 36, 32 ms'
 - L626: L61: - Mínimo: 28 ms
@@ -2675,7 +2675,7 @@ Coincidencias encontradas: **188**.
 - L127: '597e9c7'
 - L128: → implementación y resultados de SPIKE-01
 - L130: 'c6ae059'
-- L138: ## 8. S6 — SPIKE-01
+- L138: ## 8. AS-06 — SPIKE-01
 - L142: - 28 ms;
 - L143: - 65 ms;
 - L144: - 36 ms;
@@ -2934,7 +2934,7 @@ Coincidencias encontradas: **194**.
 - L46: \| A13 CQRS \| NO ADOPTADO / NO DETERMINADO \| SPIKE-03 reconocido sin convertirlo en decision automatica. \|
 - L47: \| A14 Event Sourcing \| NO ADOPTADO \| No se detecta adopcion automatica. \|
 
-#### `docs/m5/auditoria-semantica-s1-s15.md`
+#### `docs/m5/auditoria-semantica-semanas9-10.md`
 
 - L61: L195: Activities como bounded context = DECIDIDO
 - L75: L418: ## 7. Capacidades con ownership no decidido

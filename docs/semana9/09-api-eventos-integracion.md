@@ -1,6 +1,6 @@
 # Semana 9 — API, eventos e integración entre contextos
 
-<!-- M5:SEMANA9-TEMPORALIDAD:BEGIN -->
+
 
 > **DOCUMENTO EVOLUTIVO DE SEMANA 9**
 >
@@ -21,7 +21,7 @@
 > Este archivo no debe utilizarse aisladamente para reconstruir el estado
 > posterior a ADR-003.
 
-<!-- M5:SEMANA9-TEMPORALIDAD:END -->
+
 
 
 ## 1. Propósito

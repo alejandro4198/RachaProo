@@ -162,7 +162,7 @@ La hipótesis experimental queda validada dentro de las condiciones probadas.
 
 Este veredicto corresponde exclusivamente al Spike 1 y no implica por sí mismo la adopción de mensajería externa, microservicios, CQRS ni eventos para todas las relaciones entre módulos.
 
-<!-- M5:FINAL-AUDIT-SPIKE01:BEGIN -->
+
 
 ## Aclaración metodológica posterior — preregistro y tratamiento de corridas
 
@@ -235,9 +235,9 @@ La aclaración tampoco convierte este resultado en evidencia de escalabilidad
 general, tolerancia universal a fallos, CQRS, mensajería externa ni conveniencia
 de transformar todas las integraciones en eventos.
 
-<!-- M5:FINAL-AUDIT-SPIKE01:END -->
 
-<!-- M5:SPIKE01-DELEGACION-IA-POSTERIOR:BEGIN -->
+
+
 
 ## Aclaración posterior sobre trazabilidad de delegación de IA
 
@@ -252,5 +252,3 @@ o una delegación como si hubieran quedado registrados antes del experimento.
 La limitación y la evidencia histórica revisada se documentan en:
 
 - [`nota-trazabilidad-delegacion-ia.md`](./nota-trazabilidad-delegacion-ia.md)
-
-<!-- M5:SPIKE01-DELEGACION-IA-POSTERIOR:END -->
