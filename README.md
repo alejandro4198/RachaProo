@@ -7,7 +7,7 @@
 | Proyecto | RachaPro — Gestor de Productividad Académica |
 | Integrante | Alejandro Villamizar Rodríguez |
 | Curso | Arquitectura de Software |
-| Estado académico documentado | Semanas 1–8 completadas y validadas |
+| Estado académico documentado | Semanas 1–8 cerradas; documentación posterior de Semana 9, Semana 10 y M5 incorporada al repositorio |
 | Estado de Semana 8 | Cerrada y validada en `semana8-final-validado` |
 | Repositorio | https://github.com/alejandro4198/RachaProo.git |
 
@@ -67,6 +67,8 @@ Esta arquitectura se encuentra materializada en el backend. Sus fronteras se pro
 | Semana 6 | Arquitectura C4 Nivel 3 y verificación de componentes. | `dossier/07-c4-componentes.md` |
 | Semana 7 | Comparación de estilos, decisión arquitectónica, mapa modular y crítica de IA. | `dossier/08-decision-estilo-arquitectonico.md` |
 | Semana 8 | Materialización del monolito modular, ADR, ArchUnit, C4 post-refactor, rendimiento, regresión funcional y hardening. | `docs/semana8/`, `docs/adr/`, `experimentos/semana8-regresion-funcional/` |
+| Semana 9 | Evaluación de integración mediante contratos síncronos y evento interno; preregistro y ejecución de SPIKE-01. | `docs/semana9/`, `experimentos/spike-01-integracion/` |
+| Trabajo posterior / M5 | Modelado de dominio, Context Map, contrato API, AsyncAPI, auditoría de eventos, CQRS / Event Sourcing y experimentos posteriores. | `docs/dominio/`, `docs/integracion/`, `docs/asyncapi/`, `experimentos/spike-02-resiliencia/`, `experimentos/spike-03-caracterizacion-racha/`, `docs/adr/0003-integracion-eventos-internos.md` |
 
 Los documentos de semanas anteriores pueden contener estados o pendientes que eran válidos en el momento en que fueron escritos. Cuando existe evidencia posterior, debe interpretarse junto con los documentos más recientes y no como una descripción del estado vigente.
 
@@ -81,6 +83,16 @@ Para conocer el estado actual del sistema se debe consultar, en este orden:
 3. `docs/semana8/c4/c4-l3-backend-modular.md` — C4 Nivel 3 AS-IS del backend modular.
 4. `docs/adr/0001-decision-estilo.md` — decisión de monolito modular y estado de materialización.
 5. `docs/adr/0002-aislamiento-persistencia.md` — aislamiento de persistencia y contratos intermodulares.
+6. `docs/adr/0003-integracion-eventos-internos.md` — decisión vigente para el flujo post-registro Identity → Activities mediante `UserRegisteredV1`.
+7. `docs/dominio/` — modelado de subdominios, bounded contexts, responsabilidades, ownership y Context Map correspondiente a M5.
+8. `docs/integracion/` — contratos y análisis posteriores de integración.
+9. `docs/asyncapi/rachapro-events-v1.yaml` — contrato técnico vigente del evento `UserRegisteredV1`.
+
+Para evidencia experimental asociada a estas decisiones y análisis posteriores, consultar además:
+
+- `experimentos/spike-01-integracion/`
+- `experimentos/spike-02-resiliencia/`
+- `experimentos/spike-03-caracterizacion-racha/`
 
 Los siguientes documentos se conservan como trazabilidad histórica y **no deben utilizarse por sí solos como representación del AS-IS vigente**:
 - `dossier/06-c4-contenedores.md` — baseline anterior a la materialización de Semana 8.
@@ -91,6 +103,26 @@ Los siguientes documentos se conservan como trazabilidad histórica y **no deben
 - `docs/architecture/comparison-historical-current.md`
 
 ---
+
+## 4.1 Evolución posterior a Semana 8 — Semana 9, Semana 10 y M5
+
+La documentación de Semana 8 conserva el estado arquitectónico materializado en ese corte temporal.
+
+Para reconstruir el estado posterior y las decisiones tomadas después de Semana 8, deben consultarse también los siguientes artefactos:
+
+- `docs/adr/0003-integracion-eventos-internos.md` — decisión arquitectónica posterior sobre `UserRegisteredV1` para el flujo Identity → Activities.
+- `docs/dominio/` — análisis de subdominios, bounded contexts, responsabilidades, ownership y Context Map de M5.
+- `docs/integracion/` — contratos, evaluación síncrono/asíncrono, eventos candidatos y análisis de aplicabilidad de CQRS / Event Sourcing.
+- `docs/asyncapi/rachapro-events-v1.yaml` — formalización técnica del contrato vigente de `UserRegisteredV1`.
+- `experimentos/spike-01-integracion/` — evidencia experimental de la integración mediante evento interno.
+- `experimentos/spike-02-resiliencia/` — evidencia posterior sobre comportamiento ante fallo del consumidor.
+- `experimentos/spike-03-caracterizacion-racha/` — caracterización experimental posterior del cálculo de rachas en Progress.
+
+Los C4 de Semana 8 deben interpretarse como representación AS-IS de ese corte temporal y no como una sustitución automática de decisiones posteriores.
+
+La documentación posterior no reescribe retrospectivamente los artefactos históricos; los complementa con nuevas decisiones, contratos, experimentos y análisis.
+
+Las decisiones todavía marcadas como `PENDIENTE`, `NO DECIDIDO` o equivalentes permanecen abiertas hasta que el equipo las cierre explícitamente.
 
 ## 5. Dossier principal
 
