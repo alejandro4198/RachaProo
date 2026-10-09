@@ -143,6 +143,26 @@ Documentos anteriores como `01-contexto-y-drivers.md`, `02-escenarios-de-calidad
 
 ## 6. Evidencia experimental
 
+<!-- M5:EVIDENCIA-EXPERIMENTAL:BEGIN -->
+
+> **Alcance de esta sección**
+>
+> Los experimentos EXP-001, EXP-002 y EXP-003 conservados a continuación
+> corresponden a la evidencia experimental documentada en el corte temporal
+> original de esta sección y se mantienen por trazabilidad histórica.
+>
+> La evidencia experimental posterior del proyecto incluye además:
+>
+> - `experimentos/spike-01-integracion/` — evaluación de la integración interna mediante `UserRegisteredV1`;
+> - `experimentos/spike-02-resiliencia/` — caracterización posterior del comportamiento ante fallo del consumidor;
+> - `experimentos/spike-03-caracterizacion-racha/` — caracterización del cálculo de rachas en Progress.
+>
+> La existencia de estos experimentos posteriores no implica por sí sola una
+> decisión arquitectónica nueva. Sus resultados deben interpretarse junto con
+> sus prerregistros, limitaciones, veredictos y ADR relacionados.
+
+<!-- M5:EVIDENCIA-EXPERIMENTAL:END -->
+
 ### EXP-001 — Línea base Android
 
 Experimento histórico orientado a medir el flujo de carga de actividades en la aplicación Android.
