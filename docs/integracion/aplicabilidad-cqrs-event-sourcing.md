@@ -1,5 +1,46 @@
 # Aplicabilidad de CQRS y Event Sourcing
 
+<!-- M5:SPIKE03-CQRS-UPDATE:BEGIN -->
+
+## Actualización posterior — SPIKE-03
+
+Este análisis fue producido antes de la evidencia posterior registrada en
+SPIKE-03.
+
+En el corte original se identificó como evidencia faltante una medición directa
+de operaciones asociadas a Progress.
+
+Posteriormente, SPIKE-03 caracterizó específicamente el cálculo de:
+
+- `currentStreak`;
+- `bestStreak`;
+
+al aumentar la cantidad de días históricos procesados.
+
+La hipótesis experimental correspondiente resultó respaldada bajo las
+condiciones registradas por el experimento.
+
+Esta evidencia actualiza parcialmente la base empírica disponible, pero no
+constituye por sí sola una justificación de CQRS.
+
+SPIKE-03 dejó la decisión arquitectónica como:
+
+`NO DETERMINADA`
+
+Por tanto:
+
+- existe evidencia directa sobre una ruta de cálculo de Progress;
+- no se ha demostrado por ello una necesidad de separar lectura y escritura;
+- no se ha demostrado Event Sourcing;
+- la conclusión histórica debe interpretarse junto con esta evidencia posterior.
+
+Evidencia:
+
+- `experimentos/spike-03-caracterizacion-racha/`
+
+<!-- M5:SPIKE03-CQRS-UPDATE:END -->
+
+
 ## 1. Propósito
 
 Este documento analiza CQRS y Event Sourcing como opciones arquitectónicas para
