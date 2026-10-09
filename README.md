@@ -294,3 +294,16 @@ La referencia técnica congelada del cierre es:
 `semana8-final-validado`
 
 Los documentos anteriores continúan en el repositorio como trazabilidad histórica y deben interpretarse de acuerdo con la fecha y baseline que representan.
+
+## Auditoría externa post-freeze
+
+Después del freeze final se realizó una revisión semántica independiente que
+detectó hallazgos documentales y metodológicos posteriores.
+
+Fuentes vigentes de esta evolución:
+
+- `docs/m5/auditoria-externa-post-freeze.md`
+- `docs/m5/correcciones-post-freeze.md`
+
+Estas fuentes no reescriben retrospectivamente el freeze original; documentan
+evolución posterior.
