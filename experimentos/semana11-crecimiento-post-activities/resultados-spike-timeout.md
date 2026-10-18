@@ -17,7 +17,9 @@ No se modifican retroactivamente:
 - el umbral del 50 %;
 - el número de corridas;
 - la métrica principal;
+- los criterios de evaluabilidad;
 - las reglas para corridas no evaluables;
+- las reglas de reemplazo;
 - la intervención prevista.
 
 ---
@@ -32,9 +34,13 @@ Commit de prerregistro:
 
 `94dcc32`
 
-Commit de resultados previo a BASE-R2:
+Commit de resultados de BASE-R1:
 
 `b02c239`
+
+Commit provisional de BASE-R2:
+
+`e1dab87`
 
 Condición experimental actual:
 
@@ -54,7 +60,7 @@ Estado de BASE-R1:
 
 Estado de BASE-R2:
 
-`EJECUTADA — PENDIENTE DE CLASIFICACIÓN FINAL`
+`EJECUTADA — EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
 Estado de BASE-R3:
 
@@ -184,7 +190,7 @@ Hora de comprobación registrada:
 
 `16:53:43`
 
-La indisponibilidad fue confirmada antes de ejecutar el POST experimental.
+La comprobación ocurrió antes de ejecutar el POST experimental.
 
 PostgreSQL no fue detenido intencionalmente.
 
@@ -326,8 +332,6 @@ y no como:
 
 `IDENTIFICACIÓN INEQUÍVOCA DEL BODY DEL POST`
 
-No se atribuye persistencia al intento experimental únicamente a partir del título reutilizado.
-
 ---
 
 ### 2.8 Correlación de solicitudes HTTP
@@ -344,7 +348,7 @@ Hilo:
 
 `5952`
 
-Tamaño del body registrado:
+Tamaño de body:
 
 `105 bytes`
 
@@ -362,7 +366,7 @@ Hilo:
 
 `6163`
 
-Tamaño del body registrado:
+Tamaño de body:
 
 `103 bytes`
 
@@ -370,11 +374,7 @@ Resultado:
 
 `SocketTimeoutException`
 
-Los timestamps, hilos, tamaños registrados y resultados permiten correlacionar cada:
-
-`--> POST`
-
-con su resultado correspondiente.
+Los timestamps, hilos, tamaños registrados y resultados permiten correlacionar cada solicitud HTTP con su resultado correspondiente.
 
 Por tanto, la duración técnica del intento experimental puede calcularse sin mezclarla con la solicitud de control.
 
@@ -391,16 +391,16 @@ tanto para:
 - la operación de control;
 - la operación experimental durante la indisponibilidad.
 
-Esto constituye una desviación respecto de la intención preregistrada de utilizar identificadores distinguibles para las operaciones experimentales.
+Esto constituye una desviación respecto del objetivo de mantener operaciones funcionalmente distinguibles.
 
-La desviación reduce la trazabilidad funcional en PostgreSQL porque una consulta únicamente por título no permite diferenciar por sí sola ambas operaciones.
+La desviación reduce la trazabilidad funcional en PostgreSQL.
 
-No obstante, la desviación no impide distinguir técnicamente las dos solicitudes HTTP debido a la existencia de:
+No obstante, las dos solicitudes HTTP pueden distinguirse técnicamente mediante:
 
 - timestamps diferentes;
 - hilos OkHttp diferentes;
-- tamaños de cuerpo registrados diferentes;
-- resultados HTTP diferentes.
+- tamaños de body diferentes;
+- resultados diferentes.
 
 ---
 
@@ -414,18 +414,18 @@ Esta clasificación constituye una decisión metodológica posterior a la observ
 
 La justificación registrada es:
 
-1. el prerregistro existía antes de la corrida mediante `94dcc32`;
-2. la aplicación se encontraba en la condición de línea base;
+1. el prerregistro existía antes de la corrida;
+2. la aplicación se encontraba en condición de línea base;
 3. Spring Boot estaba disponible durante el control;
 4. el control obtuvo `HTTP 201`;
 5. Spring Boot fue detenido antes del POST experimental;
 6. se comprobó indisponibilidad del puerto `8080`;
-7. el POST experimental puede correlacionarse con su error;
+7. el POST experimental puede correlacionarse con su fallo;
 8. existe una duración técnica calculable;
 9. Android no mostró falso éxito;
 10. PostgreSQL pudo ser consultado;
-11. la reutilización del identificador quedó explícitamente documentada;
-12. la evidencia permite distinguir las solicitudes HTTP aunque el título funcional haya sido reutilizado.
+11. la desviación quedó documentada;
+12. las solicitudes HTTP pueden distinguirse técnicamente.
 
 La principal limitación conservada es:
 
@@ -435,43 +435,33 @@ La principal limitación conservada es:
 
 ### 2.11 Participación en la mediana
 
-Decisión de evaluación:
+Decisión:
 
-`BASE-R1 PARTICIPARÁ EN LA MEDIANA PRINCIPAL`
+`BASE-R1 PARTICIPA EN LA MEDIANA PRINCIPAL`
 
 Valor:
 
 `B1 = 10 028 ms`
 
-La repetición de reemplazo permitida para la condición BASE:
+Reemplazo:
 
-`NO SE UTILIZA PARA BASE-R1`
+`NO REQUERIDO`
 
 ---
 
 ### 2.12 Corrección procedimental posterior a BASE-R1
 
-A partir de BASE-R2 se decidió no reutilizar el mismo identificador para el control y la operación experimental.
+A partir de BASE-R2 se utilizan identificadores diferentes para control y experimento.
 
-Para BASE-R2:
+BASE-R2:
 
-Control:
+- control: `S11-A4-BASE-R2-CONTROL`;
+- experimento: `S11-A4-BASE-R2`.
 
-`S11-A4-BASE-R2-CONTROL`
+BASE-R3:
 
-Experimento:
-
-`S11-A4-BASE-R2`
-
-Para BASE-R3:
-
-Control:
-
-`S11-A4-BASE-R3-CONTROL`
-
-Experimento:
-
-`S11-A4-BASE-R3`
+- control: `S11-A4-BASE-R3-CONTROL`;
+- experimento: `S11-A4-BASE-R3`.
 
 Esta corrección no altera retrospectivamente BASE-R1.
 
@@ -495,15 +485,11 @@ No deberá versionarse sin revisión y saneamiento.
 
 ### 2.14 Resultado consolidado BASE-R1
 
-Estado metodológico:
+Estado:
 
 `EVALUABLE CON DESVIACIÓN DOCUMENTADA`
 
-Métrica principal:
-
-`10 028 ms`
-
-Valor para línea base:
+Valor:
 
 `B1 = 10 028 ms`
 
@@ -515,27 +501,19 @@ Falso éxito Android:
 
 `NO OBSERVADO`
 
-Persistencia remota del intento experimental:
+Persistencia del intento experimental:
 
-`NO DEMOSTRADA`
+`NO DEMOSTRADA DE FORMA INEQUÍVOCA`
 
-Fila PostgreSQL observada:
+Fila observada:
 
 `ID 1500178`
-
-Atribución inequívoca de esa fila únicamente mediante Logcat:
-
-`NO`
 
 Trazabilidad HTTP:
 
 `SUFICIENTE PARA CORRELACIONAR LA MEDICIÓN`
 
-Desviación:
-
-`REUTILIZACIÓN DEL IDENTIFICADOR ENTRE CONTROL Y EXPERIMENTO`
-
-Reemplazo requerido:
+Reemplazo:
 
 `NO`
 
@@ -545,19 +523,15 @@ Reemplazo requerido:
 
 Estado:
 
-`EJECUTADA — PENDIENTE DE CLASIFICACIÓN FINAL`
+`EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
-Valor temporal observado:
+Valor admitido para la comparación principal:
 
-`10 033 ms`
+`B2 = 10 033 ms`
 
-Admisión como B2 para la mediana:
+Commit provisional previo al cierre:
 
-`PENDIENTE`
-
-Commit ejecutado:
-
-`b02c239`
+`e1dab87`
 
 Condición:
 
@@ -591,29 +565,27 @@ Antes de BASE-R2 se confirmó que el commit activo era:
 
 `b02c239`
 
-La rama experimental fue sincronizada con el remoto antes de continuar.
+La configuración HTTP continuaba correspondiendo a la línea base.
+
+No se había implementado:
+
+`connectTimeout = 3 segundos`
 
 Spring Boot se encontraba disponible al comenzar la preparación.
 
-Se observó el puerto:
+El puerto:
 
 `8080`
 
-en estado:
+fue observado inicialmente en estado:
 
 `Listen`
-
-La configuración HTTP continuaba siendo la original.
-
-No se había realizado todavía la intervención:
-
-`connectTimeout = 3 segundos`
 
 ---
 
 ### 3.2 Incidencia previa de autenticación
 
-Antes del control exitoso se observó una incidencia de autenticación.
+Antes del control exitoso ocurrió una incidencia de autenticación.
 
 Inicio:
 
@@ -631,15 +603,15 @@ Fin:
 
 `17:56:47.298`
 
-Este POST no corresponde al POST experimental medido durante la indisponibilidad.
+Este POST terminó antes del login posterior.
 
-La solicitud terminó antes de la autenticación posterior y antes del control exitoso.
+No corresponde al POST experimental utilizado para medir BASE-R2.
 
 ---
 
 ### 3.3 Restablecimiento de autenticación
 
-Posteriormente se realizó una nueva autenticación.
+Posteriormente se realizó autenticación.
 
 Inicio:
 
@@ -657,25 +629,32 @@ Fin:
 
 `17:56:57.802`
 
-Esta autenticación ocurrió antes del control exitoso.
+El `HTTP 200` constituye evidencia técnica de un login exitoso.
 
-La existencia del `HTTP 200` permite afirmar que se produjo un login exitoso.
+Después de la ejecución se confirmó operativamente que:
 
-Sin embargo, la clasificación metodológica final de BASE-R2 requiere conservar separada la siguiente cuestión:
+- RachaPro permaneció abierta;
+- se mantuvo el mismo usuario;
+- no se cerró la aplicación;
+- no se reinició la aplicación;
+- no se realizó un nuevo login;
+- no se cambió intencionalmente de usuario.
 
-`PENDIENTE DE CONFIRMAR DOCUMENTALMENTE SI LA SESIÓN PERMANECIÓ AUTENTICADA SIN CAMBIOS RELEVANTES HASTA EL POST EXPERIMENTAL`
+Estas afirmaciones se clasifican como:
+
+`CONFIRMACIONES OPERATIVAS RETROSPECTIVAS`
+
+No se presentan como evidencia instrumental independiente.
 
 ---
 
 ### 3.4 Control previo de BASE-R2
 
-Después del login exitoso se ejecutó una creación remota de control.
-
 Identificador:
 
 `S11-A4-BASE-R2-CONTROL`
 
-Inicio del POST:
+Inicio:
 
 `17:57:19.284`
 
@@ -687,69 +666,58 @@ Fin:
 
 `17:57:19.544`
 
-El control exitoso demuestra que, después de la incidencia `401` y del login posterior, la aplicación volvió a poder realizar una creación remota válida.
-
-La incidencia `401` había terminado antes de este control.
+El control constituye evidencia técnica de que, después del `HTTP 401` y del login posterior, la aplicación volvió a realizar una creación remota válida.
 
 ---
 
-### 3.5 Interpretación de la incidencia de autenticación
+### 3.5 Secuencia temporal previa al experimento
 
-La secuencia observada fue:
+La secuencia reconstruida es:
 
-1. intento de creación con `HTTP 401`;
+1. POST de creación con `HTTP 401`;
 2. login posterior con `HTTP 200`;
-3. control de creación posterior con `HTTP 201`;
-4. inducción posterior de indisponibilidad;
-5. POST experimental posterior.
+3. control posterior con `HTTP 201`;
+4. detención posterior de Spring Boot;
+5. comprobación del puerto `8080` sin listener;
+6. POST experimental.
 
-Por tanto, el `401` inicial:
+Los puntos 1, 2 y 3 cuentan con registros técnicos fechados.
 
-`NO ERA UNA SOLICITUD PENDIENTE DURANTE EL POST EXPERIMENTAL`
+Los puntos 4 y 5 fueron confirmados posteriormente por el operador de la prueba, pero no cuentan con una salida instrumental fechada equivalente.
 
-No obstante, que la incidencia estuviera resuelta antes del control no basta por sí solo para declarar BASE-R2 evaluable.
-
-Debe comprobarse además que:
-
-- el login exitoso ocurrió antes de detener Spring Boot;
-- la sesión permaneció autenticada hasta el POST experimental;
-- no ocurrió un nuevo `401` relevante antes de la medición;
-- no se reinició la aplicación;
-- no se realizó un nuevo login entre la inducción del fallo y el POST experimental.
-
-Estas comprobaciones forman parte de la decisión de evaluabilidad.
+Por tanto, estas fuentes de evidencia se mantienen diferenciadas.
 
 ---
 
 ### 3.6 Inducción del fallo de BASE-R2
 
-Spring Boot fue detenido antes de ejecutar el POST experimental.
+Se confirmó operativamente que el procedimiento aplicado fue:
 
-Se reportó haber comprobado la ausencia de listener en el puerto:
+1. detener Spring Boot;
+2. comprobar el puerto `8080`;
+3. observar que no tenía listener;
+4. pulsar posteriormente `Guardar` para `S11-A4-BASE-R2`.
 
-`8080`
+Confirmación operativa:
 
-Estado reportado:
+`PUERTO 8080 SIN LISTENER ANTES DE GUARDAR`
 
-`SIN LISTENER`
+Limitación documental:
 
-La comprobación ocurrió antes del POST experimental.
+`NO SE CONSERVÓ UNA SALIDA POWERSHELL CON TIMESTAMP EXACTO DE ESA COMPROBACIÓN`
 
-Hora exacta documentada mediante salida de PowerShell:
+Por tanto:
 
-`PENDIENTE DE INCORPORAR SI SE CONSERVÓ LA SALIDA`
+- existe confirmación operativa de la comprobación;
+- no existe evidencia instrumental independiente con hora exacta de esa comprobación.
 
-La ausencia de una marca temporal incorporada todavía en este documento constituye una limitación documental.
-
-No invalida automáticamente la corrida, pero debe conservarse como parte de la evaluación metodológica.
-
-PostgreSQL permaneció disponible para la comprobación posterior.
+Esta limitación se conserva explícitamente.
 
 ---
 
-### 3.7 Intento experimental durante la indisponibilidad
+### 3.7 Intento experimental
 
-Identificador experimental:
+Identificador:
 
 `S11-A4-BASE-R2`
 
@@ -773,17 +741,20 @@ Fin:
 
 `18:00:45.224`
 
-La solicitud terminó con un error de establecimiento de conexión.
+El `SocketTimeoutException` constituye evidencia técnica de un fallo de conexión.
+
+No se utiliza, por sí solo, como demostración de que Spring Boot estuviera detenido.
 
 ---
 
-### 3.8 Correlación HTTP de BASE-R2
+### 3.8 Correlación HTTP
 
-El inicio del POST experimental y su correspondiente error pueden correlacionarse mediante:
+El inicio y el fallo del POST experimental pueden correlacionarse mediante:
 
-- proximidad temporal;
 - mismo hilo OkHttp;
 - mismo endpoint;
+- proximidad temporal;
+- secuencia registrada;
 - ausencia de otro POST experimental concurrente identificado en esa ventana.
 
 Inicio:
@@ -798,11 +769,13 @@ Hilo:
 
 `7878`
 
-Por tanto, la medición técnica es calculable.
+Estado:
+
+`CORRELACIÓN SUFICIENTE PARA LA MEDICIÓN`
 
 ---
 
-### 3.9 Duración técnica observada
+### 3.9 Duración técnica
 
 La métrica preregistrada corresponde al intervalo:
 
@@ -811,8 +784,6 @@ La métrica preregistrada corresponde al intervalo:
 hasta:
 
 `HTTP FAILED`
-
-Para BASE-R2:
 
 Inicio:
 
@@ -826,43 +797,33 @@ Cálculo:
 
 `45.224 - 35.191 = 10.033 segundos`
 
-Duración técnica observada:
+Duración:
 
 `10 033 ms`
 
-Valor observado:
+Valor admitido:
 
-`10 033 ms`
-
-Este valor se conserva independientemente de la clasificación final de la corrida.
-
-Mientras BASE-R2 permanezca pendiente de clasificación, deberá expresarse como:
-
-`VALOR OBSERVADO = 10 033 ms`
-
-y no todavía como:
-
-`B2 DEFINITIVO PARA LA MEDIANA`
+`B2 = 10 033 ms`
 
 ---
 
 ### 3.10 Resultado Android
 
-Durante el intento experimental Android mostró:
+Android mostró:
 
 `No fue posible crear la actividad`
 
-No se observó que Android presentara el intento como una creación remota exitosa.
+No se observó que Android presentara el intento experimental como exitoso.
 
-Resultado funcional observado:
+Resultado:
 
 `ERROR MOSTRADO — SIN FALSO ÉXITO OBSERVADO`
 
 ---
 
-### 3.11 Persistencia remota de BASE-R2
+### 3.11 Persistencia remota
 
-Se consultó PostgreSQL utilizando el identificador experimental:
+Consulta PostgreSQL por:
 
 `S11-A4-BASE-R2`
 
@@ -870,19 +831,15 @@ Resultado:
 
 `0 filas`
 
-Por tanto, dentro de la comprobación realizada no se observó persistencia remota de una actividad con el identificador experimental.
+Interpretación:
 
-Resultado observado:
+`NO SE ENCONTRÓ PERSISTENCIA REMOTA CON EL IDENTIFICADOR EXPERIMENTAL EN LA CONSULTA REALIZADA`
 
-`0 COINCIDENCIAS`
-
-Esta evidencia tiene una trazabilidad funcional mayor que BASE-R1 porque el identificador de control y el identificador experimental fueron diferentes.
+La afirmación se limita estrictamente al resultado observado de esa consulta.
 
 ---
 
 ### 3.12 Separación entre control y experimento
-
-A diferencia de BASE-R1, BASE-R2 utilizó identificadores distintos.
 
 Control:
 
@@ -892,158 +849,193 @@ Experimento:
 
 `S11-A4-BASE-R2`
 
-Esto permite que la consulta PostgreSQL del identificador experimental sea independiente del control previo.
+La reutilización de identificador ocurrida en BASE-R1:
 
-La desviación de reutilización de identificador observada en BASE-R1:
+`NO SE REPITIÓ`
 
-`NO SE REPITIÓ EN BASE-R2`
-
----
-
-### 3.13 Incidencia metodológica de BASE-R2
-
-La incidencia relevante de BASE-R2 fue:
-
-`HTTP 401 ANTES DEL CONTROL`
-
-Posteriormente se observó:
-
-- `HTTP 200` en login;
-- `HTTP 201` en control.
-
-Por tanto, la incidencia ocurrió antes del control válido.
-
-Sin embargo, su impacto sobre la evaluabilidad no debe decidirse únicamente porque después existiera un `HTTP 201`.
-
-Debe comprobarse si las condiciones de autenticación permanecieron estables hasta la medición experimental.
+Esto permite consultar PostgreSQL por el identificador experimental sin confundirlo con el control.
 
 ---
 
-### 3.14 Comprobaciones pendientes para cerrar la evaluabilidad
+### 3.13 Guardado único
 
-Antes de clasificar BASE-R2 definitivamente deben responderse las siguientes preguntas con la evidencia disponible.
-
-#### A. Autenticación
-
-¿El login exitoso de las:
-
-`17:56:57.802`
-
-ocurrió antes de detener Spring Boot?
-
-Estado:
-
-`PENDIENTE DE CONFIRMACIÓN EXPLÍCITA`
-
-#### B. Continuidad de sesión
-
-¿La sesión permaneció autenticada desde el login exitoso hasta el POST de:
-
-`18:00:35.191`
-
-sin:
-
-- logout;
-- nuevo `401` relevante;
-- reinicio de aplicación;
-- nuevo login;
-- cambio intencional de usuario?
-
-Estado:
-
-`PENDIENTE DE CONFIRMACIÓN EXPLÍCITA`
-
-#### C. Indisponibilidad del backend
-
-¿El puerto `8080` fue comprobado sin listener antes de las:
-
-`18:00:35.191`?
-
-Estado reportado:
-
-`SÍ`
-
-Hora exacta incorporada al documento:
-
-`PENDIENTE SI EXISTE EVIDENCIA CONSERVADA`
-
-#### D. PostgreSQL
-
-¿PostgreSQL permaneció disponible para la comprobación posterior?
-
-Resultado observado:
-
-`0 filas para S11-A4-BASE-R2`
-
-#### E. Guardado único
-
-¿Se pulsó `Guardar` exactamente una vez sobre:
+Después de la ejecución se confirmó operativamente que para:
 
 `S11-A4-BASE-R2`
 
-durante la ventana experimental?
+se pulsó:
 
-Estado:
+`GUARDAR UNA SOLA VEZ`
 
-`PENDIENTE DE CONFIRMACIÓN EXPLÍCITA`
+No se realizó una segunda pulsación de `Guardar` sobre la actividad experimental antes de consultar PostgreSQL.
+
+Tipo de evidencia:
+
+`CONFIRMACIÓN OPERATIVA RETROSPECTIVA`
 
 ---
 
-### 3.15 Regla para clasificar BASE-R2
+### 3.14 Cuatro confirmaciones operativas
 
-BASE-R2 podrá clasificarse como:
+Después de la ejecución se confirmaron las siguientes condiciones.
+
+#### 1. Mismo usuario y aplicación abierta
+
+Respuesta:
+
+`SÍ`
+
+Tipo de evidencia:
+
+`CONFIRMACIÓN OPERATIVA RETROSPECTIVA`
+
+#### 2. Sin cierre, reinicio ni nuevo login
+
+Respuesta:
+
+`SÍ`
+
+Tipo de evidencia:
+
+`CONFIRMACIÓN OPERATIVA RETROSPECTIVA`
+
+#### 3. Una sola pulsación de Guardar
+
+Respuesta:
+
+`SÍ`
+
+Tipo de evidencia:
+
+`CONFIRMACIÓN OPERATIVA RETROSPECTIVA`
+
+#### 4. Puerto 8080 sin listener antes de Guardar
+
+Respuesta:
+
+`SÍ`
+
+Tipo de evidencia:
+
+`CONFIRMACIÓN OPERATIVA RETROSPECTIVA`
+
+Limitación:
+
+`NO EXISTE UNA SALIDA POWERSHELL CONSERVADA CON TIMESTAMP EXACTO DE ESA COMPROBACIÓN`
+
+---
+
+### 3.15 Evidencia técnica conservada
+
+Se dispone de registros técnicos para:
+
+- `HTTP 401` previo;
+- login posterior con `HTTP 200`;
+- control posterior con `HTTP 201`;
+- inicio del POST experimental;
+- fallo del POST experimental;
+- `SocketTimeoutException`;
+- duración técnica de `10 033 ms`;
+- resultado visible de error en Android;
+- consulta PostgreSQL con `0 filas`;
+- SHA-256 del Logcat privado.
+
+---
+
+### 3.16 Evidencia operativa retrospectiva
+
+Se confirmó posteriormente que:
+
+- RachaPro permaneció abierta;
+- se mantuvo el mismo usuario;
+- no hubo reinicio;
+- no hubo cierre;
+- no hubo nuevo login;
+- se realizó un único `Guardar`;
+- el puerto `8080` se comprobó sin listener antes del POST experimental.
+
+Estas confirmaciones no se describen como evidencia instrumental.
+
+---
+
+### 3.17 Limitación documental principal
+
+La principal limitación documental de BASE-R2 es:
+
+`NO SE CONSERVÓ UNA SALIDA INSTRUMENTAL CON TIMESTAMP EXACTO QUE MUESTRE EL PUERTO 8080 SIN LISTENER INMEDIATAMENTE ANTES DEL POST EXPERIMENTAL`
+
+Asimismo:
+
+`SocketTimeoutException`
+
+demuestra un fallo de conexión, pero:
+
+`NO DEMUESTRA POR SÍ SOLO QUE SPRING BOOT ESTUVIERA DETENIDO`
+
+Esta limitación se conserva explícitamente en el análisis.
+
+---
+
+### 3.18 Justificación de la clasificación metodológica
+
+La clasificación de BASE-R2 se realiza contrastando la evidencia disponible con los criterios de evaluabilidad registrados previamente.
+
+Considero suficiente la verificación de la condición experimental porque existe una combinación consistente de:
+
+1. comprobación operativa de que el puerto `8080` estaba sin listener antes de pulsar `Guardar`;
+2. control previo exitoso con `HTTP 201`;
+3. POST experimental posterior terminado en `SocketTimeoutException`;
+4. continuidad de sesión confirmada operativamente;
+5. una única pulsación de `Guardar`;
+6. ausencia de falso éxito en Android;
+7. `0 filas` observadas en PostgreSQL para el identificador experimental;
+8. identificadores diferentes para control y experimento;
+9. correlación suficiente entre el inicio y el fallo de la solicitud experimental.
+
+La ausencia de una salida PowerShell fechada de la comprobación del puerto se considera una:
+
+`LIMITACIÓN DOCUMENTAL`
+
+y no se presenta como si dicha evidencia instrumental existiera.
+
+Mi decisión metodológica es que esta limitación no impide, en este caso, acreditar suficientemente la corrida mediante la combinación de evidencia técnica y confirmaciones operativas disponibles.
+
+Esta conclusión representa una decisión de evaluación sobre la suficiencia de la evidencia y no una consecuencia automática del `SocketTimeoutException`.
+
+---
+
+### 3.19 Decisión metodológica final
+
+Clasificación:
 
 `EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
-si se puede justificar suficientemente que:
+La incidencia de autenticación `HTTP 401` ocurrió antes del control válido.
 
-1. el `401` terminó antes del control;
-2. el login exitoso ocurrió antes de detener Spring Boot;
-3. el control posterior obtuvo `HTTP 201`;
-4. la sesión permaneció autenticada hasta el POST experimental;
-5. no existió un nuevo evento de autenticación que contaminara la medición;
-6. Spring Boot estaba indisponible durante el POST experimental;
-7. PostgreSQL permaneció disponible;
-8. se realizó una sola operación experimental;
-9. el POST y su fallo pueden correlacionarse;
-10. Android no mostró falso éxito;
-11. PostgreSQL mostró `0 filas` para el identificador experimental.
+Posteriormente se observaron:
 
-Si alguna condición esencial no puede verificarse suficientemente, la clasificación será:
+- login exitoso con `HTTP 200`;
+- control exitoso con `HTTP 201`.
 
-`NO EVALUABLE`
+Además, se confirmó operativamente la continuidad de la sesión hasta el POST experimental.
 
-conservando de todas maneras:
+Por tanto, la incidencia previa no se considera contaminante para la medición utilizada.
 
-`10 033 ms`
+Valor admitido:
 
-como observación descriptiva.
-
----
-
-### 3.16 Estado actual de evaluabilidad de BASE-R2
-
-Clasificación actual:
-
-`PENDIENTE DE CLASIFICACIÓN FINAL`
-
-Valor temporal observado:
-
-`10 033 ms`
+`B2 = 10 033 ms`
 
 Participación en la mediana:
 
-`PENDIENTE`
+`SÍ`
 
 Reemplazo:
 
-`NO DECIDIDO`
-
-No debe gastarse todavía la repetición de reemplazo mientras exista una auditoría pendiente de la evidencia ya obtenida.
+`NO REQUERIDO`
 
 ---
 
-### 3.17 Integridad de evidencia BASE-R2
+### 3.20 Integridad de evidencia BASE-R2
 
 Archivo privado:
 
@@ -1053,21 +1045,21 @@ SHA-256:
 
 `2BF5FDDEA23BF2D4644A616BF46DE9A1B9172EA00091E30348FA5CB571F7F907`
 
-El archivo se conserva como evidencia privada.
+El archivo permanece como evidencia privada.
 
 No deberá versionarse directamente sin revisión y saneamiento.
 
 ---
 
-### 3.18 Resultado consolidado provisional BASE-R2
+### 3.21 Resultado consolidado BASE-R2
 
 Estado:
 
-`PENDIENTE DE CLASIFICACIÓN FINAL`
+`EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
-Valor observado:
+Valor:
 
-`10 033 ms`
+`B2 = 10 033 ms`
 
 Tipo de error:
 
@@ -1077,9 +1069,9 @@ Falso éxito Android:
 
 `NO OBSERVADO`
 
-Persistencia remota del identificador experimental:
+Persistencia del identificador experimental:
 
-`0 FILAS`
+`0 FILAS OBSERVADAS`
 
 Separación control/experimento:
 
@@ -1097,13 +1089,41 @@ Control posterior:
 
 `HTTP 201`
 
-Correlación HTTP experimental:
+Continuidad de sesión:
 
-`SUFICIENTE PARA CALCULAR LA DURACIÓN`
+`CONFIRMADA OPERATIVAMENTE`
 
-Participación definitiva en mediana:
+Reinicio de aplicación:
 
-`PENDIENTE`
+`NO, SEGÚN CONFIRMACIÓN OPERATIVA`
+
+Nuevo login antes del experimento:
+
+`NO, SEGÚN CONFIRMACIÓN OPERATIVA`
+
+Guardar único:
+
+`SÍ, SEGÚN CONFIRMACIÓN OPERATIVA`
+
+Puerto `8080` sin listener antes del POST:
+
+`SÍ, SEGÚN CONFIRMACIÓN OPERATIVA`
+
+Evidencia instrumental fechada de esa comprobación:
+
+`NO CONSERVADA`
+
+Correlación HTTP:
+
+`SUFICIENTE`
+
+Participación en mediana:
+
+`SÍ`
+
+Reemplazo:
+
+`NO`
 
 ---
 
@@ -1125,7 +1145,13 @@ Valor:
 
 `B3 = PENDIENTE`
 
-BASE-R3 no deberá iniciarse hasta cerrar documentalmente la clasificación de BASE-R2.
+BASE-R3 deberá ejecutarse manteniendo la condición:
+
+`LÍNEA BASE — SIN connectTimeout EXPLÍCITO`
+
+No se modificará todavía:
+
+`RetrofitClient.kt`
 
 No se registrarán resultados antes de ejecutar la corrida.
 
@@ -1147,15 +1173,11 @@ Valor admitido:
 
 Estado:
 
-`PENDIENTE DE CLASIFICACIÓN FINAL`
+`EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
-Valor observado:
+Valor admitido:
 
-`10 033 ms`
-
-Valor admitido como B2:
-
-`PENDIENTE`
+`B2 = 10 033 ms`
 
 ### BASE-R3
 
@@ -1171,31 +1193,35 @@ Valor:
 
 ## 6. Mediana de línea base
 
-La mediana preregistrada solo podrá calcularse cuando existan:
+La mediana preregistrada solo se calculará cuando existan:
 
 `3 CORRIDAS EVALUABLES`
 
 Actualmente:
 
 - `B1 = 10 028 ms`
-- `B2 = PENDIENTE DE ADMISIÓN`
+- `B2 = 10 033 ms`
 - `B3 = PENDIENTE`
+
+Corridas evaluables:
+
+`2 de 3`
 
 Mediana:
 
 `NO CALCULADA`
 
-No se calculará una mediana provisional utilizando valores cuya evaluabilidad todavía no haya sido cerrada.
+No se calculará la mediana definitiva hasta ejecutar y clasificar BASE-R3.
 
 ---
 
 ## 7. Reemplazos de línea base
 
-El prerregistro permite:
+Máximo preregistrado:
 
-`MÁXIMO 1 REEMPLAZO POR CONDICIÓN`
+`1 REEMPLAZO POR CONDICIÓN`
 
-Condición actual:
+Condición:
 
 `BASE`
 
@@ -1209,9 +1235,13 @@ BASE-R1:
 
 BASE-R2:
 
-`PENDIENTE DE CLASIFICACIÓN — NO CONSUME TODAVÍA REEMPLAZO`
+`NO REQUIRIÓ REEMPLAZO`
 
-No se ejecutará una repetición adicional simplemente por conveniencia del valor observado.
+BASE-R3:
+
+`PENDIENTE`
+
+No se realizarán repeticiones adicionales motivadas por los valores temporales observados.
 
 ---
 
@@ -1229,7 +1259,7 @@ Archivo previsto:
 
 `RetrofitClient.kt`
 
-Estado del archivo respecto de la intervención:
+Estado:
 
 `SIN MODIFICAR`
 
@@ -1343,21 +1373,29 @@ Todavía no existe evidencia suficiente para clasificarla como:
 
 ## 13. Trazabilidad temporal
 
-La secuencia registrada hasta este momento es:
+Secuencia registrada hasta este momento:
 
-`prerregistro -> BASE-R1 -> registro BASE-R1 -> BASE-R2 -> auditoría BASE-R2`
+`prerregistro -> BASE-R1 -> registro BASE-R1 -> BASE-R2 -> registro provisional BASE-R2 -> cierre metodológico BASE-R2`
 
 Commit de prerregistro:
 
 `94dcc32`
 
-Commit de resultados de BASE-R1:
+Commit de resultados BASE-R1:
 
 `b02c239`
 
-Commit de resultados actualizado con BASE-R2:
+Commit provisional BASE-R2:
+
+`e1dab87`
+
+Commit de cierre metodológico BASE-R2:
 
 `PENDIENTE`
+
+BASE-R3:
+
+`NO EJECUTADA`
 
 Intervención:
 
@@ -1375,7 +1413,7 @@ Commit de resultados finales:
 
 `PENDIENTE`
 
-No se modificará el commit histórico de prerregistro para incorporar resultados observados posteriormente.
+No se modificará retroactivamente el commit de prerregistro para incorporar evidencia o decisiones observadas posteriormente.
 
 ---
 
@@ -1403,7 +1441,7 @@ SHA-256:
 
 `2BF5FDDEA23BF2D4644A616BF46DE9A1B9172EA00091E30348FA5CB571F7F907`
 
-Los archivos privados no deberán incorporarse directamente al repositorio sin:
+Los archivos privados no deberán incorporarse al repositorio sin:
 
 - revisión;
 - saneamiento;
@@ -1428,21 +1466,25 @@ BASE-R1:
 
 `COMPLETADA — EVALUABLE CON DESVIACIÓN DOCUMENTADA`
 
-Valor B1:
+Valor:
 
-`10 028 ms`
+`B1 = 10 028 ms`
 
 BASE-R2:
 
-`COMPLETADA TÉCNICAMENTE — PENDIENTE DE CLASIFICACIÓN METODOLÓGICA`
+`COMPLETADA — EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
-Valor observado BASE-R2:
+Valor:
 
-`10 033 ms`
+`B2 = 10 033 ms`
 
 BASE-R3:
 
 `PENDIENTE`
+
+Corridas evaluables de línea base:
+
+`2 de 3`
 
 Mediana de línea base:
 
@@ -1476,36 +1518,58 @@ Conclusión arquitectónica:
 
 ## 16. Próximo punto de control
 
-Antes de ejecutar BASE-R3 deberá cerrarse la clasificación metodológica de BASE-R2.
+BASE-R2 queda cerrada metodológicamente como:
 
-Se deberá comprobar y registrar explícitamente:
+`EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
 
-1. si el login exitoso de las `17:56:57.802` ocurrió antes de detener Spring Boot;
-2. si la sesión permaneció autenticada hasta el POST experimental de las `18:00:35.191`;
-3. si hubo o no un nuevo `401`, logout, login o reinicio de aplicación en esa ventana;
-4. si se conserva una comprobación temporal del puerto `8080` sin listener antes del POST experimental;
-5. si se pulsó `Guardar` una única vez sobre `S11-A4-BASE-R2`.
-
-Si estas condiciones quedan suficientemente verificadas, podrá justificarse:
-
-`BASE-R2 = EVALUABLE CON INCIDENCIA PREVIA RESUELTA`
-
-y entonces:
+Valor admitido:
 
 `B2 = 10 033 ms`
 
-podrá incorporarse a la mediana.
+La limitación documental conservada es:
 
-Si no pueden verificarse suficientemente las condiciones esenciales, deberá registrarse:
+`NO SE DISPONE DE UNA SALIDA POWERSHELL CON TIMESTAMP EXACTO DE LA COMPROBACIÓN DEL PUERTO 8080 SIN LISTENER`
 
-`BASE-R2 = NO EVALUABLE`
+Esta limitación:
+
+- permanece documentada;
+- no se elimina;
+- no se convierte retrospectivamente en evidencia instrumental;
+- no se atribuye al `SocketTimeoutException` una capacidad probatoria que no posee por sí solo.
+
+El siguiente paso corresponde a ejecutar:
+
+`BASE-R3`
 
 manteniendo:
 
-`10 033 ms`
+`LÍNEA BASE — SIN connectTimeout EXPLÍCITO`
 
-únicamente como observación descriptiva.
+Identificador de control:
 
-Solo después de cerrar esa decisión se continuará con:
+`S11-A4-BASE-R3-CONTROL`
 
-`BASE-R3`
+Identificador experimental:
+
+`S11-A4-BASE-R3`
+
+Durante BASE-R3 deberá conservarse explícitamente:
+
+- Spring Boot disponible antes del control;
+- PostgreSQL disponible;
+- sesión autenticada;
+- control exitoso;
+- detención de Spring Boot;
+- comprobación de puerto `8080` sin listener;
+- timestamp de la comprobación;
+- una sola pulsación de `Guardar`;
+- Logcat privado;
+- inicio del POST;
+- resultado del POST;
+- duración técnica;
+- resultado Android;
+- consulta PostgreSQL antes de cualquier segundo guardado;
+- SHA-256 de la evidencia privada;
+- cualquier desviación observada.
+
+`RetrofitClient.kt` deberá permanecer sin cambios hasta completar y cerrar las tres corridas evaluables de línea base.
