@@ -90,6 +90,12 @@ Si alguna repetición presenta una condición metodológica diferente, deberá r
 
 No se añadirán ni eliminarán repeticiones después de observar los resultados con el propósito de favorecer una conclusión.
 
+Estado posterior a la ejecución:
+
+`LAS TRES REPETICIONES PREVISTAS FUERON EJECUTADAS`
+
+No se añadió una cuarta repetición de manera post hoc.
+
 ---
 
 ## 5. Principios de ejecución
@@ -149,7 +155,7 @@ Reiniciar la aplicación o volver a autenticarse antes de esta comprobación imp
 
 | ID | Componente | Fallo inducido | Condición inicial | Condición desencadenante | Operación de prueba | Efecto esperado | Evidencia requerida | Resultado observado |
 |---|---|---|---|---|---|---|---|---|
-| F-01 | Backend Spring Boot | Indisponibilidad temporal del servicio | Backend disponible, base de datos disponible, aplicación Android abierta, usuario autenticado y creación remota previamente verificada | Después de comprobar la operación inicial, se detiene deliberadamente el backend y posteriormente se intenta crear una actividad desde Android | Intento de creación de una actividad desde Android | La aplicación no debe presentar la creación como confirmada remotamente si no existe confirmación del backend | Logcat, comportamiento visible de Android, error o respuesta de red, momento de detención del backend, identificación de la actividad intentada y comprobación posterior del estado remoto | Pendiente hasta completar las tres repeticiones |
+| F-01 | Backend Spring Boot | Indisponibilidad temporal del servicio | Backend disponible, base de datos disponible, aplicación Android abierta, usuario autenticado y creación remota previamente verificada | Después de comprobar la operación inicial, se detiene deliberadamente el backend y posteriormente se intenta crear una actividad desde Android | Intento de creación de una actividad desde Android | La aplicación no debe presentar la creación como confirmada remotamente si no existe confirmación del backend | Logcat, comportamiento visible de Android, error o respuesta de red, momento de detención del backend, identificación de la actividad intentada y comprobación posterior del estado remoto | Ejecutado en R1, R2 y R3. En las tres repeticiones la operación intentada durante la indisponibilidad no fue presentada como creación remota confirmada. Se observaron errores `SocketTimeoutException`. El destino automático de las solicitudes originales no puede determinarse de forma concluyente debido a las desviaciones de R1/R3 y a la ambigüedad de trazabilidad posterior de R2. |
 
 ---
 
@@ -269,7 +275,7 @@ El comportamiento real debe determinarse mediante la ejecución.
 
 | ID | Fallo relacionado | Estado previo | Respuesta esperada durante el fallo | Recuperación esperada | Criterio verificable | Evidencia requerida | Resultado observado |
 |---|---|---|---|---|---|---|---|
-| R-01 | F-01 | Backend disponible, usuario autenticado, aplicación Android abierta y operación remota funcional | La aplicación debe manejar la indisponibilidad sin presentar como confirmada remotamente una operación no confirmada por el backend | Después de restablecer el backend, Android debe recuperar la capacidad de ejecutar una nueva operación remota desde la misma sesión | Sin reiniciar Android ni volver a iniciar sesión, se restablece el backend y se crea una nueva actividad identificable. Existe recuperación si la nueva solicitud se completa correctamente y su resultado puede comprobarse tanto en Android como mediante evidencia remota | Logcat, respuesta de red, comportamiento visible de Android y comprobación remota de la actividad creada después de la recuperación | Pendiente hasta completar las tres repeticiones |
+| R-01 | F-01 | Backend disponible, usuario autenticado, aplicación Android abierta y operación remota funcional | La aplicación debe manejar la indisponibilidad sin presentar como confirmada remotamente una operación no confirmada por el backend | Después de restablecer el backend, Android debe recuperar la capacidad de ejecutar una nueva operación remota desde la misma sesión | Sin reiniciar Android ni volver a iniciar sesión, se restablece el backend y se crea una nueva actividad identificable. Existe recuperación si la nueva solicitud se completa correctamente y su resultado puede comprobarse tanto en Android como mediante evidencia remota | Logcat, respuesta de red, comportamiento visible de Android y comprobación remota de la actividad creada después de la recuperación | Ejecutado en R1, R2 y R3. En las tres repeticiones RachaPro permaneció abierta, no se reinició la aplicación y no se volvió a autenticar al usuario. Después del restablecimiento se comprobó persistencia de una nueva actividad de recuperación. Las desviaciones y ambigüedades de trazabilidad se documentan individualmente. |
 
 ---
 
@@ -336,39 +342,71 @@ Ejemplo para la repetición 1:
 
 ### 9.5 Resultado
 
-Pendiente de completar las tres repeticiones.
+Las tres repeticiones previstas fueron ejecutadas.
+
+En R1, R2 y R3 se mantuvo RachaPro abierta y se conservó la misma sesión autenticada durante la indisponibilidad y el restablecimiento del backend.
+
+En las tres repeticiones existe evidencia de que una nueva actividad pudo persistirse después de restablecer Spring Boot.
+
+Este resultado permite observar recuperación operativa para nuevas operaciones dentro de las condiciones reproducidas.
+
+No demuestra recuperación automática de la solicitud original que falló durante la indisponibilidad.
 
 ---
 
 ## 10. Identificación de las tres repeticiones
 
-Se utilizará una nomenclatura diferenciable para cada repetición.
+Se utilizó una nomenclatura diferenciable para cada repetición.
 
 ### Repetición 1
 
-- Control preregistrado: `S11-F01-R1-CONTROL`
-- Durante fallo preregistrado: `S11-F01-R1-DURANTE-FALLO`
-- Recuperación preregistrada: `S11-R01-R1-RECUPERACION`
+Prerregistro:
 
-Durante la ejecución real de R1 se observó una desviación nominal en la actividad de recuperación:
+- Control: `S11-F01-R1-CONTROL`
+- Durante fallo: `S11-F01-R1-DURANTE-FALLO`
+- Recuperación: `S11-R01-R1-RECUPERACION`
 
-`S11-F01-R1-RECUPERACION`
+Ejecución observada:
 
-Esta diferencia se registra como una desviación respecto del identificador preregistrado y no se corrige retroactivamente en las secciones anteriores.
+- Control: `S11-F01-R1-CONTROL`
+- Durante fallo: `S11-F01-R1-DURANTE-FALLO`
+- Recuperación utilizada: `S11-F01-R1-RECUPERACION`
+
+Existe una desviación nominal entre el identificador preregistrado para recuperación y el utilizado durante la ejecución.
 
 ### Repetición 2
+
+Prerregistro:
 
 - Control: `S11-F01-R2-CONTROL`
 - Durante fallo: `S11-F01-R2-DURANTE-FALLO`
 - Recuperación: `S11-R01-R2-RECUPERACION`
 
+Ejecución observada:
+
+- Control: `S11-F01-R2-CONTROL`
+- Durante fallo: `S11-F01-R2-DURANTE-FALLO`
+- Recuperación utilizada: `S11-F01-R2-RECUPERACION`
+
+Existe una desviación nominal entre el identificador preregistrado para recuperación y el utilizado durante la ejecución.
+
 ### Repetición 3
+
+Prerregistro:
 
 - Control: `S11-F01-R3-CONTROL`
 - Durante fallo: `S11-F01-R3-DURANTE-FALLO`
 - Recuperación: `S11-R01-R3-RECUPERACION`
 
-Esta nomenclatura permite rastrear cada operación sin depender únicamente de timestamps.
+Ejecución observada:
+
+- Control: `S11-F01-R3-CONTROL`
+- Durante fallo: `S11-F01-R3-DURANTE-FALLO`
+- Recuperación utilizada: `S11-F01-R3-RECUPERACION`
+
+Existe una desviación nominal entre el identificador preregistrado para recuperación y el utilizado durante la ejecución.
+
+Los identificadores preregistrados se conservan y no se corrigen retroactivamente.
 
 ---
 
@@ -409,6 +447,44 @@ La evidencia debe conservarse sin incluir:
 - credenciales de base de datos;
 - información sensible innecesaria.
 
+### Integridad local de Logcat
+
+Los archivos Logcat originales permanecen como evidencia local privada.
+
+No deberán versionarse sin saneamiento.
+
+Hashes SHA-256 registrados:
+
+#### R1
+
+Archivo:
+
+`evidencia-fallos/R1/logcat-R1-privado.txt`
+
+SHA-256:
+
+`586869C52B6513A4D0F05FC011729EC106109FADA6546D6D3EB640DC8146FB12`
+
+#### R2
+
+Archivo asociado al hash registrado:
+
+`evidencia-fallos/R2/logcat-R2-continuacion-privado.txt`
+
+SHA-256:
+
+`3E874289E78D3BE8D61E5AE7DCF05CF7228F47CE2E7231D0658014451EAAC5EE`
+
+#### R3
+
+Archivo:
+
+`evidencia-fallos/R3/logcat-R3-20261018-143057-privado.txt`
+
+SHA-256:
+
+`100D28B526252B8D3D10F753871214CDE0019392C88F83ADE7E04D4540A9982C`
+
 ---
 
 ## 12. Registro de ejecución
@@ -431,7 +507,7 @@ Commit de referencia del preregistro:
 
 Commit exacto utilizado durante la ejecución:
 
-`NO CAPTURADO EN EL MOMENTO DE LA PRUEBA — PENDIENTE DE VERIFICACIÓN`
+`NO CAPTURADO EN EL MOMENTO DE LA PRUEBA`
 
 Dispositivo o emulador:
 
@@ -449,14 +525,14 @@ Condición inicial verificada:
 
 `SÍ`
 
-Se verificó previamente que:
+Se verificó:
 
-- Spring Boot estaba disponible;
-- PostgreSQL estaba disponible;
-- Android permanecía abierto;
-- el usuario estaba autenticado;
-- existía comunicación Android-backend;
-- la creación remota funcionaba correctamente.
+- Spring Boot disponible;
+- PostgreSQL disponible;
+- Android abierto;
+- usuario autenticado;
+- comunicación Android-backend funcional;
+- creación remota funcional.
 
 Actividad de control:
 
@@ -466,7 +542,7 @@ Control confirmado remotamente:
 
 `SÍ`
 
-Resultado del control:
+Resultado:
 
 `HTTP 201`
 
@@ -474,19 +550,17 @@ ID observado en PostgreSQL:
 
 `1500170`
 
-La consulta a PostgreSQL confirmó la persistencia remota de la actividad de control.
-
-Hora exacta de detención del backend:
-
-`NO CAPTURADA`
-
 Fallo inducido:
 
-`Detención deliberada del proceso Spring Boot`
+`DETENCIÓN DEL PROCESO SPRING BOOT`
 
 Comprobación de indisponibilidad:
 
-`No existía listener activo en el puerto 8080 durante la fase de fallo`
+`PUERTO 8080 SIN LISTENER`
+
+Hora exacta de detención:
+
+`NO CAPTURADA`
 
 Actividad intentada durante el fallo:
 
@@ -494,79 +568,49 @@ Actividad intentada durante el fallo:
 
 Comportamiento visible en Android:
 
-`Android mostró el mensaje «No fue posible crear la actividad».`
+`No fue posible crear la actividad`
 
-Error o respuesta registrada:
+Error registrado:
 
 `SocketTimeoutException aproximadamente después de 10 segundos`
 
 Estado local observado:
 
-`Android no presentó el intento como una creación remota confirmada exitosamente.`
+`Android no presentó la actividad como creación remota confirmada exitosamente.`
 
 Comprobación remota inicial:
 
-`Después del intento realizado durante la caída, la consulta inicial a PostgreSQL no encontró un registro correspondiente a S11-F01-R1-DURANTE-FALLO.`
+`La consulta realizada después del intento fallido no encontró la actividad en PostgreSQL.`
 
 Resultado remoto posterior:
 
-`Posteriormente apareció en PostgreSQL una actividad con ID 1500171 correspondiente a S11-F01-R1-DURANTE-FALLO.`
+`S11-F01-R1-DURANTE-FALLO apareció posteriormente con ID 1500171.`
 
-Interpretación de ese resultado:
+### Desviación metodológica de F-01/R1
 
-`NO puede atribuirse al intento original realizado durante la caída.`
+Después de restablecer Spring Boot se volvió a pulsar manualmente `Guardar` sobre:
 
-Después de restablecer Spring Boot se volvió a pulsar manualmente `Guardar` sobre la actividad `S11-F01-R1-DURANTE-FALLO`.
+`S11-F01-R1-DURANTE-FALLO`
 
-Por tanto, la persistencia posterior con ID `1500171` puede corresponder a ese segundo intento manual.
+Por esta razón, la aparición posterior de ID:
 
-No existe evidencia suficiente en R1 para afirmar que:
+`1500171`
 
-- Android reintentó automáticamente la operación original;
-- Retrofit reenvió automáticamente la solicitud;
-- existía una cola local;
-- existía sincronización diferida;
-- el intento original durante la caída terminó persistido de manera automática.
+no puede atribuirse al intento original realizado durante la caída.
 
-Logs asociados:
+No existe evidencia suficiente para afirmar que:
 
-`evidencia-fallos/R1/logcat-R1-privado.txt`
-
-Estado del Logcat:
-
-`EVIDENCIA LOCAL PRIVADA — NO VERSIONAR SIN SANEAMIENTO`
-
-SHA-256 del Logcat original:
-
-`586869C52B6513A4D0F05FC011729EC106109FADA6546D6D3EB640DC8146FB12`
-
-Algoritmo:
-
-`SHA256`
-
-Conclusión experimental F-01/R1:
-
-`Durante la indisponibilidad inducida de Spring Boot, Android no presentó el intento de creación como una operación remota confirmada. La interfaz mostró «No fue posible crear la actividad» y Logcat registró SocketTimeoutException aproximadamente después de 10 segundos. La comprobación inicial en PostgreSQL no encontró la actividad intentada durante la caída.`
-
-La aparición posterior de `S11-F01-R1-DURANTE-FALLO` con ID `1500171` no puede utilizarse como evidencia de recuperación automática porque existió una segunda pulsación manual de `Guardar` después de restablecer Spring Boot.
-
-Esta conclusión corresponde únicamente a R1.
-
----
+- Android reintentó automáticamente la operación;
+- Retrofit reenviara automáticamente la solicitud;
+- existiera una cola local;
+- existiera sincronización diferida;
+- la solicitud original hubiese sido recuperada automáticamente.
 
 ### R-01
 
 Estado:
 
 `EJECUTADA CON DESVIACIONES DOCUMENTADAS`
-
-Hora exacta de restablecimiento del backend:
-
-`NO CAPTURADA`
-
-Comprobación de restauración:
-
-`El puerto 8080 volvió a estar disponible después de reiniciar Spring Boot.`
 
 Aplicación reiniciada:
 
@@ -576,153 +620,61 @@ Usuario volvió a autenticarse:
 
 `NO`
 
-Continuidad de sesión Android:
+Continuidad de sesión:
 
-`SÍ — la aplicación permaneció abierta y se conservó la misma sesión durante la prueba`
+`SÍ — RachaPro permaneció abierta y se conservó la misma sesión autenticada durante toda la repetición.`
 
-Identificador preregistrado para recuperación:
+Hora exacta de restablecimiento:
+
+`NO CAPTURADA`
+
+Backend restablecido:
+
+`SÍ`
+
+Identificador preregistrado:
 
 `S11-R01-R1-RECUPERACION`
 
-Identificador utilizado realmente durante R1:
+Identificador utilizado realmente:
 
 `S11-F01-R1-RECUPERACION`
 
-Estado de esta diferencia:
+Estado:
 
 `DESVIACIÓN NOMINAL DOCUMENTADA`
 
-No se modifica retroactivamente el identificador preregistrado.
+Resultado:
 
-Resultado visible en Android:
+`HTTP 201`
 
-`La nueva creación posterior al restablecimiento del backend se completó correctamente.`
-
-Respuesta HTTP observada:
-
-`201`
-
-Resultado remoto:
-
-`La actividad de recuperación quedó persistida en PostgreSQL.`
-
-ID remoto observado:
+ID PostgreSQL:
 
 `1500172`
 
-Título persistido observado:
+Persistencia remota:
 
-`S11-F01-R1-RECUPERACION`
+`CONFIRMADA`
 
-Criterio de recuperación satisfecho:
+Criterio de recuperación para una nueva operación:
 
-`SÍ PARA R1, respecto de una nueva operación remota`
+`SATISFECHO EN R1`
 
-La evidencia disponible muestra que:
+Conclusión R1:
 
-- Android permaneció abierto;
-- no se reinició la aplicación;
-- no se volvió a autenticar al usuario;
-- Spring Boot fue restablecido;
-- se realizó una nueva creación;
-- la nueva creación obtuvo HTTP 201;
-- la actividad quedó persistida en PostgreSQL con ID `1500172`.
+`Después de restablecer Spring Boot, Android pudo ejecutar una nueva operación remota desde la misma sesión, sin reiniciar la aplicación ni volver a autenticar al usuario.`
 
-Por tanto, para R1 existe evidencia de que Android recuperó la capacidad de realizar una nueva operación remota después de restablecer Spring Boot.
+Destino automático del intento original durante la caída:
 
----
+`NO CONCLUYENTE`
 
-### Desviaciones metodológicas registradas en R1
+Logcat:
 
-R1 contiene dos desviaciones respecto del procedimiento preregistrado.
+`evidencia-fallos/R1/logcat-R1-privado.txt`
 
-#### Desviación 1 — segundo Guardar sobre DURANTE-FALLO
+SHA-256:
 
-Después de restablecer Spring Boot se volvió a pulsar manualmente `Guardar` sobre:
-
-`S11-F01-R1-DURANTE-FALLO`
-
-Posteriormente esa actividad apareció en PostgreSQL con ID:
-
-`1500171`
-
-Esta intervención impide determinar si el intento original realizado durante la caída habría sido reenviado o persistido automáticamente.
-
-Por tanto:
-
-`La persistencia de 1500171 se atribuye únicamente a una operación observada después de una intervención manual adicional, no a recuperación automática del intento original.`
-
-#### Desviación 2 — identificador de recuperación diferente al preregistrado
-
-El identificador preregistrado fue:
-
-`S11-R01-R1-RECUPERACION`
-
-El identificador utilizado realmente fue:
-
-`S11-F01-R1-RECUPERACION`
-
-La actividad real quedó persistida con ID:
-
-`1500172`
-
-La diferencia se conserva como desviación nominal.
-
-No se corrige silenciosamente el preregistro.
-
----
-
-### Validez de R1
-
-F-01/R1:
-
-`VÁLIDA para observar el comportamiento durante la indisponibilidad.`
-
-Se observó:
-
-- indisponibilidad del backend;
-- ausencia de listener en 8080;
-- mensaje de error en Android;
-- `SocketTimeoutException`;
-- ausencia inicial de persistencia remota.
-
-R-01/R1:
-
-`VÁLIDA para comprobar recuperación de una nueva operación después de restablecer el backend.`
-
-Se observó:
-
-- continuidad de la aplicación;
-- continuidad de sesión;
-- backend nuevamente disponible;
-- HTTP 201;
-- persistencia remota con ID `1500172`.
-
-Destino final del intento DURANTE-FALLO:
-
-`NO CONCLUYENTE respecto de recuperación automática debido al segundo Guardar manual.`
-
-La repetición R1 no se descarta.
-
-La desviación se conserva explícitamente para evaluar posteriormente su comparabilidad con R2 y R3.
-
----
-
-### Conclusión experimental de R1
-
-La primera repetición aporta evidencia de que:
-
-1. al detener Spring Boot, Android no presentó la creación como confirmada exitosamente;
-2. Android informó que no fue posible crear la actividad;
-3. se registró `SocketTimeoutException` aproximadamente después de 10 segundos;
-4. la consulta inicial a PostgreSQL no encontró la actividad intentada durante la caída;
-5. después de restablecer Spring Boot, Android permaneció en la misma sesión;
-6. una nueva creación posterior obtuvo HTTP 201;
-7. la nueva actividad quedó persistida con ID `1500172`.
-
-R1 no permite concluir si una operación fallida puede recuperarse automáticamente después de volver a levantar el backend, porque se realizó manualmente un segundo intento sobre `S11-F01-R1-DURANTE-FALLO`.
-
-R2 y R3 deberán ejecutarse sin repetir esa intervención.
+`586869C52B6513A4D0F05FC011729EC106109FADA6546D6D3EB640DC8146FB12`
 
 ---
 
@@ -732,15 +684,19 @@ R2 y R3 deberán ejecutarse sin repetir esa intervención.
 
 Estado:
 
-`PENDIENTE DE EJECUCIÓN`
+`EJECUTADA`
 
 Fecha:
 
-`PENDIENTE`
+`2026-10-18`
+
+Preparación registrada:
+
+`13:25:47`
 
 Commit:
 
-`PENDIENTE`
+`83eee68`
 
 Dispositivo o emulador:
 
@@ -748,93 +704,189 @@ Dispositivo o emulador:
 
 Versión Android:
 
-`PENDIENTE DE REGISTRAR`
+`Android 14`
 
 Condición inicial verificada:
 
-`PENDIENTE`
+`SÍ`
+
+Se verificó:
+
+- Spring Boot disponible;
+- puerto 8080 disponible;
+- PostgreSQL disponible;
+- Android abierto;
+- usuario autenticado;
+- misma configuración de comunicación;
+- creación remota funcional.
 
 Actividad de control:
 
 `S11-F01-R2-CONTROL`
 
+Hora del control:
+
+`13:28:27`
+
+Resultado:
+
+`HTTP 201`
+
+ID PostgreSQL:
+
+`1500173`
+
 Control confirmado remotamente:
 
-`PENDIENTE`
+`SÍ`
 
 Hora de detención del backend:
 
-`PENDIENTE`
+`13:31:37`
+
+Comprobación de indisponibilidad:
+
+`PUERTO 8080 SIN LISTENER`
 
 Actividad intentada durante el fallo:
 
 `S11-F01-R2-DURANTE-FALLO`
 
-Comportamiento visible en Android:
+POST observado durante la caída:
 
-`PENDIENTE`
+`13:32:29`
 
-Error o respuesta registrada:
+Error registrado:
 
-`PENDIENTE`
+`SocketTimeoutException`
 
-Estado local observado:
+Hora del error:
 
-`PENDIENTE`
+`13:32:39`
 
-Resultado remoto posterior del intento:
+Duración aproximada:
 
-`PENDIENTE`
+`10 segundos`
 
-Logs asociados:
+Comportamiento durante la caída:
 
-`PENDIENTE`
+`La creación no fue completada correctamente mientras Spring Boot estaba indisponible.`
 
-Conclusión experimental:
+Hora de restablecimiento del backend:
 
-`PENDIENTE`
+`13:34:22`
+
+Comprobación:
+
+`PUERTO 8080 NUEVAMENTE DISPONIBLE`
+
+Comprobación remota del intento realizado durante el fallo:
+
+`0 rows`
+
+La consulta fue realizada después de restablecer Spring Boot y antes de comprobar la nueva actividad de recuperación.
+
+No se reportó una segunda pulsación manual de `Guardar` sobre:
+
+`S11-F01-R2-DURANTE-FALLO`
+
+### Solicitudes posteriores observadas en R2
+
+Después del restablecimiento se observaron dos solicitudes POST en Logcat.
+
+Primera:
+
+`13:36:02 — POST posterior al restablecimiento`
+
+La respuesta correspondiente no quedó identificada en el fragmento analizado.
+
+Segunda:
+
+`13:36:49 — POST posterior`
+
+Resultado:
+
+`HTTP 201`
+
+La evidencia disponible no permite determinar únicamente a partir de ese fragmento de Logcat el origen funcional exacto de cada POST.
+
+Por tanto, no se afirma que:
+
+- el POST de `13:36:02` fuera un reintento automático;
+- el POST de `13:36:02` correspondiera necesariamente a `DURANTE-FALLO`;
+- el POST de `13:36:49` pueda identificarse únicamente por Logcat con un título específico;
+- Android disponga de reintento automático;
+- Retrofit haya reenviado automáticamente la solicitud fallida.
+
+Esta condición se conserva como:
+
+`AMBIGÜEDAD DE TRAZABILIDAD DE SOLICITUDES POSTERIORES`
 
 ### R-01
 
 Estado:
 
-`PENDIENTE DE EJECUCIÓN`
-
-Hora de restablecimiento del backend:
-
-`PENDIENTE`
+`EJECUTADA`
 
 Aplicación reiniciada:
 
-`NO DEBE REINICIARSE`
+`NO`
 
 Usuario volvió a autenticarse:
 
-`NO DEBE VOLVER A AUTENTICARSE`
+`NO`
 
-Actividad de recuperación:
+Continuidad de sesión:
+
+`SÍ — RachaPro permaneció abierta y se conservó la misma sesión autenticada durante toda la repetición.`
+
+Identificador preregistrado:
 
 `S11-R01-R2-RECUPERACION`
 
-Resultado visible en Android:
+Identificador utilizado realmente:
 
-`PENDIENTE`
+`S11-F01-R2-RECUPERACION`
 
-Resultado remoto:
+Estado:
 
-`PENDIENTE`
+`DESVIACIÓN NOMINAL DOCUMENTADA`
 
-Logs asociados:
+Intervención manual informada:
 
-`PENDIENTE`
+`Una pulsación de Guardar para crear la actividad de recuperación.`
 
-Criterio de recuperación satisfecho:
+No se reportó una segunda pulsación manual sobre `S11-F01-R2-DURANTE-FALLO`.
 
-`PENDIENTE`
+ID PostgreSQL de la actividad de recuperación:
 
-Conclusión experimental:
+`1500174`
 
-`PENDIENTE`
+Persistencia remota:
+
+`CONFIRMADA`
+
+Criterio de recuperación para una nueva operación:
+
+`SATISFECHO EN R2`
+
+Conclusión R2:
+
+`Después de restablecer Spring Boot, Android pudo mantener la misma sesión y completar una nueva operación cuya persistencia quedó comprobada en PostgreSQL con ID 1500174.`
+
+La comprobación anterior no resuelve la naturaleza de los dos POST posteriores observados en Logcat.
+
+Destino automático del intento original durante la caída:
+
+`NO DEMOSTRADO`
+
+Logcat utilizado para la evidencia complementaria:
+
+`evidencia-fallos/R2/logcat-R2-continuacion-privado.txt`
+
+SHA-256:
+
+`3E874289E78D3BE8D61E5AE7DCF05CF7228F47CE2E7231D0658014451EAAC5EE`
 
 ---
 
@@ -844,15 +896,15 @@ Conclusión experimental:
 
 Estado:
 
-`PENDIENTE DE EJECUCIÓN`
+`EJECUTADA`
 
 Fecha:
 
-`PENDIENTE`
+`2026-10-18`
 
 Commit:
 
-`PENDIENTE`
+`83eee68`
 
 Dispositivo o emulador:
 
@@ -860,99 +912,165 @@ Dispositivo o emulador:
 
 Versión Android:
 
-`PENDIENTE DE REGISTRAR`
+`Android 14`
 
-Condición inicial verificada:
+Condición inicial:
 
-`PENDIENTE`
+`VERIFICADA`
 
 Actividad de control:
 
 `S11-F01-R3-CONTROL`
 
+Resultado del control:
+
+`HTTP 201`
+
+ID PostgreSQL:
+
+`1500175`
+
 Control confirmado remotamente:
 
-`PENDIENTE`
+`SÍ`
 
-Hora de detención del backend:
+Fallo inducido:
 
-`PENDIENTE`
+`DETENCIÓN DEL PROCESO SPRING BOOT`
+
+Comprobación:
+
+`PUERTO 8080 SIN LISTENER`
 
 Actividad intentada durante el fallo:
 
 `S11-F01-R3-DURANTE-FALLO`
 
+POST durante la caída:
+
+`14:34:04`
+
+Error registrado:
+
+`SocketTimeoutException`
+
+Hora del error:
+
+`14:34:14`
+
+Duración aproximada:
+
+`10 segundos`
+
 Comportamiento visible en Android:
 
-`PENDIENTE`
+`No fue posible crear la actividad`
 
-Error o respuesta registrada:
+Android no presentó la operación como una creación remota confirmada durante la caída.
 
-`PENDIENTE`
+### Restablecimiento y solicitudes posteriores
 
-Estado local observado:
+Después del restablecimiento de Spring Boot se observó:
 
-`PENDIENTE`
+`14:36:13 — POST posterior con HTTP 201`
 
-Resultado remoto posterior del intento:
+Posteriormente se observó:
 
-`PENDIENTE`
+`14:37:17 — otro POST posterior con HTTP 201`
 
-Logs asociados:
+PostgreSQL mostró:
 
-`PENDIENTE`
+`1500176 — S11-F01-R3-DURANTE-FALLO`
 
-Conclusión experimental:
+`1500177 — S11-F01-R3-RECUPERACION`
 
-`PENDIENTE`
+### Desviación metodológica de F-01/R3
+
+Después de restablecer Spring Boot se volvió a pulsar manualmente `Guardar` sobre:
+
+`S11-F01-R3-DURANTE-FALLO`
+
+Por esta razón, la persistencia de:
+
+`1500176`
+
+no demuestra que el intento original realizado durante la caída se recuperara automáticamente.
+
+No se puede afirmar que:
+
+- Android reintentara automáticamente la solicitud;
+- Retrofit reenviara automáticamente la operación;
+- existiera una cola local;
+- existiera sincronización diferida;
+- la persistencia de `1500176` procediera del intento original sin intervención.
+
+Además, los POST posteriores observados en Logcat no deben vincularse de manera definitiva con títulos concretos únicamente a partir de ese fragmento.
 
 ### R-01
 
 Estado:
 
-`PENDIENTE DE EJECUCIÓN`
-
-Hora de restablecimiento del backend:
-
-`PENDIENTE`
+`EJECUTADA CON DESVIACIONES DOCUMENTADAS`
 
 Aplicación reiniciada:
 
-`NO DEBE REINICIARSE`
+`NO`
 
 Usuario volvió a autenticarse:
 
-`NO DEBE VOLVER A AUTENTICARSE`
+`NO`
 
-Actividad de recuperación:
+Continuidad de sesión:
+
+`SÍ — RachaPro permaneció abierta y se conservó la misma sesión autenticada durante toda la repetición.`
+
+Identificador preregistrado:
 
 `S11-R01-R3-RECUPERACION`
 
-Resultado visible en Android:
+Identificador utilizado realmente:
 
-`PENDIENTE`
+`S11-F01-R3-RECUPERACION`
 
-Resultado remoto:
+Estado:
 
-`PENDIENTE`
+`DESVIACIÓN NOMINAL DOCUMENTADA`
 
-Logs asociados:
+ID PostgreSQL:
 
-`PENDIENTE`
+`1500177`
 
-Criterio de recuperación satisfecho:
+Persistencia remota:
 
-`PENDIENTE`
+`CONFIRMADA`
 
-Conclusión experimental:
+Criterio de recuperación para una nueva operación:
 
-`PENDIENTE`
+`SATISFECHO EN R3`
+
+Conclusión R3:
+
+`Después del restablecimiento existe evidencia de que Android, manteniendo la misma sesión y sin reiniciar la aplicación, pudo realizar una nueva operación de recuperación que quedó persistida en PostgreSQL con ID 1500177.`
+
+Destino automático del intento original durante la caída:
+
+`NO CONCLUYENTE`
+
+La persistencia con ID `1500176` no puede utilizarse como prueba de recuperación automática debido a la segunda pulsación manual de `Guardar`.
+
+Logcat:
+
+`evidencia-fallos/R3/logcat-R3-20261018-143057-privado.txt`
+
+SHA-256:
+
+`100D28B526252B8D3D10F753871214CDE0019392C88F83ADE7E04D4540A9982C`
 
 ---
 
 ## 13. Separación entre expectativa y observación
 
-Las siguientes afirmaciones corresponden a expectativas definidas antes de ejecutar las pruebas:
+Las siguientes afirmaciones fueron definidas como expectativas previas y no como resultados:
 
 - Android no debería presentar una operación remota como confirmada si el backend no respondió.
 - Una operación mostrada localmente no debe asumirse automáticamente como persistida remotamente.
@@ -960,13 +1078,29 @@ Las siguientes afirmaciones corresponden a expectativas definidas antes de ejecu
 - La recuperación debería poder comprobarse sin reiniciar la aplicación.
 - El estado remoto debe comprobarse para distinguir entre intento, visualización local y persistencia real.
 
-La ejecución de R1 aporta una primera observación sobre estas expectativas, pero no permite todavía establecer reproducibilidad.
+Después de ejecutar R1, R2 y R3 se observaron resultados compatibles con algunas de estas expectativas.
 
-Las conclusiones consolidadas del escenario deberán esperar la ejecución de R2 y R3.
+En las tres repeticiones:
+
+- Android no presentó como creación remota confirmada la operación que terminó en timeout durante la indisponibilidad;
+- Spring Boot volvió a estar disponible;
+- RachaPro permaneció abierta;
+- el usuario permaneció en la misma sesión autenticada;
+- posteriormente pudo comprobarse persistencia de una nueva actividad de recuperación.
+
+Estas observaciones no permiten afirmar mecanismos internos que no fueron medidos.
+
+En particular, no existe evidencia suficiente para afirmar la existencia de:
+
+- reintento automático;
+- cola local;
+- sincronización diferida;
+- recuperación automática del intento original;
+- reenvío automático de Retrofit.
 
 ---
 
-## 14. Criterio de reproducibilidad
+## 14. Criterio de reproducibilidad y comparabilidad
 
 El escenario se considerará reproducido consistentemente si las tres repeticiones cumplen condiciones iniciales equivalentes y producen el mismo comportamiento observable relevante.
 
@@ -980,9 +1114,76 @@ Cualquier repetición invalidada metodológicamente deberá justificar:
 - qué evidencia demuestra la desviación;
 - por qué no puede compararse directamente con las demás.
 
-R1 contiene desviaciones documentadas, pero no se invalida completamente.
+### Núcleo comparable observado
 
-La comparabilidad final de R1 con R2 y R3 deberá evaluarse después de terminar las tres ejecuciones.
+R1, R2 y R3 permiten comparar el siguiente comportamiento:
+
+- Spring Boot estaba disponible inicialmente;
+- existía una actividad de control confirmada remotamente;
+- Spring Boot fue detenido;
+- el puerto 8080 dejó de atender;
+- se intentó crear una actividad durante la caída;
+- se produjo un error de comunicación;
+- Android no presentó la operación como creación remota confirmada;
+- Spring Boot fue restablecido;
+- RachaPro permaneció abierta;
+- el usuario permaneció autenticado;
+- una nueva actividad pudo persistirse después del restablecimiento.
+
+### Diferencias relevantes
+
+#### R1
+
+Se realizó una segunda pulsación manual de `Guardar` sobre:
+
+`S11-F01-R1-DURANTE-FALLO`
+
+La persistencia posterior de ID `1500171` no puede interpretarse como recuperación automática.
+
+#### R2
+
+No se reportó una segunda pulsación manual sobre:
+
+`S11-F01-R2-DURANTE-FALLO`
+
+La consulta remota realizada después del restablecimiento devolvió:
+
+`0 rows`
+
+Sin embargo, Logcat contiene dos POST posteriores al restablecimiento y la relación exacta de cada POST con las acciones funcionales no quedó determinada completamente.
+
+Esta limitación impide utilizar R2 para afirmar un mecanismo automático no observado.
+
+#### R3
+
+Se realizó una segunda pulsación manual de `Guardar` sobre:
+
+`S11-F01-R3-DURANTE-FALLO`
+
+La persistencia posterior con ID `1500176` no puede interpretarse como recuperación automática.
+
+### Evaluación de comparabilidad
+
+Las tres repeticiones son comparables para observar:
+
+- respuesta de Android ante indisponibilidad de Spring Boot;
+- timeout de red;
+- ausencia de confirmación falsa de éxito durante la caída;
+- continuidad de la aplicación;
+- continuidad de sesión;
+- posibilidad de realizar una nueva operación después del restablecimiento.
+
+Las tres repeticiones no proporcionan evidencia igualmente limpia para determinar:
+
+`qué ocurre automáticamente con la solicitud original realizada durante la indisponibilidad`
+
+debido a:
+
+- segundo Guardar manual en R1;
+- ambigüedad de trazabilidad posterior en R2;
+- segundo Guardar manual en R3.
+
+No se ejecuta una cuarta repetición únicamente para favorecer una conclusión.
 
 ---
 
@@ -996,7 +1197,7 @@ No evalúa todavía:
 - pérdida parcial de conectividad;
 - latencia extrema;
 - respuestas HTTP 5xx deliberadas;
-- timeouts controlados;
+- timeouts controlados desde servidor;
 - agotamiento del pool de conexiones;
 - fallos de autenticación;
 - expiración del JWT;
@@ -1010,21 +1211,31 @@ El escenario tampoco demuestra por sí mismo disponibilidad global del sistema.
 
 Los resultados deben interpretarse únicamente dentro de las condiciones reproducidas.
 
-R1 presenta además una limitación específica:
+### Limitaciones específicas observadas
 
-`el intento DURANTE-FALLO fue guardado manualmente una segunda vez después de restablecer Spring Boot.`
+R1:
 
-Esta intervención impide determinar mediante R1 si el intento original habría sido recuperado automáticamente.
+`Segundo Guardar manual sobre la actividad DURANTE-FALLO.`
+
+R2:
+
+`Dos POST posteriores al restablecimiento cuya relación funcional exacta no quedó completamente determinada mediante el fragmento de Logcat disponible.`
+
+R3:
+
+`Segundo Guardar manual sobre la actividad DURANTE-FALLO.`
+
+Estas condiciones deben conservarse en cualquier análisis posterior y no deben ocultarse al evaluar una táctica arquitectónica.
 
 ---
 
 ## 16. Entorno de ejecución
 
-Las pruebas F-01/R-01 se están ejecutando utilizando:
+Las pruebas F-01/R-01 se ejecutaron utilizando:
 
 `DISPOSITIVO FÍSICO ANDROID`
 
-El dispositivo fue conectado al computador mediante USB para permitir la captura de evidencia mediante ADB y Logcat.
+El dispositivo fue conectado al computador mediante USB para permitir captura de evidencia mediante ADB y Logcat.
 
 ADB reconoció correctamente el dispositivo con estado:
 
@@ -1032,53 +1243,55 @@ ADB reconoció correctamente el dispositivo con estado:
 
 La aplicación Android se ejecutó en el celular físico.
 
-La comunicación utilizada durante R1 fue:
+Spring Boot se ejecutó en el computador de pruebas.
+
+PostgreSQL permaneció disponible durante las interrupciones deliberadas de Spring Boot.
+
+En R1 se registró comunicación mediante:
 
 `Android -> 192.168.1.20:8080 -> Spring Boot`
 
-Spring Boot se ejecutó en el computador de pruebas.
+Para R2 y R3 se registró:
 
-PostgreSQL permaneció disponible durante el escenario de indisponibilidad del backend.
+`Android 14`
 
-La utilización de un dispositivo físico implica:
+Para R1 la versión exacta de Android no fue capturada durante la ejecución y no se infiere retroactivamente.
 
-- utilizar una dirección de red del computador alcanzable desde Android;
-- comprobar que Spring Boot escuche en una interfaz accesible;
-- mantener PC y celular con conectividad compatible;
-- capturar Logcat mediante ADB;
-- preservar evidencia de una ejecución realizada en un dispositivo Android real.
+Las tres repeticiones mantuvieron:
 
-Versión exacta de Android utilizada en R1:
+- RachaPro abierta;
+- la misma sesión autenticada;
+- ausencia de reinicio de aplicación;
+- ausencia de nueva autenticación después del restablecimiento.
 
-`NO CAPTURADA DURANTE LA EJECUCIÓN`
-
-Esta información no se inferirá retroactivamente sin una comprobación verificable.
-
-R2 y R3 deberán realizarse utilizando el mismo dispositivo y condiciones equivalentes en la medida de lo técnicamente posible.
+Los Logcat se conservaron como evidencia local privada y no deben publicarse sin saneamiento.
 
 ---
 
 ## 17. Relación con Semana 11
 
-Esta actividad corresponde al tercer bloque de Semana 11:
+Esta actividad corresponde al tercer bloque de Semana 11.
+
+Estado:
 
 - crecimiento de carga: completado;
 - registro de degradación: completado;
-- matriz de fallos y resiliencia: preregistrada y en ejecución;
-- F-01/R-01 R1: ejecutada y documentada con desviaciones;
-- F-01/R-01 R2: pendiente;
-- F-01/R-01 R3: pendiente;
+- matriz de fallos y resiliencia: preregistrada;
+- F-01/R-01 R1: ejecutada y documentada;
+- F-01/R-01 R2: ejecutada y documentada;
+- F-01/R-01 R3: ejecutada y documentada;
+- comparabilidad: analizada;
 - táctica y comparación antes/después: pendiente.
 
-R1 aporta evidencia inicial sobre el comportamiento de RachaPro ante la indisponibilidad temporal de Spring Boot y su posterior restablecimiento.
+Las tres repeticiones previstas fueron ejecutadas.
 
-No se considera todavía completada la actividad de matrices de fallos y resiliencia porque faltan R2 y R3.
+No se considera necesario añadir automáticamente una cuarta repetición.
 
-La reproducibilidad del comportamiento no puede establecerse hasta terminar las tres repeticiones.
+La selección de una táctica arquitectónica se realizará después de cerrar la auditoría de esta actividad.
 
-La selección de una táctica arquitectónica se realizará después de analizar el conjunto completo de resultados.
+La evidencia obtenida no selecciona por sí sola la táctica.
 
-No se seleccionará una táctica únicamente a partir de R1 ni de una expectativa no medida.
+La decisión arquitectónica corresponde al equipo y deberá registrarse posteriormente.
 
 ---
 
@@ -1088,57 +1301,138 @@ La secuencia metodológica definida fue:
 
 `definición del escenario -> commit previo -> ejecución -> evidencia -> resultados -> análisis -> decisión de táctica`
 
-La definición de F-01 y R-01 fue registrada previamente en Git mediante:
+El preregistro de F-01/R-01 quedó registrado antes de ejecutar las pruebas mediante:
 
 `87de9d9`
 
-Posteriormente se ejecutó R1.
+Después se ejecutó R1.
 
-El registro de los resultados de R1 se realizará en un commit distinto y posterior al preregistro.
+El registro documental de R1 quedó en:
 
-Esto permite demostrar que:
+`83eee68`
 
-- las expectativas existían antes de observar el comportamiento;
-- los criterios verificables no fueron definidos después de conocer R1;
-- las desviaciones de R1 se registran explícitamente;
-- la evidencia experimental permanece separada de la definición previa;
-- la futura decisión de táctica deberá apoyarse en las observaciones completas.
+R2 y R3 fueron ejecutadas posteriormente con:
+
+`83eee68`
+
+como commit registrado durante sus ejecuciones.
+
+El documento actual deberá quedar registrado en un nuevo commit posterior.
+
+Esta secuencia permite distinguir:
+
+- expectativas previas;
+- evidencia obtenida;
+- desviaciones observadas;
+- interpretación posterior;
+- futura decisión arquitectónica.
+
+Los criterios preregistrados no deben ser sustituidos retroactivamente por criterios definidos después de observar los resultados.
 
 ---
 
-## 19. Próximo paso
+## 19. Resultado consolidado de la actividad 3
 
-R1 ya fue ejecutada.
+Las tres repeticiones preregistradas de F-01/R-01 fueron ejecutadas.
 
-Antes de ejecutar R2 se debe:
+### F-01 — comportamiento durante la indisponibilidad
 
-1. guardar este registro actualizado de R1;
-2. verificar que las expectativas y criterios preregistrados no fueron modificados retroactivamente;
-3. conservar `logcat-R1-privado.txt` únicamente como evidencia local privada;
-4. conservar su SHA-256:
-   `586869C52B6513A4D0F05FC011729EC106109FADA6546D6D3EB640DC8146FB12`;
-5. no incorporar el Logcat privado a Git sin un proceso previo de saneamiento;
-6. registrar este documento actualizado en un commit posterior al preregistro;
-7. mantener el mismo dispositivo físico para R2 cuando sea posible;
-8. comprobar nuevamente la condición inicial;
-9. crear `S11-F01-R2-CONTROL`;
-10. comprobar su persistencia remota;
-11. detener Spring Boot;
-12. comprobar que el puerto 8080 dejó de atender;
-13. intentar `S11-F01-R2-DURANTE-FALLO`;
-14. registrar el comportamiento de Android y Logcat;
-15. restablecer Spring Boot;
-16. **no volver a pulsar Guardar sobre `S11-F01-R2-DURANTE-FALLO`**;
-17. comprobar directamente en PostgreSQL si el intento original existe o no;
-18. crear después una nueva actividad:
-    `S11-R01-R2-RECUPERACION`;
-19. comprobar el resultado tanto en Android como en PostgreSQL;
-20. conservar cualquier desviación observada sin descartarla.
+En las tres repeticiones se observó que:
 
-R2 debe evitar el segundo intento manual realizado en R1.
+- Spring Boot dejó de atender solicitudes;
+- Android intentó realizar una creación;
+- la operación produjo un error de comunicación;
+- se observó `SocketTimeoutException`;
+- Android no presentó la creación como una operación remota confirmada exitosamente.
 
-Esto permitirá distinguir con mayor claridad entre:
+Esto constituye evidencia reproducida, bajo las condiciones del experimento, del comportamiento visible ante indisponibilidad temporal del backend.
 
-- fallo de la operación original;
-- posible comportamiento automático después de la recuperación;
-- recuperación del cliente para una nueva operación.
+### R-01 — recuperación para una nueva operación
+
+En R1, R2 y R3 se confirmó que:
+
+- RachaPro permaneció abierta;
+- no se reinició la aplicación;
+- no se volvió a iniciar sesión;
+- Spring Boot fue restablecido;
+- posteriormente pudo persistirse una nueva actividad de recuperación.
+
+Por tanto, las tres repeticiones aportan evidencia de recuperación operativa para una nueva operación desde la sesión Android existente.
+
+Esta conclusión se limita al escenario reproducido y no demuestra disponibilidad global.
+
+### Destino de la solicitud original durante el fallo
+
+No se dispone de evidencia suficiente para afirmar que la solicitud fallida durante la indisponibilidad sea recuperada automáticamente.
+
+R1:
+
+`NO CONCLUYENTE — segundo Guardar manual`
+
+R2:
+
+`NO DEMOSTRADO — 0 rows en comprobación inicial y dos POST posteriores con trazabilidad incompleta`
+
+R3:
+
+`NO CONCLUYENTE — segundo Guardar manual`
+
+Por tanto, no se atribuye al sistema ninguna capacidad observada de:
+
+- reintento automático;
+- cola local;
+- sincronización posterior;
+- reenvío automático;
+- recuperación automática de operaciones fallidas.
+
+### Desviaciones nominales
+
+Los identificadores de recuperación preregistrados utilizaban:
+
+`S11-R01-Rx-RECUPERACION`
+
+Durante las ejecuciones se utilizaron:
+
+- `S11-F01-R1-RECUPERACION`
+- `S11-F01-R2-RECUPERACION`
+- `S11-F01-R3-RECUPERACION`
+
+Esta diferencia se conserva como desviación nominal.
+
+No se modifica retroactivamente el preregistro.
+
+### Estado metodológico
+
+R1:
+
+`UTILIZABLE para F-01 y recuperación de una nueva operación; limitada para analizar el destino automático de DURANTE-FALLO.`
+
+R2:
+
+`UTILIZABLE para F-01 y recuperación de una nueva operación; presenta ambigüedad de trazabilidad en POST posteriores.`
+
+R3:
+
+`UTILIZABLE para F-01 y recuperación de una nueva operación; limitada para analizar el destino automático de DURANTE-FALLO.`
+
+No se descarta ninguna repetición.
+
+### Estado de Semana 11
+
+Actividad 1 — Medición con crecimiento de carga:
+
+`COMPLETADA`
+
+Actividad 2 — Registro de degradación:
+
+`COMPLETADA`
+
+Actividad 3 — Matrices de fallos y resiliencia:
+
+`TRES REPETICIONES EJECUTADAS Y DOCUMENTADAS — PENDIENTE DE AUDITORÍA FINAL EN GIT`
+
+Actividad 4 — Aplicación de táctica y comparación antes/después:
+
+`PENDIENTE`
+
+El siguiente paso es verificar que el documento actual no haya modificado retroactivamente los criterios preregistrados y, si la auditoría es satisfactoria, registrar R2, R3 y la comparabilidad en un nuevo commit.
