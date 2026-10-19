@@ -46,13 +46,25 @@ Commit de cierre metodológico de BASE-R2:
 
 `01d8e6a`
 
+Commit de cierre de línea base:
+
+`b6f82a5`
+
+Merge del cierre de línea base:
+
+`be2b2f3`
+
 Condición experimental actual:
 
-`LÍNEA BASE`
+`POST-INTERVENCIÓN TIMEOUT3`
 
-Configuración HTTP:
+Configuración HTTP experimental:
 
-`SIN connectTimeout EXPLÍCITO`
+`connectTimeout = 3 segundos`
+
+Commit de intervención:
+
+`a722954`
 
 Corridas principales previstas de línea base:
 
@@ -70,13 +82,37 @@ Estado de BASE-R3:
 
 `EJECUTADA — EVALUABLE CON INCIDENCIA DOCUMENTADA`
 
+Mediana de línea base:
+
+`M_antes = 10 028 ms`
+
 Intervención experimental:
 
-`NO IMPLEMENTADA`
+`IMPLEMENTADA`
 
-Mediciones posteriores:
+Estado de TIMEOUT3-R1:
 
-`NO EJECUTADAS`
+`EJECUTADA — NO EVALUABLE POR TRAZABILIDAD FUNCIONAL INSUFICIENTE`
+
+Valor T1:
+
+`NO ASIGNADO`
+
+Reemplazo de TIMEOUT3-R1:
+
+`PROCEDE SEGÚN PRERREGISTRO — AÚN NO EJECUTADO`
+
+TIMEOUT3-R2:
+
+`NO EJECUTADA`
+
+TIMEOUT3-R3:
+
+`NO EJECUTADA`
+
+Mediana posterior:
+
+`NO CALCULADA`
 
 Hipótesis:
 
@@ -1075,7 +1111,7 @@ El punto a evaluar no es simplemente la existencia de dos filas.
 
 La cuestión metodológica es determinar si esa duplicidad impide reconstruir o verificar suficientemente la operación experimental principal.
 
-Hasta el momento, el POST experimental dispone de:
+El POST experimental dispone de:
 
 - identificador propio;
 - inicio propio;
@@ -1084,13 +1120,7 @@ Hasta el momento, el POST experimental dispone de:
 - comprobación instrumental del puerto previa;
 - consulta PostgreSQL independiente.
 
-Por tanto, la posible afectación del prerregistro permanece:
-
-`PENDIENTE DE VALORACIÓN METODOLÓGICA`
-
-y no:
-
-`DEMOSTRADA AUTOMÁTICAMENTE POR LA DUPLICIDAD`
+La incidencia quedó posteriormente clasificada mediante la decisión metodológica final documentada en la sección 4.15.
 
 ---
 
@@ -1301,7 +1331,7 @@ Procedencia exacta:
 
 El posible criterio metodológico afectado corresponde a la trazabilidad y reconstrucción inequívoca de las operaciones previas de la corrida.
 
-No obstante, la evidencia actualmente disponible también muestra que:
+No obstante, la evidencia disponible también muestra que:
 
 - el identificador experimental fue distinto;
 - el puerto `8080` tenía `0 listeners` antes del experimento;
@@ -1310,7 +1340,7 @@ No obstante, la evidencia actualmente disponible también muestra que:
 - PostgreSQL devolvió `0 filas` para el identificador experimental;
 - Android no mostró falso éxito.
 
-Por tanto, hasta este punto se documenta:
+Por tanto, se documenta:
 
 `UNA ANOMALÍA COMPROBADA EN EL CONTROL`
 
@@ -1634,47 +1664,357 @@ La incidencia documentada de BASE-R3 no motivó reemplazo porque la corrida fue 
 
 Estado:
 
-`NO IMPLEMENTADA`
+`IMPLEMENTADA`
 
-Cambio previsto:
+Cambio preregistrado:
 
 `connectTimeout = 3 segundos`
 
-Archivo previsto:
+Archivo modificado:
 
-`RetrofitClient.kt`
+`app/src/main/java/com/example/rachapro/network/RetrofitClient.kt`
 
-Estado:
+Commit de intervención:
 
-`SIN MODIFICAR`
+`a722954`
 
-No se modificarán antes de cerrar la línea base:
+Cambio aplicado:
 
-- `connectTimeout`;
+`.connectTimeout(3, TimeUnit.SECONDS)`
+
+Import requerido:
+
+`java.util.concurrent.TimeUnit`
+
+La intervención se registró después de cerrar la línea base.
+
+La comparación experimental exige mantener constantes las demás variables. Por tanto, la intervención no incluye cambios deliberados en:
+
 - `readTimeout`;
 - `writeTimeout`;
 - `callTimeout`;
 - retry;
 - fallback;
-- circuit breaker.
+- circuit breaker;
+- interceptores existentes.
 
-La intervención solo podrá comenzar después de completar tres corridas evaluables de línea base.
+La hipótesis no se considera evaluada por el solo hecho de implementar la intervención.
 
 ---
 
 ## 9. Corridas posteriores a la intervención
 
-### TIMEOUT3-R1
+### 9.1 TIMEOUT3-R1
 
-Estado:
+Estado de ejecución:
 
-`NO EJECUTADA`
+`EJECUTADA`
 
-Valor:
+Clasificación metodológica final:
 
-`T1 = PENDIENTE`
+`NO EVALUABLE POR TRAZABILIDAD FUNCIONAL INSUFICIENTE`
 
-### TIMEOUT3-R2
+Valor asignado a T1:
+
+`NO ASIGNADO`
+
+La corrida se conserva íntegramente como evidencia histórica y descriptiva.
+
+No se elimina ni se reescribe por haber sido clasificada como no evaluable.
+
+---
+
+#### 9.1.1 Condición experimental
+
+Configuración HTTP:
+
+`connectTimeout = 3 segundos`
+
+La intervención correspondía al commit:
+
+`a722954`
+
+La prueba se realizó bajo la condición posterior a la intervención.
+
+---
+
+#### 9.1.2 Comprobación de indisponibilidad
+
+Puerto comprobado:
+
+`8080`
+
+Listeners observados:
+
+`0`
+
+Hora registrada:
+
+`20:32:15.603`
+
+Esta comprobación ocurrió antes de los POST fallidos considerados durante la ejecución.
+
+---
+
+#### 9.1.3 Intentos POST observados
+
+Durante TIMEOUT3-R1 se observaron dos solicitudes:
+
+`POST /api/activities`
+
+con inicio y fallo correlacionables.
+
+##### POST observado 1
+
+Inicio:
+
+`20:32:49.240`
+
+Fallo:
+
+`20:32:52.252`
+
+Duración técnica observada:
+
+`3 012 ms`
+
+##### POST observado 2
+
+Inicio:
+
+`20:33:40.536`
+
+Fallo:
+
+`20:33:43.551`
+
+Duración técnica observada:
+
+`3 015 ms`
+
+Ambos valores son mediciones técnicas observadas.
+
+Ninguno se registra como:
+
+`T1`
+
+porque la corrida completa no satisface suficientemente la trazabilidad funcional requerida para ser admitida en la comparación principal.
+
+---
+
+#### 9.1.4 Orden funcional recordado
+
+Según confirmación operativa retrospectiva, los títulos utilizados fueron, en este orden:
+
+1. `S11-A4-TIMEOUT-R1`
+2. `S11-A4-TIMEOUT3-R1`
+
+El primer título no correspondía al identificador previsto para la corrida.
+
+El segundo sí correspondía al identificador previsto.
+
+Esta información se clasifica como:
+
+`CONFIRMACIÓN OPERATIVA RETROSPECTIVA`
+
+y no como:
+
+`ATRIBUCIÓN INSTRUMENTAL DEL BODY A CADA POST`
+
+El nivel de Logcat utilizado no expone el título funcional contenido en el body de cada solicitud.
+
+Por ello, el Logcat por sí solo no permite demostrar inequívocamente cuál de los dos POST corresponde a cada título.
+
+---
+
+#### 9.1.5 Fallo adicional de las 20:32:25.078
+
+Se observó además un fallo a las:
+
+`20:32:25.078`
+
+La auditoría posterior permitió establecer que dicho fallo correspondía a una solicitud:
+
+`PATCH`
+
+y no a:
+
+`POST /api/activities`
+
+Por tanto:
+
+`NO SE CONTABILIZA COMO UN TERCER POST`
+
+y no se utiliza para calcular una duración de creación de actividad.
+
+Tampoco se inventa un inicio para esa operación.
+
+---
+
+#### 9.1.6 Resultado Android
+
+Android mostró:
+
+`No fue posible crear la actividad`
+
+Falso éxito observado:
+
+`NO`
+
+La aplicación no presentó la creación experimental como confirmada exitosamente.
+
+---
+
+#### 9.1.7 Persistencia remota
+
+Se realizó la consulta PostgreSQL correspondiente al identificador experimental.
+
+Resultado:
+
+`0 FILAS`
+
+Interpretación limitada a lo observado:
+
+`NO SE ENCONTRÓ PERSISTENCIA REMOTA DEL IDENTIFICADOR EXPERIMENTAL EN LA CONSULTA REALIZADA`
+
+Este hecho no resuelve por sí solo la atribución funcional entre los dos POST registrados en Logcat.
+
+---
+
+#### 9.1.8 Integridad de evidencia
+
+SHA-256 del Logcat privado de TIMEOUT3-R1:
+
+`787BB5935347EABAD2C281765E715C5F247BEA3FB626DEF21768273BCCC9AC81`
+
+El Logcat privado permanece fuera del repositorio público.
+
+No deben incorporarse al repositorio público:
+
+- JWT;
+- credenciales;
+- encabezados de autenticación;
+- tokens;
+- secretos;
+- Logcat privado completo sin saneamiento;
+- información sensible innecesaria.
+
+---
+
+#### 9.1.9 Desviación metodológica
+
+La desviación comprobada es:
+
+`SE EJECUTARON DOS POST DURANTE LA MISMA CORRIDA Y EL PRIMERO UTILIZÓ UN TÍTULO INCORRECTO`
+
+Existe además una limitación instrumental:
+
+`LOGCAT BASIC NO PERMITE ATRIBUIR INEQUÍVOCAMENTE EL TÍTULO FUNCIONAL A CADA POST`
+
+Aunque las dos solicitudes poseen timestamps y duraciones independientes, la evidencia instrumental conservada no demuestra por sí sola que el POST de:
+
+`3 015 ms`
+
+sea el que contenía el título correcto.
+
+El orden recordado se conserva como confirmación operativa, pero no sustituye la exigencia de correlación suficiente establecida antes de observar los resultados.
+
+---
+
+#### 9.1.10 Contraste con los criterios preregistrados
+
+El prerregistro exige tres corridas evaluables por condición y establece criterios de evaluabilidad relacionados con:
+
+- correlación suficiente de la solicitud experimental;
+- identificadores que permitan distinguir las operaciones;
+- trazabilidad suficiente para reconstruir la corrida;
+- tratamiento explícito de desviaciones u operaciones adicionales;
+- exclusión metodológica cuando la evidencia no permite atribuir suficientemente el resultado experimental.
+
+También establece:
+
+`MÁXIMO 1 REEMPLAZO POR CONDICIÓN`
+
+para una corrida declarada no evaluable por una causa metodológica documentada.
+
+En TIMEOUT3-R1, la existencia de dos POST dentro de la misma corrida no invalida automáticamente cualquier medición técnica.
+
+Sin embargo, la combinación de:
+
+- un primer POST con título incorrecto;
+- un segundo POST con el título previsto según confirmación operativa retrospectiva;
+- ausencia del título funcional en Logcat BASIC;
+- imposibilidad de atribuir instrumentalmente cada título a cada POST;
+
+impide demostrar con suficiencia cuál de las dos mediciones debe constituir el valor principal de la corrida.
+
+---
+
+#### 9.1.11 Decisión metodológica final
+
+Decisión:
+
+`TIMEOUT3-R1 = NO EVALUABLE`
+
+Motivo:
+
+`TRAZABILIDAD FUNCIONAL INSUFICIENTE PARA ASIGNAR INEQUÍVOCAMENTE EL POST CORRECTO A T1`
+
+Valores conservados únicamente como observaciones descriptivas:
+
+- `3 012 ms`
+- `3 015 ms`
+
+Valor T1:
+
+`NO ASIGNADO`
+
+Esta decisión no significa que:
+
+`connectTimeout = 3 segundos`
+
+haya fallado técnicamente.
+
+Tampoco significa que la hipótesis quede respaldada o no respaldada.
+
+Únicamente significa que:
+
+`ESTA CORRIDA NO PUEDE PARTICIPAR EN LA COMPARACIÓN PRINCIPAL`
+
+---
+
+#### 9.1.12 Regla de reemplazo
+
+La causa de exclusión es metodológica y queda documentada antes de consolidar un valor T1.
+
+Por tanto, conforme a la regla preregistrada:
+
+`PROCEDE UN REEMPLAZO DE TIMEOUT3-R1`
+
+Estado del reemplazo:
+
+`AUTORIZADO METODOLÓGICAMENTE — NO EJECUTADO`
+
+Reemplazos ejecutados en la condición posterior hasta este punto:
+
+`0`
+
+Máximo permitido en la condición:
+
+`1`
+
+El reemplazo deberá conservarse como una nueva ejecución identificable.
+
+No deberá:
+
+- sobrescribir TIMEOUT3-R1;
+- eliminar su evidencia;
+- reinterpretar `3 012 ms` como T1;
+- reinterpretar `3 015 ms` como T1.
+
+---
+
+### 9.2 TIMEOUT3-R2
 
 Estado:
 
@@ -1684,7 +2024,9 @@ Valor:
 
 `T2 = PENDIENTE`
 
-### TIMEOUT3-R3
+---
+
+### 9.3 TIMEOUT3-R3
 
 Estado:
 
@@ -1698,15 +2040,31 @@ Valor:
 
 ## 10. Mediana posterior
 
-Valores:
+Para calcular la mediana posterior se requieren:
 
-- `T1 = PENDIENTE`
+`3 CORRIDAS EVALUABLES`
+
+Estado actual:
+
+- `TIMEOUT3-R1 = NO EVALUABLE`
+- `T1 = NO ASIGNADO`
 - `T2 = PENDIENTE`
 - `T3 = PENDIENTE`
 
-Mediana:
+Reemplazo permitido de TIMEOUT3-R1:
 
-`PENDIENTE`
+`PENDIENTE DE EJECUCIÓN`
+
+Mediana posterior:
+
+`NO CALCULADA`
+
+No se utilizarán:
+
+- `3 012 ms`;
+- `3 015 ms`;
+
+en la mediana principal.
 
 ---
 
@@ -1716,6 +2074,14 @@ La reducción se calculará únicamente después de disponer de:
 
 - tres corridas evaluables antes;
 - tres corridas evaluables después.
+
+Mediana de línea base cerrada:
+
+`M_antes = 10 028 ms`
+
+Mediana posterior:
+
+`M_después = NO CALCULADA`
 
 Fórmula preregistrada:
 
@@ -1728,13 +2094,20 @@ Reducción(\%) =
 
 Resultado:
 
-`PENDIENTE`
+`NO CALCULADO`
 
 Criterio preregistrado:
 
 `REDUCCIÓN >= 50 %`
 
-El criterio no será modificado después de observar los resultados.
+El criterio no se modifica después de observar las mediciones.
+
+Los valores descriptivos de TIMEOUT3-R1 no se utilizarán para:
+
+- calcular informalmente la reducción;
+- anticipar `M_después`;
+- decidir si la hipótesis está respaldada;
+- seleccionar retrospectivamente cuál POST conviene utilizar.
 
 ---
 
@@ -1748,19 +2121,23 @@ Estado actual:
 
 `NO EVALUADA`
 
-Todavía no existe evidencia suficiente para clasificarla como:
+TIMEOUT3-R1 no aporta un valor T1 a la comparación principal.
+
+Todavía no existe evidencia suficiente para clasificar la hipótesis como:
 
 - respaldada;
 - no respaldada;
 - comparación principal no evaluable.
 
+La comparación principal solo podrá evaluarse después de completar tres corridas posteriores evaluables.
+
 ---
 
 ## 13. Trazabilidad temporal
 
-Secuencia registrada hasta este momento:
+Secuencia registrada:
 
-`prerregistro -> BASE-R1 -> registro BASE-R1 -> BASE-R2 -> registro provisional BASE-R2 -> cierre metodológico BASE-R2 -> BASE-R3 -> auditoría BASE-R3`
+`prerregistro -> BASE-R1 -> BASE-R2 -> BASE-R3 -> cierre de línea base -> intervención connectTimeout 3s -> TIMEOUT3-R1 -> clasificación metodológica TIMEOUT3-R1`
 
 Commit de prerregistro:
 
@@ -1778,27 +2155,55 @@ Commit de cierre metodológico BASE-R2:
 
 `01d8e6a`
 
-BASE-R3:
+Commit de cierre de línea base:
 
-`EJECUTADA`
+`b6f82a5`
 
-Commit de resultados BASE-R3:
+Merge del cierre de línea base:
 
-`PENDIENTE`
+`be2b2f3`
 
-Intervención:
+Mediana de línea base:
 
-`NO REALIZADA`
+`M_antes = 10 028 ms`
 
 Commit de intervención:
 
-`PENDIENTE`
+`a722954`
 
-Mediciones posteriores:
+Intervención:
 
-`NO REALIZADAS`
+`connectTimeout = 3 segundos`
 
-No se modificará retroactivamente el prerregistro ni los commits históricos para incorporar evidencia observada posteriormente.
+TIMEOUT3-R1:
+
+`EJECUTADA — NO EVALUABLE`
+
+Commit documental de evidencia y clasificación de TIMEOUT3-R1:
+
+`PENDIENTE — DEBERÁ SER POSTERIOR A a722954`
+
+TIMEOUT3-R2:
+
+`NO EJECUTADA`
+
+TIMEOUT3-R3:
+
+`NO EJECUTADA`
+
+Reemplazo de TIMEOUT3-R1:
+
+`PROCEDE — NO EJECUTADO`
+
+No se modifica retroactivamente:
+
+- el prerregistro;
+- la hipótesis;
+- el umbral del 50 %;
+- la métrica principal;
+- los criterios de evaluabilidad;
+- la regla de reemplazo;
+- los commits históricos.
 
 ---
 
@@ -1808,7 +2213,7 @@ Los Logcat completos permanecen fuera del repositorio público.
 
 ### BASE-R1
 
-Archivo:
+Archivo privado registrado:
 
 `evidencia-timeout/BASE-R1/logcat-BASE-R1-privado.txt`
 
@@ -1818,7 +2223,7 @@ SHA-256:
 
 ### BASE-R2
 
-Archivo:
+Archivo privado registrado:
 
 `evidencia-timeout/BASE-R2/logcat-BASE-R2-privado.txt`
 
@@ -1828,13 +2233,25 @@ SHA-256:
 
 ### BASE-R3
 
-Archivo:
+Archivo privado registrado:
 
 `evidencia-timeout/BASE-R3/logcat-BASE-R3-privado.txt`
 
 SHA-256:
 
 `6508512032222FCF374F0C8998018DB01E8D466734F0B2516F57128B1894D5FF`
+
+### TIMEOUT3-R1
+
+Estado:
+
+`EVIDENCIA PRIVADA CONSERVADA FUERA DEL REPOSITORIO PÚBLICO`
+
+SHA-256:
+
+`787BB5935347EABAD2C281765E715C5F247BEA3FB626DEF21768273BCCC9AC81`
+
+La huella permite comprobar posteriormente la integridad del archivo privado utilizado durante la auditoría.
 
 Los archivos privados no deberán incorporarse al repositorio sin:
 
@@ -1843,7 +2260,10 @@ Los archivos privados no deberán incorporarse al repositorio sin:
 - comprobación de credenciales;
 - eliminación de JWT;
 - eliminación de encabezados sensibles;
+- eliminación de tokens o secretos;
 - eliminación de información innecesaria.
+
+El documento público de resultados no debe copiar cuerpos completos del Logcat privado cuando no sean necesarios para demostrar el resultado.
 
 ---
 
@@ -1856,6 +2276,8 @@ Prerregistro:
 Commit de prerregistro:
 
 `94dcc32`
+
+### 15.1 Línea base
 
 BASE-R1:
 
@@ -1873,10 +2295,6 @@ Valor:
 
 `B2 = 10 033 ms`
 
-Commit de cierre BASE-R2:
-
-`01d8e6a`
-
 BASE-R3:
 
 `COMPLETADA — EVALUABLE CON INCIDENCIA DOCUMENTADA`
@@ -1884,14 +2302,6 @@ BASE-R3:
 Valor:
 
 `B3 = 10 023 ms`
-
-Incidencia conservada:
-
-`DOS FILAS PARA S11-A4-BASE-R3-CONTROL — PROCEDENCIA EXACTA NO DETERMINADA`
-
-Alteración comprobada del POST experimental por la incidencia:
-
-`NO DEMOSTRADA`
 
 Corridas de línea base ejecutadas:
 
@@ -1905,21 +2315,82 @@ Mediana de línea base:
 
 `M_antes = 10 028 ms`
 
-Reemplazos utilizados:
+Reemplazos de línea base utilizados:
 
 `0`
 
-Intervención:
+### 15.2 Intervención
 
-`NO IMPLEMENTADA`
+Estado:
 
-Mediciones posteriores:
+`IMPLEMENTADA`
 
-`NO EJECUTADAS`
+Configuración:
 
-Comparación antes/después:
+`connectTimeout = 3 segundos`
 
-`PENDIENTE`
+Commit:
+
+`a722954`
+
+### 15.3 Condición posterior
+
+TIMEOUT3-R1:
+
+`EJECUTADA — NO EVALUABLE`
+
+Motivo:
+
+`DOS POST EN LA MISMA CORRIDA Y ATRIBUCIÓN FUNCIONAL INSUFICIENTE DEL TÍTULO A CADA POST`
+
+Mediciones descriptivas conservadas:
+
+- `3 012 ms`
+- `3 015 ms`
+
+T1:
+
+`NO ASIGNADO`
+
+Android:
+
+`ERROR MOSTRADO — SIN FALSO ÉXITO OBSERVADO`
+
+Persistencia experimental:
+
+`0 FILAS`
+
+Integridad del Logcat privado:
+
+`SHA-256 787BB5935347EABAD2C281765E715C5F247BEA3FB626DEF21768273BCCC9AC81`
+
+Fallo de las:
+
+`20:32:25.078`
+
+Clasificación:
+
+`PATCH — NO TERCER POST`
+
+Reemplazo de TIMEOUT3-R1:
+
+`PROCEDE — NO EJECUTADO`
+
+TIMEOUT3-R2:
+
+`NO EJECUTADA`
+
+TIMEOUT3-R3:
+
+`NO EJECUTADA`
+
+Mediana posterior:
+
+`NO CALCULADA`
+
+Reducción:
+
+`NO CALCULADA`
 
 Hipótesis:
 
@@ -1933,70 +2404,110 @@ Conclusión arquitectónica:
 
 ## 16. Próximo punto de control
 
-Las tres corridas principales de línea base fueron ejecutadas y clasificadas metodológicamente.
-
-Estado de cierre de línea base:
-
-`CERRADA — 3 DE 3 CORRIDAS EVALUABLES`
-
-Valores admitidos:
-
-- `B1 = 10 028 ms`
-- `B2 = 10 033 ms`
-- `B3 = 10 023 ms`
-
-Mediana:
+La línea base permanece cerrada con:
 
 `M_antes = 10 028 ms`
 
-BASE-R3 se admite como:
-
-`EVALUABLE CON INCIDENCIA DOCUMENTADA`
-
-La incidencia conservada es:
-
-`DOS FILAS PARA S11-A4-BASE-R3-CONTROL`
-
-Su procedencia exacta permanece:
-
-`NO DETERMINADA`
-
-La decisión de admitir BASE-R3 no elimina ni reescribe esa incidencia. La evidencia histórica permanece documentada y la clasificación final distingue entre:
-
-`ANOMALÍA COMPROBADA EN EL CONTROL`
-
-y:
-
-`ALTERACIÓN COMPROBADA DEL POST EXPERIMENTAL`
-
-Para esta última:
-
-`NO DEMOSTRADA`
-
-No se utilizó ningún reemplazo de línea base.
-
-El siguiente paso experimental será registrar primero el cierre de línea base en un commit propio.
-
-Hasta completar ese commit:
-
-- no se modificará `RetrofitClient.kt`;
-- no se implementará todavía `connectTimeout = 3 segundos`;
-- no se ejecutarán TIMEOUT3-R1, TIMEOUT3-R2 o TIMEOUT3-R3.
-
-Después del commit de cierre de línea base podrá iniciarse la intervención preregistrada:
+La intervención:
 
 `connectTimeout = 3 segundos`
 
-manteniendo sin cambios los demás parámetros no incluidos en la intervención.
+ya fue implementada y registrada en:
 
-La hipótesis continúa:
+`a722954`
 
-`NO EVALUADA`
+TIMEOUT3-R1 fue ejecutada, pero no se admite en la comparación principal.
 
-y solo podrá evaluarse después de disponer de tres corridas posteriores evaluables y calcular:
+Decisión final de TIMEOUT3-R1:
+
+`NO EVALUABLE`
+
+No debe registrarse:
+
+`T1 = 3 012 ms`
+
+ni:
+
+`T1 = 3 015 ms`
+
+Tampoco debe calcularse todavía:
+
+- `M_después`;
+- reducción porcentual;
+- respaldo de la hipótesis;
+- no respaldo de la hipótesis.
+
+El fallo de las:
+
+`20:32:25.078`
+
+se conserva correctamente clasificado como:
+
+`PATCH`
+
+y no debe presentarse como un tercer POST.
+
+La evidencia de TIMEOUT3-R1 debe registrarse en un commit documental posterior a:
+
+`a722954`
+
+sin modificar el prerregistro.
+
+Después de ese registro documental corresponde aplicar la regla preregistrada de reemplazo para obtener una corrida que pueda ocupar la posición metodológica de TIMEOUT3-R1.
+
+El reemplazo deberá ejecutarse bajo la misma intervención:
+
+`connectTimeout = 3 segundos`
+
+y deberá evitar:
+
+- reutilizar un título incorrecto;
+- ejecutar más de un POST experimental;
+- pulsar Guardar más de una vez;
+- introducir operaciones adicionales durante la ventana de medición;
+- cambiar `readTimeout`;
+- cambiar `writeTimeout`;
+- cambiar `callTimeout`;
+- modificar retry;
+- modificar fallback;
+- modificar circuit breaker;
+- modificar los interceptores existentes;
+- alterar el prerregistro;
+- eliminar evidencia de TIMEOUT3-R1;
+- reutilizar `3 012 ms` como T1;
+- reutilizar `3 015 ms` como T1;
+- seleccionar un resultado en función de cuál favorezca la hipótesis.
+
+Una vez exista una corrida de reemplazo evaluable, podrá asignarse:
+
+`T1`
+
+Posteriormente podrán ejecutarse:
+
+- `TIMEOUT3-R2`;
+- `TIMEOUT3-R3`.
+
+Solo después de disponer de tres valores posteriores evaluables podrá calcularse:
 
 `M_después`
 
-para aplicar la fórmula preregistrada de reducción porcentual frente a:
+Después podrá calcularse:
+
+\[
+Reducción(\%) =
+\frac{M_{antes} - M_{después}}
+{M_{antes}}
+\times 100
+\]
+
+y contrastarse formalmente con el criterio:
+
+`REDUCCIÓN >= 50 %`
+
+utilizando como referencia de línea base:
 
 `M_antes = 10 028 ms`
+
+Hasta ese momento, la hipótesis permanece:
+
+`NO EVALUADA`
