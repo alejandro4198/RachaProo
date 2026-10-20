@@ -26,6 +26,7 @@ La comprobación histórica confirmó que las reglas relevantes para:
 - las corridas no evaluables;
 - los reemplazos;
 - el cálculo de las medianas;
+- el criterio cuantitativo del `50 %`;
 
 ya se encontraban definidas antes de ejecutar las mediciones.
 
@@ -168,23 +169,31 @@ Reemplazos disponibles:
 
 Mediana posterior:
 
-`PENDIENTE DE CÁLCULO CONSOLIDADO`
+`M_después = 3 014 ms`
 
 Reducción porcentual:
 
-`PENDIENTE DE CÁLCULO CONSOLIDADO`
+`69,94 %`
+
+Umbral preregistrado:
+
+`50 %`
+
+Criterio cuantitativo:
+
+`CUMPLIDO`
 
 Hipótesis:
 
-`NO EVALUADA`
+`RESPALDADA`
 
 Comparación principal:
 
-`PENDIENTE DE CONSOLIDACIÓN CUANTITATIVA`
+`EVALUABLE Y COMPLETADA`
 
 Conclusión arquitectónica:
 
-`PENDIENTE`
+`LA CONFIGURACIÓN EXPLÍCITA DE connectTimeout = 3 SEGUNDOS REDUJO SUSTANCIALMENTE EL TIEMPO DE FALLO OBSERVADO BAJO LAS CONDICIONES DEL EXPERIMENTO`
 
 ---
 
@@ -1205,12 +1214,6 @@ Estado:
 
 `LÍNEA BASE CERRADA`
 
-No es necesario repetir:
-
-- BASE-R1;
-- BASE-R2;
-- BASE-R3.
-
 ---
 
 # 6. Intervención experimental
@@ -1271,7 +1274,7 @@ Los identificadores definidos son:
 - `S11-A4-TIMEOUT3-R2`
 - `S11-A4-TIMEOUT3-R3`
 
-Estado actual:
+Estado final:
 
 - `TIMEOUT3-R1 = EJECUTADA — NO EVALUABLE`
 - `TIMEOUT3-R1-REP1 = EJECUTADA — EVALUABLE`
@@ -1282,7 +1285,7 @@ Valores evaluables consolidados:
 
 `3 de 3`
 
-Valores disponibles:
+Valores admitidos:
 
 - `T1 = 3 024 ms`
 - `T2 = 3 011 ms`
@@ -1296,7 +1299,9 @@ Reemplazos disponibles:
 
 `0`
 
-La condición posterior ya dispone de las tres corridas evaluables requeridas para realizar posteriormente el cálculo consolidado.
+Estado:
+
+`CONDICIÓN POSTERIOR COMPLETADA`
 
 ---
 
@@ -1461,6 +1466,8 @@ permanecen como observaciones descriptivas.
 
 No participan en la comparación principal.
 
+TIMEOUT3-R1 no cuenta como respaldo ni como no respaldo de la hipótesis.
+
 ---
 
 # 10. Regla de reemplazo
@@ -1476,6 +1483,12 @@ El reemplazo:
 `TIMEOUT3-R1-REP1`
 
 se conserva independientemente de la corrida original.
+
+La corrida original permanece:
+
+`NO EVALUABLE`
+
+y no se elimina del registro histórico.
 
 ---
 
@@ -1594,6 +1607,8 @@ Commit comprobado posteriormente:
 `11c4092`
 
 La comprobación ocurrió después de la ejecución.
+
+No se presenta como una captura Git realizada durante la ventana experimental.
 
 ---
 
@@ -1900,6 +1915,8 @@ Valor:
 
 `T2 = 3 011 ms`
 
+La clasificación no elimina ni minimiza la incidencia.
+
 ---
 
 # 16. TIMEOUT3-R3
@@ -1916,21 +1933,17 @@ Valor admitido:
 
 `T3 = 3 014 ms`
 
-La corrida completa las tres mediciones posteriores evaluables requeridas para realizar posteriormente la consolidación cuantitativa.
-
 ---
 
 ## 16.1 Estado de PostgreSQL antes del intento
 
-Antes de ejecutar la operación experimental se comprobó PostgreSQL utilizando el identificador correspondiente a R3:
+Antes de ejecutar la operación experimental se comprobó PostgreSQL utilizando:
 
 `S11-A4-TIMEOUT3-R3`
 
 Resultado:
 
 `0 FILAS`
-
-Esta comprobación proporciona un estado previo sin coincidencias registradas para el identificador consultado.
 
 ---
 
@@ -1948,11 +1961,9 @@ Hora:
 
 `13:41:49.173`
 
-La comprobación ocurrió antes del POST experimental iniciado a las:
+La comprobación ocurrió antes del POST experimental iniciado a:
 
 `13:42:32.930`
-
-Por tanto, se documentó la indisponibilidad observada del backend antes de la solicitud medida.
 
 ---
 
@@ -2014,11 +2025,11 @@ Cálculo:
 
 `35.944 - 32.930 = 3.014 segundos`
 
-Duración observada:
+Duración:
 
 `3 014 ms`
 
-Valor admitido:
+Valor:
 
 `T3 = 3 014 ms`
 
@@ -2029,8 +2040,6 @@ Valor admitido:
 Tipo:
 
 `SocketTimeoutException`
-
-La excepción se registra de manera independiente del valor temporal.
 
 ---
 
@@ -2044,13 +2053,11 @@ Falso éxito observado:
 
 `NO`
 
-Esta observación corresponde al comportamiento visible de la aplicación.
-
 ---
 
 ## 16.8 Pulsaciones de Guardar
 
-Número de pulsaciones durante TIMEOUT3-R3:
+Número:
 
 `1`
 
@@ -2058,15 +2065,13 @@ Fuente:
 
 `CONFIRMACIÓN OPERATIVA`
 
-Esta confirmación fue proporcionada después de la ejecución.
-
-No se presenta como un dato obtenido directamente del Logcat BASIC.
+La pulsación única no se presenta como información derivada directamente de Logcat BASIC.
 
 ---
 
 ## 16.9 PostgreSQL después del intento
 
-Después del POST experimental se consultó PostgreSQL utilizando:
+Consulta:
 
 `S11-A4-TIMEOUT3-R3`
 
@@ -2088,8 +2093,6 @@ Por tanto:
 
 `NO SE OBSERVÓ PERSISTENCIA REMOTA BAJO EL IDENTIFICADOR CONSULTADO`
 
-A diferencia de R2, en R3 no existe una fila histórica previa que deba separarse del intento experimental.
-
 ---
 
 ## 16.10 Identificador y fuentes de trazabilidad
@@ -2098,11 +2101,9 @@ El identificador definido previamente para la corrida R3 es:
 
 `S11-A4-TIMEOUT3-R3`
 
-La procedencia de esta información se mantiene diferenciada de la evidencia HTTP.
-
 ### Identificador previsto
 
-La versión histórica del prerregistro establece para R3:
+La versión histórica del prerregistro establece:
 
 `S11-A4-TIMEOUT3-R3`
 
@@ -2112,7 +2113,7 @@ Por tanto:
 
 ### Identificador utilizado en PostgreSQL
 
-Las comprobaciones antes y después de la operación se realizaron consultando:
+Las comprobaciones antes y después se realizaron consultando:
 
 `S11-A4-TIMEOUT3-R3`
 
@@ -2126,32 +2127,30 @@ El nivel:
 
 `HttpLoggingInterceptor.Level.BASIC`
 
-no expone el contenido completo del body.
+no expone el body completo.
 
-Por tanto, Logcat BASIC no demuestra por sí solo que el campo funcional del título contenido dentro del POST fuera:
+Por tanto, Logcat BASIC no demuestra por sí solo que el título contenido dentro del POST fuera:
 
 `S11-A4-TIMEOUT3-R3`
 
 No se transforma:
 
 - el identificador previsto por el prerregistro;
-- ni el identificador consultado en PostgreSQL;
+- ni el identificador utilizado en PostgreSQL;
 
 en una observación instrumental del contenido del body.
 
-Esta limitación permanece explícita.
-
-La correlación técnica del POST se sustenta separadamente mediante:
+La correlación técnica del POST se sustenta independientemente mediante:
 
 - timestamp de inicio;
 - timestamp de fallo;
-- mismo hilo OkHttp;
-- endpoint correspondiente;
+- hilo OkHttp;
+- operación HTTP correspondiente;
 - resultado `SocketTimeoutException`.
 
 ---
 
-## 16.11 Integridad de evidencia
+## 16.11 Integridad
 
 Archivo privado:
 
@@ -2161,151 +2160,38 @@ SHA-256:
 
 `572453C199416CA22FF7A57E4FCE75A61837F7B8AC06C5F611070BF4B7325884`
 
-El hash corresponde al archivo privado conservado después de la ejecución.
-
 Las dos marcas utilizadas para el cálculo fueron localizadas en dicho archivo.
 
 ---
 
-# 17. Evaluabilidad de TIMEOUT3-R3
-
-## 17.1 Evidencia registrada en Logcat
-
-El Logcat permite observar:
-
-- inicio del POST a las `13:42:32.930`;
-- línea `40853`;
-- hilo OkHttp `30948`;
-- fallo a las `13:42:35.944`;
-- línea `40854`;
-- `SocketTimeoutException`;
-- duración calculable de `3 014 ms`.
-
----
-
-## 17.2 Comprobación de infraestructura
-
-Puerto:
-
-`8080`
-
-Resultado:
-
-`SIN LISTENER`
-
-Hora:
-
-`13:41:49.173`
-
-La comprobación ocurrió antes de la solicitud experimental.
-
----
-
-## 17.3 Observación Android
-
-Mensaje:
-
-`No fue posible crear la actividad`
-
-Falso éxito observado:
-
-`NO`
-
----
-
-## 17.4 Confirmación operativa
-
-Pulsaciones de `Guardar`:
-
-`1`
-
-Fuente:
-
-`CONFIRMACIÓN OPERATIVA`
-
----
-
-## 17.5 Comprobación PostgreSQL
-
-Identificador consultado:
-
-`S11-A4-TIMEOUT3-R3`
-
-Antes:
-
-`0 FILAS`
-
-Después:
-
-`0 FILAS`
-
-Por tanto:
-
-`NO SE OBSERVÓ NUEVA PERSISTENCIA REMOTA BAJO EL IDENTIFICADOR CONSULTADO`
-
----
-
-## 17.6 Integridad
-
-SHA-256:
-
-`572453C199416CA22FF7A57E4FCE75A61837F7B8AC06C5F611070BF4B7325884`
-
-Estado:
-
-`EVIDENCIA PRIVADA CONSERVADA`
-
----
-
-## 17.7 Limitaciones conservadas
-
-Se mantiene explícitamente que:
-
-- Logcat BASIC no expone el título funcional contenido en el body;
-- el identificador `S11-A4-TIMEOUT3-R3` está respaldado como identificador previsto por el prerregistro;
-- el mismo identificador fue utilizado en las consultas PostgreSQL;
-- estas fuentes no se presentan como prueba directa del contenido del body;
-- la pulsación única corresponde a confirmación operativa.
-
-No se identificó:
-
-- más de una pulsación de `Guardar`;
-- una segunda solicitud experimental de creación;
-- persistencia remota inesperada;
-- falso éxito en Android;
-- imposibilidad de correlacionar técnicamente el POST y su fallo.
-
----
-
-## 17.8 Decisión metodológica
+# 17. Decisión metodológica TIMEOUT3-R3
 
 La corrida dispone de:
 
-- estado PostgreSQL previo de `0 filas` para el identificador consultado;
-- comprobación del puerto sin listener;
-- POST experimental técnicamente correlacionable;
+- estado PostgreSQL previo de `0 filas`;
+- puerto sin listener antes del POST;
+- POST correlacionable;
 - mismo hilo para inicio y fallo;
 - duración calculable;
 - `SocketTimeoutException`;
 - una sola pulsación de `Guardar` según confirmación operativa;
 - error visible en Android;
 - ausencia de falso éxito observada;
-- PostgreSQL posterior con `0 filas` para el identificador consultado;
+- PostgreSQL posterior con `0 filas`;
 - evidencia privada conservada;
-- SHA-256 verificado;
-- limitaciones de trazabilidad del body expresamente registradas.
+- SHA-256 verificado.
+
+Se conserva la limitación de que Logcat BASIC no expone directamente el título contenido en el body.
 
 No se identificó una desviación que impida reconstruir suficientemente la operación experimental.
 
 Clasificación:
 
-`TIMEOUT3-R3 = EVALUABLE`
+`EVALUABLE`
 
-Valor admitido:
+Valor:
 
 `T3 = 3 014 ms`
-
-La clasificación corresponde a la decisión metodológica documentada para la corrida.
 
 ---
 
@@ -2356,31 +2242,114 @@ Reemplazos disponibles:
 
 `0`
 
-La condición posterior dispone ya de las tres corridas evaluables requeridas.
+Estado:
+
+`CONDICIÓN POSTERIOR CERRADA`
 
 ---
 
 # 19. Mediana posterior
 
-Valores posteriores admitidos:
+La condición posterior dispone de tres corridas evaluables:
 
 - `T1 = 3 024 ms`
 - `T2 = 3 011 ms`
 - `T3 = 3 014 ms`
 
-Estado de disponibilidad:
+Estas corresponden a:
 
-`3 de 3 VALORES EVALUABLES DISPONIBLES`
+- `TIMEOUT3-R1-REP1 = EVALUABLE`
+- `TIMEOUT3-R2 = EVALUABLE CON INCIDENCIA DOCUMENTADA`
+- `TIMEOUT3-R3 = EVALUABLE`
 
-El cálculo formal de:
+TIMEOUT3-R1 original permanece:
 
-`M_después`
+`NO EVALUABLE`
 
-queda:
+y sus observaciones:
 
-`PENDIENTE DE CONSOLIDACIÓN DESPUÉS DEL REGISTRO DOCUMENTAL DE R3`
+- `3 012 ms`
+- `3 015 ms`
 
-En esta versión no se anticipa todavía el valor de la mediana posterior.
+no participan en el cálculo de la mediana posterior.
+
+---
+
+## 19.1 Valores utilizados
+
+Valores:
+
+- `3 024 ms`
+- `3 011 ms`
+- `3 014 ms`
+
+Valores ordenados:
+
+- `3 011 ms`
+- `3 014 ms`
+- `3 024 ms`
+
+El valor central es:
+
+`3 014 ms`
+
+Por tanto:
+
+\[
+M_{después} = 3\,014\text{ ms}
+\]
+
+Resultado:
+
+`M_después = 3 014 ms`
+
+---
+
+## 19.2 Verificación mediante PowerShell
+
+El cálculo fue verificado mediante:
+
+```powershell
+$valores = @(3024, 3011, 3014) | Sort-Object
+$mediana = $valores[1]
+$reduccion = (10028 - $mediana) / 10028 * 100
+
+"Valores ordenados: $($valores -join ', ')"
+"Mediana posterior: $mediana ms"
+"Reducción: $([math]::Round($reduccion, 2)) %"
+```
+
+Salida obtenida:
+
+```text
+Valores ordenados: 3011, 3014, 3024
+Mediana posterior: 3014 ms
+Reducción: 69.94 %
+```
+
+La salida coincide con el cálculo realizado a partir de los tres valores admitidos.
+
+---
+
+## 19.3 Condición requerida por el prerregistro
+
+La versión histórica del prerregistro:
+
+`94dcc32`
+
+requiere:
+
+`3 CORRIDAS EVALUABLES DESPUÉS DE LA INTERVENCIÓN`
+
+Estado final:
+
+`3 de 3`
+
+Por tanto, se cumplen las condiciones necesarias para calcular la mediana posterior según el procedimiento establecido.
+
+Resultado consolidado:
+
+`M_después = 3 014 ms`
 
 ---
 
@@ -2392,9 +2361,9 @@ Mediana de línea base:
 
 Mediana posterior:
 
-`M_después = PENDIENTE DE CÁLCULO`
+`M_después = 3 014 ms`
 
-Fórmula preregistrada:
+La fórmula definida en el prerregistro es:
 
 \[
 Reducción(\%) =
@@ -2403,15 +2372,110 @@ Reducción(\%) =
 \times 100
 \]
 
+Sustituyendo:
+
+\[
+Reducción(\%) =
+\frac{10\,028 - 3\,014}
+{10\,028}
+\times 100
+\]
+
+Diferencia:
+
+\[
+10\,028 - 3\,014 = 7\,014
+\]
+
+Por tanto:
+
+\[
+Reducción(\%) =
+\frac{7\,014}
+{10\,028}
+\times 100
+\]
+
 Resultado:
 
-`PENDIENTE DE CÁLCULO`
+\[
+Reducción(\%) \approx 69.94\%
+\]
 
-Criterio preregistrado:
+Valor consolidado:
+
+`REDUCCIÓN = 69,94 %`
+
+---
+
+## 20.1 Contraste con el umbral preregistrado
+
+Criterio definido previamente en:
+
+`94dcc32`
+
+Umbral:
 
 `REDUCCIÓN >= 50 %`
 
-Aunque los tres valores posteriores ya están disponibles, el contraste cuantitativo se realizará después del registro documental de R3.
+Resultado:
+
+`69,94 %`
+
+Comparación:
+
+\[
+69.94\% \ge 50\%
+\]
+
+Resultado del criterio cuantitativo:
+
+`CUMPLIDO`
+
+Diferencia respecto del umbral:
+
+\[
+69.94 - 50 = 19.94
+\]
+
+La reducción observada supera el umbral en:
+
+`19,94 puntos porcentuales`
+
+---
+
+## 20.2 Alcance del cálculo
+
+### Línea base
+
+- `B1 = 10 028 ms`
+- `B2 = 10 033 ms`
+- `B3 = 10 023 ms`
+
+Mediana:
+
+`M_antes = 10 028 ms`
+
+### Condición posterior
+
+- `T1 = 3 024 ms`
+- `T2 = 3 011 ms`
+- `T3 = 3 014 ms`
+
+Mediana:
+
+`M_después = 3 014 ms`
+
+No participan:
+
+- `3 012 ms`;
+- `3 015 ms`;
+
+observados en TIMEOUT3-R1, porque dicha corrida fue:
+
+`NO EVALUABLE`
+
+TIMEOUT3-R1 permanece conservada documentalmente.
 
 ---
 
@@ -2421,31 +2485,270 @@ Hipótesis preregistrada:
 
 > Ante una indisponibilidad controlada de Spring Boot, configurar explícitamente `connectTimeout = 3 segundos` reducirá al menos un 50 % la mediana de la duración técnica de los `POST` fallidos de creación de actividad respecto de una nueva línea base ejecutada bajo el mismo protocolo, sin que Android presente falsamente la operación como exitosa ni se observe persistencia remota inesperada de la actividad intentada durante el fallo.
 
+La evaluación requiere contrastar:
+
+1. reducción de al menos `50 %`;
+2. ausencia de falso éxito visible en Android;
+3. ausencia de persistencia remota inesperada durante los intentos fallidos evaluables.
+
+---
+
+## 21.1 Condición cuantitativa
+
+Mediana de línea base:
+
+`M_antes = 10 028 ms`
+
+Mediana posterior:
+
+`M_después = 3 014 ms`
+
+Reducción:
+
+`69,94 %`
+
+Umbral:
+
+`50 %`
+
+Resultado:
+
+`CUMPLE`
+
+---
+
+## 21.2 Resultado Android
+
+### TIMEOUT3-R1-REP1
+
+Android mostró:
+
+`No fue posible crear la actividad`
+
+Falso éxito:
+
+`NO OBSERVADO`
+
+### TIMEOUT3-R2
+
+Android mostró:
+
+`No fue posible crear la actividad`
+
+Falso éxito:
+
+`NO OBSERVADO`
+
+### TIMEOUT3-R3
+
+Android mostró:
+
+`No fue posible crear la actividad`
+
+Falso éxito:
+
+`NO OBSERVADO`
+
+Resultado consolidado:
+
+`NO SE OBSERVÓ FALSO ÉXITO EN ANDROID EN LAS TRES CORRIDAS POSTERIORES EVALUABLES`
+
 Estado:
 
-`NO EVALUADA`
+`CUMPLE SEGÚN LAS OBSERVACIONES REGISTRADAS`
 
-La disponibilidad de:
+---
 
-- `T1`
-- `T2`
-- `T3`
+## 21.3 Persistencia remota — REP1
 
-permite realizar posteriormente el contraste cuantitativo.
+Consulta:
 
-Sin embargo, esta versión no declara todavía:
+`S11-A4-TIMEOUT3-R1-REP1`
+
+Resultado:
+
+`0 COINCIDENCIAS`
+
+Conclusión observacional:
+
+`NO SE OBSERVÓ PERSISTENCIA REMOTA BAJO EL IDENTIFICADOR EXPERIMENTAL CONSULTADO`
+
+---
+
+## 21.4 Persistencia remota — R2
+
+Antes existía:
+
+`1500185 — is_deleted = true`
+
+Después permaneció:
+
+`1500185 — is_deleted = true`
+
+Filas nuevas observadas:
+
+`0`
+
+Por tanto:
+
+`NO SE OBSERVÓ NUEVA PERSISTENCIA REMOTA ASOCIADA AL POST EXPERIMENTAL`
+
+Esta conclusión se basa en la comparación antes/después.
+
+No se afirma que el identificador nunca hubiera sido utilizado.
+
+La preparación de R2 no fue idéntica a REP1.
+
+---
+
+## 21.5 Persistencia remota — R3
+
+Antes:
+
+`0 FILAS`
+
+Después:
+
+`0 FILAS`
+
+Por tanto:
+
+`NO SE OBSERVÓ PERSISTENCIA REMOTA BAJO EL IDENTIFICADOR CONSULTADO`
+
+---
+
+## 21.6 Resultado consolidado de persistencia
+
+REP1:
+
+`0 coincidencias`
+
+R2:
+
+`0 filas nuevas observadas`
+
+R3:
+
+`0 filas antes / 0 filas después`
+
+Resultado consolidado:
+
+`NO SE OBSERVÓ PERSISTENCIA REMOTA INESPERADA ATRIBUIBLE A LOS POST EXPERIMENTALES EVALUABLES`
+
+Esta conclusión queda limitada a las consultas realizadas y evidencia conservada.
+
+---
+
+## 21.7 Limitaciones que afectan el alcance
+
+### TIMEOUT3-R1
+
+La corrida original fue:
+
+`NO EVALUABLE`
+
+debido a más de una pulsación de `Guardar`.
+
+Sus valores no participan en la comparación.
+
+### TIMEOUT3-R1-REP1
+
+Se conservan:
+
+- identificador confirmado operativamente;
+- una pulsación confirmada operativamente;
+- commit `11c4092` comprobado posteriormente;
+- ausencia de captura instrumental contemporánea de toda la configuración HTTP.
+
+### TIMEOUT3-R2
+
+Se conserva:
+
+`USO PREVIO DEL IDENTIFICADOR EXPERIMENTAL`
+
+y:
+
+`1500185 — is_deleted = true`
+
+La ausencia de nueva persistencia se determina mediante comparación antes/después.
+
+La preparación no fue idéntica a REP1.
+
+### TIMEOUT3-R3
+
+Se mantiene la distinción entre:
+
+- identificador previsto por el prerregistro;
+- identificador consultado en PostgreSQL;
+- contenido del body no visible mediante Logcat BASIC.
+
+La pulsación única corresponde a:
+
+`CONFIRMACIÓN OPERATIVA`
+
+---
+
+## 21.8 Contraste final
+
+### Condición 1 — reducción >= 50 %
+
+Resultado:
+
+`69,94 %`
+
+Estado:
+
+`CUMPLE`
+
+### Condición 2 — ausencia de falso éxito Android
+
+Resultado:
+
+`NO SE OBSERVÓ FALSO ÉXITO EN LAS TRES CORRIDAS POSTERIORES EVALUABLES`
+
+Estado:
+
+`CUMPLE SEGÚN LA EVIDENCIA REGISTRADA`
+
+### Condición 3 — ausencia de persistencia remota inesperada
+
+Resultado:
+
+`NO SE OBSERVÓ NUEVA PERSISTENCIA REMOTA ATRIBUIBLE A LOS POST EXPERIMENTALES EVALUABLES`
+
+Estado:
+
+`CUMPLE SEGÚN LAS CONSULTAS REGISTRADAS`
+
+---
+
+## 21.9 Decisión final
+
+Los resultados observados muestran que:
+
+- la mediana pasó de `10 028 ms` a `3 014 ms`;
+- la reducción fue de `69,94 %`;
+- el umbral preregistrado era `50 %`;
+- no se observó falso éxito Android en las tres corridas posteriores evaluables;
+- no se observó persistencia remota inesperada atribuible a los POST experimentales evaluables.
+
+Por tanto, dentro del alcance y las limitaciones documentadas:
 
 `HIPÓTESIS RESPALDADA`
 
-ni:
+Conclusión:
 
-`HIPÓTESIS NO RESPALDADA`
+`LA HIPÓTESIS PRERREGISTRADA QUEDA RESPALDADA POR LA EVIDENCIA OBTENIDA EN ESTE EXPERIMENTO`
 
-La evaluación se realizará después de consolidar:
+Esta conclusión no elimina:
 
-- `M_después`;
-- reducción porcentual;
-- condiciones funcionales complementarias.
+- las incidencias;
+- las limitaciones;
+- TIMEOUT3-R1 no evaluable;
+- las diferencias de preparación de R2;
+- las limitaciones de Logcat BASIC.
+
+La conclusión se restringe al protocolo, entorno, aplicación, condiciones y evidencia registrados.
 
 ---
 
@@ -2459,37 +2762,57 @@ Condición posterior:
 
 `3 de 3 CORRIDAS EVALUABLES`
 
-Reemplazo:
+Reemplazo utilizado:
 
-`1 de 1 UTILIZADO`
+`1 de 1`
+
+Mediana de línea base:
+
+`10 028 ms`
+
+Mediana posterior:
+
+`3 014 ms`
+
+Reducción:
+
+`69,94 %`
+
+Umbral:
+
+`50 %`
 
 Estado:
 
-`DATOS NECESARIOS DISPONIBLES — CONSOLIDACIÓN CUANTITATIVA PENDIENTE`
+`COMPARACIÓN PRINCIPAL EVALUABLE Y COMPLETADA`
 
 La categoría:
 
 `COMPARACIÓN PRINCIPAL NO EVALUABLE`
 
-no corresponde al estado actual, porque se dispone del número requerido de corridas evaluables en ambas condiciones.
+no corresponde al resultado obtenido porque se consiguieron las tres corridas evaluables requeridas en ambas condiciones.
 
 ---
 
 # 23. Diferencia entre hipótesis no respaldada y comparación principal no evaluable
 
-Si, después de realizar el cálculo correspondiente, la reducción es menor al:
+La regla metodológica distingue:
 
-`50 %`
+### Comparación válida con reducción inferior al 50 %
 
-bajo una comparación válida, corresponderá:
+Correspondería:
 
 `HIPÓTESIS NO RESPALDADA`
 
-Si no existieran las corridas evaluables requeridas, podría corresponder:
+### Falta de tres corridas evaluables después de aplicar las reglas permitidas
+
+Correspondería:
 
 `COMPARACIÓN PRINCIPAL NO EVALUABLE`
 
-En el estado actual existen:
+Ninguno de esos escenarios corresponde al resultado final.
+
+Se obtuvieron:
 
 `3 CORRIDAS EVALUABLES ANTES`
 
@@ -2497,7 +2820,13 @@ y:
 
 `3 CORRIDAS EVALUABLES DESPUÉS`
 
-Por tanto, la comparación dispone de los datos necesarios para realizar el contraste cuantitativo posterior.
+Además:
+
+`69,94 % >= 50 %`
+
+Por tanto:
+
+`HIPÓTESIS RESPALDADA`
 
 ---
 
@@ -2627,7 +2956,8 @@ confirmó que antes de las mediciones ya estaban establecidos:
 - identificador nuevo para el reemplazo;
 - conservación de la corrida original;
 - mantenimiento del mismo protocolo;
-- tres corridas evaluables como condición para calcular la mediana posterior.
+- tres corridas evaluables como condición para calcular la mediana posterior;
+- umbral cuantitativo del `50 %`.
 
 Estado:
 
@@ -2669,7 +2999,7 @@ Commit documental de TIMEOUT3-R1:
 
 `cc68828`
 
-Commit de revisión documental previo:
+Commit de revisión documental:
 
 `964ef25`
 
@@ -2685,19 +3015,19 @@ Commit documental de TIMEOUT3-R2:
 
 `40eb3cf`
 
-TIMEOUT3-R3 fue ejecutada:
-
-`DESPUÉS DEL REGISTRO DOCUMENTAL DE R2`
-
 Commit documental de TIMEOUT3-R3:
+
+`84c7e3c`
+
+Commit de consolidación cuantitativa:
 
 `PENDIENTE`
 
-El commit de R3 deberá ser:
+El commit de consolidación deberá ser:
 
-`POSTERIOR A 40eb3cf`
+`POSTERIOR A 84c7e3c`
 
-No se asigna un hash al registro documental de R3 hasta que dicho commit exista realmente.
+No se asigna un hash hasta que el commit exista realmente.
 
 Secuencia consolidada:
 
@@ -2713,9 +3043,9 @@ Secuencia consolidada:
 
 `-> TIMEOUT3-R1`
 
-`-> cc68828 registro de TIMEOUT3-R1`
+`-> cc68828 registro de R1`
 
-`-> clasificación NO EVALUABLE`
+`-> R1 NO EVALUABLE`
 
 `-> verificación histórica`
 
@@ -2725,30 +3055,29 @@ Secuencia consolidada:
 
 `-> 11c4092 comprobado posteriormente como commit activo`
 
-`-> clasificación REP1 EVALUABLE`
+`-> REP1 EVALUABLE`
 
 `-> bf8fcbc registro documental de REP1`
 
 `-> TIMEOUT3-R2`
 
-`-> clasificación EVALUABLE CON INCIDENCIA DOCUMENTADA`
+`-> R2 EVALUABLE CON INCIDENCIA DOCUMENTADA`
 
 `-> 40eb3cf registro documental de R2`
 
 `-> TIMEOUT3-R3`
 
-`-> clasificación EVALUABLE`
+`-> R3 EVALUABLE`
 
-`-> commit documental de R3 PENDIENTE`
+`-> 84c7e3c registro documental de R3`
 
-`-> consolidación cuantitativa PENDIENTE`
+`-> cálculo de M_después = 3 014 ms`
 
-La secuencia conserva por separado:
+`-> cálculo de reducción = 69,94 %`
 
-- ejecución experimental;
-- decisión metodológica;
-- registro documental;
-- comprobaciones posteriores.
+`-> HIPÓTESIS RESPALDADA`
+
+`-> commit de consolidación cuantitativa PENDIENTE`
 
 No se reescriben los commits ya publicados.
 
@@ -2822,6 +3151,10 @@ Observaciones:
 Valor principal:
 
 `NO ASIGNADO`
+
+SHA-256:
+
+`787BB5935347EABAD2C281765E715C5F247BEA3FB626DEF21768273BCCC9AC81`
 
 ---
 
@@ -2899,7 +3232,7 @@ Valor:
 
 `T3 = 3 014 ms`
 
-Identificador previsto por el prerregistro:
+Identificador previsto:
 
 `S11-A4-TIMEOUT3-R3`
 
@@ -2907,7 +3240,7 @@ Identificador consultado en PostgreSQL:
 
 `S11-A4-TIMEOUT3-R3`
 
-Contenido del título en el body demostrado directamente por Logcat BASIC:
+Título del body demostrado directamente por Logcat BASIC:
 
 `NO`
 
@@ -2957,122 +3290,270 @@ SHA-256:
 
 Commit documental:
 
-`PENDIENTE`
+`84c7e3c`
 
 ---
 
-## 27.7 Condición posterior
+## 27.7 Comparación cuantitativa
 
-T1:
+Valores de línea base:
 
-`3 024 ms`
+- `10 028 ms`
+- `10 033 ms`
+- `10 023 ms`
 
-T2:
+Mediana:
 
-`3 011 ms`
+`M_antes = 10 028 ms`
 
-T3:
+Valores posteriores:
 
-`3 014 ms`
+- `3 024 ms`
+- `3 011 ms`
+- `3 014 ms`
 
-Corridas evaluables:
+Valores posteriores ordenados:
 
-`3 de 3`
+- `3 011 ms`
+- `3 014 ms`
+- `3 024 ms`
 
-Reemplazos:
+Mediana:
 
-`1 de 1 UTILIZADO`
-
-M_después:
-
-`PENDIENTE DE CÁLCULO CONSOLIDADO`
+`M_después = 3 014 ms`
 
 Reducción:
 
-`PENDIENTE DE CÁLCULO CONSOLIDADO`
+`69,94 %`
 
-Hipótesis:
+Umbral:
 
-`NO EVALUADA`
+`50 %`
+
+Resultado cuantitativo:
+
+`CUMPLE`
+
+---
+
+## 27.8 Condiciones funcionales
+
+Falso éxito Android en las tres corridas posteriores evaluables:
+
+`NO OBSERVADO`
+
+Persistencia remota inesperada atribuible a los POST experimentales evaluables:
+
+`NO OBSERVADA`
+
+La conclusión sobre persistencia conserva las particularidades documentadas de R2.
+
+---
+
+## 27.9 Resultado final
 
 Comparación principal:
 
-`DATOS COMPLETOS — CÁLCULO FINAL PENDIENTE`
+`EVALUABLE Y COMPLETADA`
+
+Hipótesis:
+
+`RESPALDADA`
+
+Conclusión:
+
+`LA HIPÓTESIS PRERREGISTRADA QUEDA RESPALDADA POR LA EVIDENCIA OBTENIDA EN ESTE EXPERIMENTO, DENTRO DE LAS CONDICIONES Y LIMITACIONES DOCUMENTADAS`
 
 ---
 
-# 28. Próximo punto de control
+# 28. Cierre del experimento
 
-TIMEOUT3-R3 queda documentada como:
+La Actividad 4 dispone de:
+
+- prerregistro histórico verificable;
+- línea base completa;
+- intervención registrada;
+- tres valores evaluables de línea base;
+- tres valores evaluables posteriores;
+- una corrida no evaluable conservada;
+- un reemplazo utilizado conforme a la regla preregistrada;
+- evidencia privada con hashes SHA-256;
+- mediana antes;
+- mediana después;
+- reducción porcentual;
+- contraste contra el umbral;
+- comprobaciones funcionales de Android;
+- comprobaciones de persistencia;
+- limitaciones expresamente documentadas.
+
+---
+
+## 28.1 Resultado cuantitativo final
+
+```text
+M_antes    = 10 028 ms
+M_después  = 3 014 ms
+Reducción  = 69,94 %
+Umbral     = 50 %
+```
+
+Comparación:
+
+```text
+69,94 % >= 50 %
+```
+
+Resultado:
+
+`CRITERIO CUANTITATIVO CUMPLIDO`
+
+---
+
+## 28.2 Resultado funcional final
+
+Android:
+
+`NO SE OBSERVÓ FALSO ÉXITO EN LAS TRES CORRIDAS POSTERIORES EVALUABLES`
+
+Persistencia:
+
+`NO SE OBSERVÓ NUEVA PERSISTENCIA REMOTA INESPERADA ATRIBUIBLE A LOS POST EXPERIMENTALES EVALUABLES`
+
+---
+
+## 28.3 Resultado metodológico final
+
+Hipótesis:
+
+`RESPALDADA`
+
+Comparación principal:
 
 `EVALUABLE`
 
-Valor:
+Estado experimental:
 
-`T3 = 3 014 ms`
+`COMPLETADO`
 
-La condición posterior ya cuenta con:
+La categoría:
 
-`3 DE 3 CORRIDAS EVALUABLES`
+`COMPARACIÓN PRINCIPAL NO EVALUABLE`
 
-No es necesario repetir:
+no corresponde.
 
-- la línea base;
-- TIMEOUT3-R1;
-- TIMEOUT3-R1-REP1;
-- TIMEOUT3-R2;
-- TIMEOUT3-R3.
+La categoría:
 
-La siguiente acción es registrar documentalmente R3 mediante un commit posterior a:
+`HIPÓTESIS NO RESPALDADA`
 
-`40eb3cf`
+tampoco corresponde.
 
 ---
 
-## 28.1 Revisión del documento antes del commit
+## 28.4 Alcance arquitectónico
+
+Bajo las condiciones registradas en este experimento, la configuración explícita:
+
+`connectTimeout = 3 segundos`
+
+estuvo asociada con una reducción de la mediana técnica de los POST fallidos desde:
+
+`10 028 ms`
+
+hasta:
+
+`3 014 ms`
+
+equivalente a:
+
+`69,94 %`
+
+La evidencia observada también mostró que Android continuó presentando el error al usuario y no se observó nueva persistencia remota inesperada atribuible a las solicitudes fallidas evaluables.
+
+Por tanto, dentro del alcance del experimento, la intervención proporciona evidencia favorable para mantener explícitamente:
+
+`connectTimeout = 3 segundos`
+
+como decisión de configuración para este escenario de indisponibilidad controlada.
+
+Esta conclusión no se generaliza automáticamente a:
+
+- otras redes;
+- otros dispositivos;
+- otros endpoints;
+- otros tipos de fallo;
+- indisponibilidad de PostgreSQL;
+- fallos parciales del backend;
+- timeouts de lectura;
+- timeouts de escritura;
+- timeouts globales de llamada;
+- escenarios con retry;
+- escenarios con fallback;
+- escenarios con circuit breaker.
+
+---
+
+## 28.5 Limitaciones finales conservadas
+
+### BASE-R1
+
+Reutilización del identificador entre control y experimento.
+
+### BASE-R2
+
+Incidencia previa de autenticación y ausencia de una captura fechada exacta de la comprobación del puerto.
+
+### BASE-R3
+
+Dos filas de control con procedencia exacta no determinada.
+
+### TIMEOUT3-R1
+
+Dos pulsaciones de `Guardar`; corrida no evaluable.
+
+### TIMEOUT3-R1-REP1
+
+Confirmaciones operativas para identificador y pulsación; commit comprobado posteriormente; ausencia de captura instrumental completa de configuración durante la ventana exacta.
+
+### TIMEOUT3-R2
+
+Uso previo del identificador y existencia de la fila histórica:
+
+`1500185 — is_deleted = true`
+
+La preparación no fue idéntica a REP1.
+
+### TIMEOUT3-R3
+
+Logcat BASIC no expone directamente el título funcional contenido en el body.
+
+Estas limitaciones:
+
+`NO SE ELIMINAN DEL REGISTRO`
+
+y delimitan el alcance de la conclusión final.
+
+---
+
+## 28.6 Próximo paso documental
+
+El último commit documental previo a esta consolidación es:
+
+`84c7e3c`
+
+La actualización cuantitativa final deberá registrarse mediante:
+
+`UN NUEVO COMMIT POSTERIOR A 84c7e3c`
 
 Archivo:
 
 `experimentos/semana11-crecimiento-post-activities/resultados-spike-timeout.md`
 
-Ejecutar:
+Antes del commit deberá ejecutarse:
 
 ```powershell
 $ruta = "experimentos/semana11-crecimiento-post-activities/resultados-spike-timeout.md"
 
 git diff -- $ruta
-```
-
-La revisión debe confirmar:
-
-- `T1 = 3 024 ms`;
-- `T2 = 3 011 ms`;
-- `T3 = 3 014 ms`;
-- R2 conserva la fila histórica `1500185`;
-- R2 utiliza `0 filas nuevas observadas`;
-- R2 conserva el commit `40eb3cf`;
-- R3 tiene PostgreSQL `0 filas / 0 filas`;
-- puerto R3 sin listener a las `13:41:49.173`;
-- POST R3 a las `13:42:32.930`;
-- fallo R3 a las `13:42:35.944`;
-- hilo `30948`;
-- una pulsación de `Guardar` según confirmación operativa;
-- SHA-256 completo de R3;
-- el identificador previsto y el identificador consultado en PostgreSQL están diferenciados del contenido del body;
-- Logcat BASIC no se presenta como evidencia directa del título funcional;
-- el commit de R2 figura como `40eb3cf`;
-- el commit documental de R3 continúa `PENDIENTE`;
-- `M_después` todavía no está calculada;
-- la reducción todavía no está calculada;
-- la hipótesis permanece `NO EVALUADA`.
-
----
-
-## 28.2 Preparación del commit de R3
-
-Después de revisar el diff:
-
-```powershell
 git add -- $ruta
 git diff --cached --name-only
 git diff --cached --check
@@ -3085,82 +3566,83 @@ Debe quedar preparado únicamente:
 No se deben incluir:
 
 - Logcat privados;
-- archivos de evidencia cruda;
+- carpetas de evidencia privada;
 - prerregistro modificado;
 - JWT;
-- credenciales;
 - tokens;
+- credenciales;
 - secretos;
 - archivos no relacionados.
 
 ---
 
-## 28.3 Commit documental de R3
+## 28.7 Commit de consolidación final
 
-Si el staging contiene únicamente el documento esperado y `git diff --cached --check` no muestra errores:
+Si el staging contiene únicamente el documento esperado y:
 
 ```powershell
-git commit -m "S11 A4: registrar R3 y su evaluabilidad"
+git diff --cached --check
+```
+
+no presenta errores, podrá registrarse la consolidación mediante un commit nuevo.
+
+Mensaje propuesto:
+
+```powershell
+git commit -m "S11 A4: consolidar resultado final del experimento de timeout"
+```
+
+Después podrá publicarse en:
+
+`exp/semana11-timeout3-intervencion`
+
+mediante:
+
+```powershell
 git push origin exp/semana11-timeout3-intervencion
 ```
 
-Después de crear el commit deberá sustituirse:
+Una vez creado el commit, deberá sustituirse:
 
-`Commit documental de TIMEOUT3-R3 = PENDIENTE`
+`Commit de consolidación cuantitativa = PENDIENTE`
 
-por el hash real obtenido.
-
----
-
-## 28.4 Consolidación cuantitativa posterior
-
-Después de versionar R3 podrán ordenarse formalmente:
-
-- `T1 = 3 024 ms`
-- `T2 = 3 011 ms`
-- `T3 = 3 014 ms`
-
-y calcularse:
-
-`M_después`
-
-Posteriormente podrá aplicarse:
-
-\[
-Reducción(\%) =
-\frac{M_{antes} - M_{después}}
-{M_{antes}}
-\times 100
-\]
-
-utilizando:
-
-`M_antes = 10 028 ms`
-
-El resultado deberá contrastarse con el criterio preregistrado:
-
-`REDUCCIÓN >= 50 %`
-
-Solo después de esa consolidación corresponde determinar el estado final de la hipótesis.
+por el hash real correspondiente.
 
 ---
 
-## 28.5 Estado actual
+## 28.8 Estado final antes del commit de consolidación
 
-Hasta registrar R3 y realizar posteriormente la consolidación cuantitativa:
+```text
+Prerregistro                         = COMPLETADO
+Verificación histórica              = COMPLETADA
 
-`M_antes = 10 028 ms`
+Línea base                          = CERRADA
+B1                                  = 10 028 ms
+B2                                  = 10 033 ms
+B3                                  = 10 023 ms
+M_antes                             = 10 028 ms
 
-`T1 = 3 024 ms`
+Intervención                        = connectTimeout = 3 segundos
 
-`T2 = 3 011 ms`
+TIMEOUT3-R1                         = NO EVALUABLE
+TIMEOUT3-R1-REP1                    = EVALUABLE
+T1                                  = 3 024 ms
 
-`T3 = 3 014 ms`
+TIMEOUT3-R2                         = EVALUABLE CON INCIDENCIA DOCUMENTADA
+T2                                  = 3 011 ms
 
-`M_después = PENDIENTE DE CÁLCULO`
+TIMEOUT3-R3                         = EVALUABLE
+T3                                  = 3 014 ms
 
-`REDUCCIÓN = PENDIENTE DE CÁLCULO`
+Corridas posteriores evaluables     = 3 de 3
+M_después                           = 3 014 ms
+Reducción                           = 69,94 %
+Umbral                              = 50 %
 
-`HIPÓTESIS = NO EVALUADA`
+Falso éxito Android                 = NO OBSERVADO
+Persistencia remota inesperada      = NO OBSERVADA EN LAS CORRIDAS EVALUABLES
 
-`COMPARACIÓN PRINCIPAL = DATOS COMPLETOS — CONSOLIDACIÓN FINAL PENDIENTE`
+Comparación principal               = EVALUABLE Y COMPLETADA
+Hipótesis                           = RESPALDADA
+Estado experimental                 = COMPLETADO
+```
