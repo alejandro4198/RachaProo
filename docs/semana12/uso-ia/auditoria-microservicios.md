@@ -6,7 +6,7 @@
 - **Fecha de evaluación:** 2026-10-21
 - **Autor de la evaluación y decisión:** Equipo de RachaPro
 - **Herramienta de IA auditada:** ChatGPT
-- **Estado:** Auditoría crítica posterior a la preservación de la propuesta original
+- **Estado:** Auditoría crítica registrada y publicada
 - **Prompt original:** `docs/semana12/uso-ia/prompt-original.md`
 - **Respuesta original:** `docs/semana12/uso-ia/respuesta-original.md`
 - **Documento de auditoría:** `docs/semana12/uso-ia/auditoria-microservicios.md`
@@ -123,8 +123,6 @@ Por ello, la aparición de estas tecnologías o mecanismos en la respuesta no de
 
 Varios de ellos fueron solicitados expresamente como dimensiones de análisis.
 
----
-
 ### 3.2. Respuesta original
 
 Ruta:
@@ -176,8 +174,6 @@ ADR-004 contiene la propuesta de re-decisión de distribución de Semana 12 y co
 
 No se incluye una ruta incompleta o inferida para ADR-001 en esta lista de fuentes directas.
 
----
-
 ### 4.2. Integración y Spike 1
 
 Se utiliza:
@@ -194,8 +190,6 @@ Estas fuentes permiten delimitar:
 - bajo qué arquitectura;
 - qué resultado fue observado;
 - y qué tecnologías quedaron fuera del alcance.
-
----
 
 ### 4.3. Campaña de crecimiento de Semana 11
 
@@ -217,7 +211,7 @@ Scripts y elementos relacionados con la ejecución se encuentran bajo:
 experimentos/semana11-crecimiento-post-activities/
 ```
 
-Estas rutas constituyen la referencia primaria para las afirmaciones de esta auditoría relativas a:
+Estas rutas constituyen la referencia primaria para las afirmaciones relativas a:
 
 - niveles de carga;
 - número de corridas;
@@ -225,9 +219,7 @@ Estas rutas constituyen la referencia primaria para las afirmaciones de esta aud
 - degradación observada;
 - éxito funcional;
 - errores HTTP;
-- y límites de interpretación.
-
----
+- límites de interpretación.
 
 ### 4.4. Matriz de fallos y resiliencia
 
@@ -243,8 +235,6 @@ Esta evidencia se utiliza para delimitar:
 - recuperación posterior;
 - alcance de la operación observada;
 - ambigüedades o condiciones operativas de algunas repeticiones.
-
----
 
 ### 4.5. Experimento de timeout
 
@@ -266,9 +256,7 @@ Estas fuentes permiten rastrear:
 - intervención;
 - mediciones posteriores;
 - umbral;
-- y conclusión experimental.
-
----
+- conclusión experimental.
 
 ### 4.6. Costos relativos
 
@@ -303,8 +291,6 @@ No representa:
 - complejidad total;
 - esfuerzo humano.
 
----
-
 ### 4.7. Fitness function
 
 Ruta:
@@ -316,8 +302,6 @@ docs/semana12/fitness-function.md
 El documento define una regla y un umbral propuestos para proteger fronteras modulares.
 
 La existencia de esa definición no debe confundirse con una afirmación de que la nueva fitness function ya fue implementada, ejecutada y validada completamente en CI.
-
----
 
 ### 4.8. Seguridad
 
@@ -355,13 +339,9 @@ Existe evidencia suficiente para sostener la afirmación dentro del alcance eval
 
 No implica una garantía universal.
 
----
-
 ### 5.2. PARCIALMENTE RESPALDADO
 
 Existe evidencia relacionada, pero no suficiente para extender la afirmación a todo el sistema o a todos los escenarios.
-
----
 
 ### 5.3. CONDICIONADO
 
@@ -373,8 +353,6 @@ La propuesta podría justificarse si aparece:
 - o una decisión previa que haga necesario el mecanismo.
 
 No representa una obligación actual.
-
----
 
 ### 5.4. SIN EVIDENCIA SUFICIENTE
 
@@ -392,8 +370,6 @@ Encontrar una configuración demuestra que existe una configuración.
 
 No demuestra automáticamente todo su comportamiento en ejecución.
 
----
-
 ### 6.2. Implementado no significa exhaustivamente validado
 
 Una clase o mecanismo implementado no acredita por sí solo:
@@ -402,23 +378,17 @@ Una clase o mecanismo implementado no acredita por sí solo:
 - ausencia de vulnerabilidades;
 - comportamiento correcto bajo cualquier condición.
 
----
-
 ### 6.3. Documentado no significa implementado
 
 Una regla en un ADR demuestra una decisión documentada.
 
 Su cumplimiento debe contrastarse con código, pruebas u otra evidencia cuando corresponda.
 
----
-
 ### 6.4. Ausencia de evidencia no equivale a evidencia de ausencia
 
 Cuando una característica no ha sido comprobada, la formulación correcta es:
 
 > **no demostrada con la evidencia inspeccionada.**
-
----
 
 ### 6.5. Medición no implica causalidad
 
@@ -431,8 +401,6 @@ La investigación causal requiere contrastar hipótesis mediante:
 - intervenciones;
 - repetición;
 - comparación.
-
----
 
 ### 6.6. Capacidad arquitectónica no equivale a necesidad
 
@@ -447,8 +415,6 @@ no implica:
 ```text
 RachaPro necesita escalado independiente actualmente.
 ```
-
----
 
 ### 6.7. Necesidad no equivale a producto
 
@@ -496,8 +462,6 @@ como unidades desplegables independientes.
 
 Los límites propuestos corresponden aproximadamente con las capacidades funcionales ya identificadas en el backend.
 
----
-
 ## 7.2. Arquitectura actual
 
 Actualmente RachaPro posee:
@@ -531,8 +495,6 @@ monolito sin estructura
 vs.
 microservicios
 ```
-
----
 
 ## 7.3. Evidencia de crecimiento
 
@@ -616,8 +578,6 @@ Por ello:
 
 > **la campaña no demuestra que cinco microservicios reduzcan el P95 observado.**
 
----
-
 ## 7.4. Relación de unidades desplegables
 
 La alternativa actual utiliza:
@@ -626,7 +586,7 @@ La alternativa actual utiliza:
 1 unidad backend desplegable
 ```
 
-La alternativa de cinco microservicios utilizaría, por definición:
+La alternativa de cinco microservicios utilizaría:
 
 ```text
 5 unidades backend desplegables
@@ -660,8 +620,6 @@ Además:
 
 por lo que tampoco representa un orden decimal completo en esta dimensión.
 
----
-
 ## 7.5. Evidencia que podría justificar la distribución
 
 La decisión debería reconsiderarse ante evidencia de:
@@ -673,9 +631,7 @@ La decisión debería reconsiderarse ante evidencia de:
 - requisito de seguridad que exija aislamiento;
 - persistencia con necesidades incompatibles;
 - equipos independientes;
-- o evidencia experimental favorable de un piloto distribuido.
-
----
+- evidencia experimental favorable de un piloto distribuido.
 
 ## 7.6. Clasificación
 
@@ -724,8 +680,6 @@ No es:
 
 > **instalar obligatoriamente un producto específico.**
 
----
-
 ## 8.2. Pregunta diagnóstica
 
 La investigación debería intentar responder:
@@ -754,8 +708,6 @@ Estas variables sirven para investigar hipótesis.
 
 No garantizan identificar causalidad.
 
----
-
 ## 8.3. Stack propuesto por IA
 
 La IA plantea como posibles tecnologías:
@@ -774,8 +726,6 @@ k6
 La necesidad de observabilidad está respaldada.
 
 La obligatoriedad de este stack no lo está.
-
----
 
 ## 8.4. Clasificación
 
@@ -832,8 +782,6 @@ Estas referencias demuestran dependencias estáticas entre módulos.
 
 No demuestran transporte remoto.
 
----
-
 ## 9.2. Dirección de dependencia y flujo de información
 
 Debe diferenciarse:
@@ -849,8 +797,6 @@ de:
 > Identity origina conceptualmente la información del evento y Activities la consume.
 
 El sentido de una importación no debe confundirse automáticamente con el sentido semántico de publicación.
-
----
 
 ## 9.3. Propuesta distribuida de IA
 
@@ -868,8 +814,6 @@ Activities -> Reminders   evento
 Estas relaciones forman parte de la arquitectura objetivo.
 
 No describen el estado actual.
-
----
 
 ## 9.4. Alcance del Spike 1
 
@@ -899,8 +843,6 @@ Por tanto:
 
 > **un evento interno funcionando no demuestra necesidad de mensajería externa.**
 
----
-
 ## 9.5. Condiciones para evaluar un broker
 
 Un broker podría justificarse si aparece una necesidad demostrada de:
@@ -918,8 +860,6 @@ Aun demostrando esa necesidad:
 
 > **RabbitMQ seguiría siendo una alternativa a evaluar, no una consecuencia automática.**
 
----
-
 ## 9.6. Transactional Outbox
 
 El patrón cobra sentido cuando existe:
@@ -936,8 +876,6 @@ Como la mensajería distribuida no ha sido justificada actualmente:
 Transactional Outbox:
 CONDICIONADO
 ```
-
----
 
 ## 9.7. Clasificación
 
@@ -1028,8 +966,6 @@ ReminderRepository
 
 Esto proporciona evidencia estructural de separación por capacidad.
 
----
-
 ## 10.2. ADR-002
 
 Fuente:
@@ -1063,8 +999,6 @@ Esto permite preservar ownership aun utilizando:
 una única base PostgreSQL
 ```
 
----
-
 ## 10.3. Alcance de la evidencia actual
 
 Puede sostenerse:
@@ -1090,8 +1024,6 @@ una instancia PostgreSQL por módulo:
 NO DEMOSTRADO
 ```
 
----
-
 ## 10.4. Propuesta de IA
 
 La arquitectura distribuida propone conceptualmente:
@@ -1113,8 +1045,6 @@ base lógica por servicio
 !=
 servidor PostgreSQL por servicio
 ```
-
----
 
 ## 10.5. Tres niveles de separación
 
@@ -1142,8 +1072,6 @@ infraestructura PostgreSQL independiente
 
 No demostrada ni justificada actualmente.
 
----
-
 ## 10.6. Condiciones para mayor aislamiento
 
 Podría reconsiderarse ante:
@@ -1156,8 +1084,6 @@ Podría reconsiderarse ante:
 - despliegues independientes;
 - saturación localizada;
 - necesidad de migraciones independientes.
-
----
 
 ## 10.7. Clasificación
 
@@ -1225,8 +1151,6 @@ Esto demuestra configuración.
 
 No constituye una prueba exhaustiva de cada endpoint.
 
----
-
 ## 11.2. JWT observado
 
 En:
@@ -1283,8 +1207,6 @@ y expiración de:
 3600 segundos
 ```
 
----
-
 ## 11.3. Validaciones no demostradas
 
 Se observó:
@@ -1320,8 +1242,6 @@ Esta conclusión no significa que el sistema sea necesariamente vulnerable.
 
 Significa únicamente que esa garantía no quedó demostrada mediante la inspección realizada.
 
----
-
 ## 11.4. Identidad y ownership
 
 Se observó uso de:
@@ -1349,8 +1269,6 @@ No permite afirmar:
 
 > **todos los endpoints han sido exhaustivamente auditados y autorizan correctamente todos los recursos.**
 
----
-
 ## 11.5. Configuración sensible
 
 Se observaron referencias:
@@ -1369,9 +1287,7 @@ No certifica:
 - dónde se almacenan los secretos en despliegue;
 - quién puede acceder a ellos;
 - cómo se rotan;
-- ni qué mecanismo de secret management se utiliza.
-
----
+- qué mecanismo de secret management se utiliza.
 
 ## 11.6. Seguridad adicional asociada a distribución
 
@@ -1414,8 +1330,6 @@ Entonces aparecen responsabilidades adicionales:
 - gestionar claves;
 - autorizar llamadas internas.
 
----
-
 ## 11.7. HS256 frente a distribución
 
 Actualmente se observó:
@@ -1430,8 +1344,6 @@ Una arquitectura distribuida podría beneficiarse de mecanismos de validación m
 Sin embargo:
 
 > **esta posibilidad no demuestra que RachaPro deba adoptar actualmente RS256, ES256 o JWKS.**
-
----
 
 ## 11.8. Clasificación
 
@@ -1515,8 +1427,6 @@ y la intervención aplicada en:
 app/src/main/java/com/example/rachapro/network/RetrofitClient.kt
 ```
 
----
-
 ## 12.2. Experimento de timeout
 
 La intervención fue:
@@ -1565,8 +1475,6 @@ HIPÓTESIS RESPALDADA
 
 bajo las condiciones del experimento.
 
----
-
 ## 12.3. Alcance del resultado de timeout
 
 La conclusión respaldada es:
@@ -1588,8 +1496,6 @@ cliente Android
 ```
 
 y no en una arquitectura de servicios distribuidos.
-
----
 
 ## 12.4. Caída y recuperación
 
@@ -1613,11 +1519,9 @@ Algunas repeticiones incluyeron condiciones operativas como:
 
 - reintentos manuales;
 - desviaciones nominales;
-- y al menos una situación ambigua asociada a una segunda operación POST.
+- al menos una situación ambigua asociada a una segunda operación POST.
 
 Por tanto, la matriz no certifica recuperación automática ni idempotencia general.
-
----
 
 ## 12.5. Circuit breaker
 
@@ -1643,8 +1547,6 @@ Podrían medirse:
 - recuperación;
 - impacto en otras operaciones.
 
----
-
 ## 12.6. Retries
 
 Los reintentos solo deben evaluarse como mejora si:
@@ -1663,8 +1565,6 @@ idempotencia demostrada
 
 El escenario de Semana 11 con reintentos manuales no constituye una demostración general de que reintentos automáticos sean seguros.
 
----
-
 ## 12.7. Bulkhead
 
 Un bulkhead requeriría evidencia de contención de recursos, por ejemplo:
@@ -1675,8 +1575,6 @@ Un bulkhead requeriría evidencia de contención de recursos, por ejemplo:
 - interferencia entre operaciones.
 
 Esta necesidad no fue demostrada en la evidencia revisada.
-
----
 
 ## 12.8. Health checks
 
@@ -1700,15 +1598,11 @@ Por tanto:
 
 > **detectar estado no equivale a recuperar servicio.**
 
----
-
 ## 12.9. Graceful shutdown
 
 Es una táctica potencialmente útil para retirar instancias sin interrumpir operaciones activas.
 
 No fue evaluada experimentalmente en esta actividad.
-
----
 
 ## 12.10. Idempotencia
 
@@ -1728,8 +1622,6 @@ Para una operación concreta sería necesario comprobar que repeticiones equival
 - duplican efectos;
 - alteran incorrectamente el estado.
 
----
-
 ## 12.11. Dead Letter Queue
 
 Una DLQ depende de una arquitectura de mensajería externa.
@@ -1740,8 +1632,6 @@ Como esa arquitectura no está actualmente justificada:
 DLQ:
 CONDICIONADA
 ```
-
----
 
 ## 12.12. Degradación controlada
 
@@ -1762,8 +1652,6 @@ mientras Activities continúa
 pero estos escenarios no fueron probados con procesos independientes.
 
 Por tanto, el aislamiento de fallos permanece como beneficio potencial.
-
----
 
 ## 12.13. Clasificación
 
@@ -1897,7 +1785,7 @@ Esta lista no debe interpretarse como:
 
 > **todos estos componentes son obligatorios actualmente.**
 
-Cada uno conserva la clasificación indicada en la matriz de la sección 13.
+Cada elemento conserva la clasificación indicada en la matriz de la sección 13.
 
 La lista representa responsabilidades que pueden aparecer dependiendo del diseño distribuido seleccionado.
 
@@ -1923,33 +1811,23 @@ Mantener contratos bajo:
 
 permite controlar dependencias sin distribución física.
 
----
-
 ### 15.2. Ownership de persistencia
 
 ADR-002 demuestra que ownership lógico puede preservarse utilizando una sola base PostgreSQL.
-
----
 
 ### 15.3. Observabilidad
 
 La campaña de Semana 11 dejó una incertidumbre causal que justifica mejorar la información diagnóstica.
 
----
-
 ### 15.4. Seguridad
 
 Autenticación, autorización, ownership y gestión responsable de secretos son necesidades independientes del estilo de distribución.
-
----
 
 ### 15.5. Timeouts
 
 Existe evidencia concreta sobre el `connectTimeout` del cliente Android.
 
 Su resultado no se extrapola automáticamente a futuras comunicaciones entre servicios.
-
----
 
 ### 15.6. Ensayos de fallos
 
@@ -2047,25 +1925,17 @@ La posición actual deberá revisarse si aparece evidencia relevante de alguno d
 
 Una capacidad demuestra un patrón de carga que hace necesario escalarla sin replicar todo el backend.
 
----
-
 ## C2. Saturación causalmente localizada
 
 Una investigación reproducible identifica un recurso o capacidad específica como factor dominante de una limitación.
-
----
 
 ## C3. Despliegue independiente
 
 Existe una necesidad real de desplegar o revertir una capacidad sin afectar el resto del backend.
 
----
-
 ## C4. Aislamiento de fallos
 
 Una capacidad provoca consecuencias que podrían reducirse mediante aislamiento efectivo.
-
----
 
 ## C5. Persistencia
 
@@ -2074,9 +1944,7 @@ Una capacidad requiere:
 - tecnología distinta;
 - escalado diferente;
 - aislamiento diferente;
-- o ciclo de migración independiente.
-
----
+- ciclo de migración independiente.
 
 ## C6. Seguridad o regulación
 
@@ -2087,13 +1955,9 @@ Surge un requisito que obligue a aislar:
 - procesos;
 - privilegios.
 
----
-
 ## C7. Organización
 
 Equipos realmente independientes necesitan ciclos autónomos de construcción, despliegue y operación.
-
----
 
 ## C8. Evidencia experimental
 
@@ -2125,8 +1989,6 @@ monolito modular
 
 mientras se reduce la incertidumbre mediante mejor observabilidad.
 
----
-
 ## Fase 2 — Fortalecer fronteras
 
 Continuar aplicando:
@@ -2139,8 +2001,6 @@ fitness functions
 ```
 
 para evitar acoplamiento indebido.
-
----
 
 ## Fase 3 — Identificar el driver
 
@@ -2166,15 +2026,11 @@ tecnología
 buscar después un problema que la justifique
 ```
 
----
-
 ## Fase 4 — Piloto condicionado
 
 Si aparece un driver suficiente, podría extraerse una capacidad como experimento controlado.
 
 El piloto debe producir evidencia comparable.
-
----
 
 ## Fase 5 — Re-decidir
 
@@ -2332,7 +2188,7 @@ Después de contrastar la propuesta de IA con:
 - costos relativos;
 - estructura modular;
 - configuración inspeccionada;
-- y limitaciones conocidas;
+- limitaciones conocidas;
 
 el equipo concluye:
 
@@ -2352,7 +2208,7 @@ Por tanto, la evidencia no permite concluir que:
 
 - el monolito sea la causa;
 - los microservicios sean la solución;
-- o la distribución reduzca el P95.
+- la distribución reduzca el P95.
 
 RachaPro ya posee capacidades funcionales diferenciadas y ha avanzado en:
 
@@ -2420,7 +2276,7 @@ abierta y condicionada a nueva evidencia
 
 # 22. Trazabilidad Git de la Actividad 4
 
-La secuencia de Git busca demostrar que la propuesta de IA fue preservada antes de registrar la evaluación crítica.
+La secuencia de Git demuestra que la propuesta de IA fue preservada antes de registrar la evaluación crítica.
 
 ## 22.1. Preservación inicial de evidencia de IA
 
@@ -2436,11 +2292,13 @@ Mensaje:
 S12 A4: conservar prompt y respuesta original de IA
 ```
 
-En ese momento se registró la respuesta original y se creó la estructura documental correspondiente.
+En este commit se registró la respuesta original y se creó la estructura documental correspondiente.
 
-Sin embargo, la trazabilidad posterior mostró que el contenido completo del prompt todavía no había quedado incorporado correctamente en esa versión.
+La revisión posterior de la trazabilidad mostró que el contenido completo del prompt todavía no había quedado incorporado definitivamente en esa versión.
 
-Por tanto, **no se atribuye a `645702a` la preservación definitiva del contenido completo del prompt**.
+Por tanto:
+
+> **no se atribuye a `645702a` la preservación definitiva del contenido completo del prompt.**
 
 ---
 
@@ -2464,28 +2322,24 @@ Este commit incorpora y publica el contenido completo de:
 docs/semana12/uso-ia/prompt-original.md
 ```
 
-La verificación local posterior mostró:
+La verificación local posterior confirmó:
 
 ```text
 107 líneas
 ```
 
-para el prompt.
+en el archivo.
 
-La secuencia relevante queda:
+La secuencia hasta ese momento fue:
 
 ```text
 645702a
     ↓
-preservación inicial de respuesta/evidencia IA
+preservación inicial de evidencia de IA
 
 72448c5
     ↓
-completitud y trazabilidad del prompt original
-
-commit posterior
-    ↓
-auditoría crítica del equipo
+incorporación completa y trazabilidad del prompt original
 ```
 
 ---
@@ -2498,27 +2352,39 @@ Archivo:
 docs/semana12/uso-ia/auditoria-microservicios.md
 ```
 
-Estado al redactar esta versión:
+Commit que registró la auditoría crítica:
 
 ```text
-COMMIT PENDIENTE
+8ebb2f4
 ```
 
-Mensaje previsto:
+Mensaje:
 
 ```text
 S12 A4: registrar auditoria critica de propuesta IA
 ```
 
-El hash definitivo:
+Este commit fue creado y publicado después de preservar la evidencia original de IA y completar la trazabilidad del prompt.
 
-> **no debe incorporarse antes de ejecutar realmente el commit.**
-
-Después de crearlo deberá comprobarse con:
+La secuencia documental comprobada es:
 
 ```text
-git log -1 --oneline
+645702a
+    ↓
+preservación inicial de evidencia de IA
+
+72448c5
+    ↓
+incorporación completa del prompt original
+
+8ebb2f4
+    ↓
+registro de la auditoría crítica posterior del equipo
 ```
+
+Por tanto, la evaluación crítica quedó registrada cronológicamente después de la evidencia utilizada como objeto de auditoría.
+
+Una modificación posterior de este archivo destinada únicamente a actualizar su estado de cierre no modifica ni reemplaza el significado histórico de `8ebb2f4`.
 
 ---
 
@@ -2563,29 +2429,44 @@ experimentos/semana11-crecimiento-post-activities/matrices-fallos-resiliencia.md
 experimentos/semana11-crecimiento-post-activities/resultados-spike-timeout.md
 ```
 
-y la intervención del timeout queda asociada a:
+La intervención del timeout queda asociada a:
 
 ```text
 app/src/main/java/com/example/rachapro/network/RetrofitClient.kt
 ```
 
-Por tanto, el contenido de la auditoría queda preparado para cierre documental.
+La Actividad 4 se encuentra documentalmente registrada y publicada.
 
-La Actividad 4 quedará formalmente registrada cuando:
+La secuencia comprobada es:
 
-1. esta versión se encuentre guardada en el repositorio local;
-2. `git diff --cached --check` no reporte problemas;
-3. únicamente `auditoria-microservicios.md` quede preparado;
-4. se cree el commit correspondiente;
-5. se publique en el remoto;
-6. se verifique el hash resultante y el estado del repositorio.
+```text
+645702a — preservación inicial de evidencia de IA
+72448c5 — incorporación completa del prompt original
+8ebb2f4 — registro de la auditoría crítica del equipo
+```
 
-Hasta completar esos pasos:
+La actualización posterior de este documento únicamente corrige su estado de cierre para reflejar un hecho ocurrido después de la redacción inicial de la auditoría.
+
+Por tanto:
 
 ```text
 CONTENIDO DE A4:
 CONSOLIDADO
 
-COMMIT FINAL DE A4:
-PENDIENTE
+EVIDENCIA ORIGINAL DE IA:
+REGISTRADA
+
+PROMPT ORIGINAL COMPLETO:
+REGISTRADO EN 72448c5
+
+AUDITORÍA CRÍTICA:
+REGISTRADA EN 8ebb2f4
+
+PUBLICACIÓN REMOTA:
+CONFIRMADA
+
+ACTIVIDAD 4:
+CERRADA DOCUMENTALMENTE
 ```
+
+La conclusión arquitectónica permanece abierta a re-decisión futura si aparece nueva evidencia que satisfaga alguno de los criterios documentados en la sección 17.
