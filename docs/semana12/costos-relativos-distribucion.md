@@ -23,9 +23,11 @@ Se busca:
 - diferenciar hechos, mediciones, supuestos e inferencias;
 - hacer explícitos los costos que no pueden estimarse con la evidencia actual;
 - registrar beneficios y riesgos de ambas alternativas;
-- producir evidencia que sirva como entrada para el ADR-004.
+- producir evidencia que sirva como entrada para la re-decisión arquitectónica documentada posteriormente en ADR-004.
 
-La decisión arquitectónica formal se realizará posteriormente en el ADR-004.
+La Actividad 1 realiza la estimación de costos relativos.
+
+La decisión arquitectónica formal corresponde a una actividad posterior y quedó documentada en ADR-004.
 
 ---
 
@@ -685,17 +687,41 @@ No son una medición monetaria.
 
 Semana 11 aporta evidencia relevante para evaluar la distribución, pero no constituye una comparación directa entre monolito y microservicios.
 
----
-
 ### 16.1. Experimento de crecimiento
 
-La campaña de crecimiento alcanzó niveles de concurrencia hasta:
+La campaña de crecimiento utilizó ocho niveles de concurrencia:
 
 ```text
+1
+10
+50
+100
+250
+500
+750
 1000 VUs
 ```
 
-Se observó degradación bajo determinadas condiciones de carga.
+Se realizaron:
+
+```text
+4 corridas por nivel
+32 ejecuciones oficiales
+```
+
+El valor representativo definido fue:
+
+```text
+mediana(P95_R2, P95_R3, P95_R4)
+```
+
+La primera condición preregistrada de degradación relativa del P95 se cumplió en:
+
+```text
+50 VUs
+```
+
+Esto permite afirmar que, bajo las condiciones probadas, se observó una señal de degradación relativa de latencia desde ese nivel.
 
 Sin embargo, la evidencia no permite establecer causalmente:
 
@@ -709,9 +735,20 @@ Tampoco permite establecer:
 microservicios -> eliminación de la degradación
 ```
 
-Por tanto, la degradación observada no constituye evidencia suficiente para migrar automáticamente hacia microservicios.
+No se identificó causalmente si el origen dominante correspondía a:
 
----
+- una capacidad funcional;
+- PostgreSQL;
+- consultas;
+- CPU;
+- memoria;
+- GC;
+- conexiones;
+- threads;
+- infraestructura;
+- u otra causa.
+
+Por tanto, la degradación observada no constituye evidencia suficiente para migrar automáticamente hacia microservicios.
 
 ### 16.2. Experimento de timeout
 
@@ -720,6 +757,14 @@ La comparación consolidada del experimento de timeout fue:
 ```text
 M_antes   = 10 028 ms
 M_después = 3 014 ms
+```
+
+Las mediciones posteriores válidas utilizadas fueron:
+
+```text
+3 024 ms
+3 011 ms
+3 014 ms
 ```
 
 Reducción:
@@ -732,6 +777,12 @@ Umbral preregistrado:
 
 ```text
 50 %
+```
+
+Intervención aplicada:
+
+```text
+connectTimeout(3, TimeUnit.SECONDS)
 ```
 
 Conclusión metodológica registrada:
@@ -749,6 +800,10 @@ monolito modular
 vs.
 microservicios
 ```
+
+Además, la intervención corresponde al cliente Android.
+
+No demuestra el comportamiento de futuros timeouts interservicio.
 
 Sin embargo, sí aporta un antecedente relevante:
 
@@ -980,8 +1035,6 @@ Costo monetario:
 NO MEDIDO
 ```
 
----
-
 ### 22.2. Alternativa B
 
 La Alternativa B requeriría resolver explícitamente al menos:
@@ -1028,8 +1081,6 @@ Cantidad estructural conocida:
 Las dependencias entre módulos internos no atraviesan una frontera de red.
 
 La operación mantiene un único proceso backend como unidad principal.
-
----
 
 ### 23.2. Alternativa B
 
@@ -1121,16 +1172,19 @@ En B, una interacción remota podría presentar:
 - fallo parcial;
 - respuestas tardías.
 
-El experimento de Semana 11 mostró que una política explícita de timeout produjo una diferencia medible bajo una condición controlada de indisponibilidad.
+El experimento de Semana 11 mostró que una política explícita de timeout produjo una diferencia medible bajo una condición controlada de indisponibilidad desde el cliente Android.
 
-Esto respalda la necesidad de considerar la resiliencia cuando una interacción cruza una frontera de red.
+Esto constituye un antecedente para considerar explícitamente políticas de resiliencia cuando una interacción atraviesa una frontera de red.
+
+No demuestra que futuros timeouts entre microservicios presenten el mismo comportamiento.
 
 No permite cuantificar el costo económico de esa resiliencia.
 
 Resultado:
 
 ```text
-Costo de resiliencia interservicio = NUEVA CATEGORÍA, NO CUANTIFICADA
+Costo de resiliencia interservicio =
+NUEVA CATEGORÍA, NO CUANTIFICADA
 ```
 
 ---
@@ -1283,37 +1337,25 @@ La evaluación podría cambiar ante nueva evidencia.
 
 Si una capacidad concentra una proporción dominante de la carga y requiere escalarse de manera independiente, la utilidad de la distribución física aumentaría.
 
----
-
 ### S2 — Fallos que deban aislarse por proceso
 
 Si una capacidad presenta fallos cuya propagación a todo el backend no sea aceptable, el aislamiento físico podría adquirir mayor valor.
-
----
 
 ### S3 — Equipos independientes
 
 Si varias capacidades son desarrolladas por equipos independientes con ritmos distintos de entrega y despliegue, el costo del despliegue conjunto podría aumentar.
 
----
-
 ### S4 — Persistencia incompatible
 
 Si una capacidad requiere un modelo de persistencia, escalabilidad o consistencia incompatible con el resto del sistema, una separación física podría estar mejor justificada.
-
----
 
 ### S5 — Requisitos de disponibilidad diferentes
 
 Si alguna capacidad necesita una disponibilidad considerablemente superior o inferior a las demás, la distribución podría permitir asignar estrategias de operación distintas.
 
----
-
 ### S6 — Crecimiento de infraestructura
 
 Si RachaPro evoluciona hacia múltiples réplicas, regiones, servicios gestionados o topologías de alta disponibilidad, deberá realizarse una nueva estimación con datos reales.
-
----
 
 ### S7 — Evidencia experimental nueva
 
@@ -1326,8 +1368,6 @@ Si futuros experimentos demuestran que una restricción específica del proceso 
 ### L1 — La Alternativa B no está implementada
 
 No existe medición directa de una versión de RachaPro basada en cinco microservicios.
-
----
 
 ### L2 — Sin costos monetarios medidos
 
@@ -1342,8 +1382,6 @@ USD/año
 
 para las dos alternativas.
 
----
-
 ### L3 — Sin horas reales de migración
 
 No se ha realizado la migración propuesta.
@@ -1353,8 +1391,6 @@ Por tanto:
 ```text
 horas de migración = NO MEDIDAS
 ```
-
----
 
 ### L4 — Dependencias obtenidas mediante análisis estático
 
@@ -1367,8 +1403,6 @@ No se midió:
 - frecuencia de eventos;
 - porcentaje de tráfico asociado.
 
----
-
 ### L5 — Semana 11 no comparó distribuciones
 
 La evidencia experimental disponible no corresponde a:
@@ -1378,8 +1412,6 @@ monolito modular vs. microservicios
 ```
 
 Por tanto, no puede utilizarse como prueba directa de superioridad de A o B.
-
----
 
 ### L6 — `5×` tiene alcance estrictamente estructural
 
@@ -1403,8 +1435,6 @@ No corresponde a:
 - complejidad total;
 - disponibilidad;
 - rendimiento.
-
----
 
 ### L7 — Infraestructura futura no definida
 
@@ -1473,7 +1503,7 @@ ni que:
 cinco microservicios los resolverían
 ```
 
-Por tanto, la evaluación provisional es:
+Por tanto, la evaluación de A1 es:
 
 > **Con la evidencia actualmente disponible, no se observa una necesidad experimental suficiente que justifique asumir como obligatoria la separación completa de RachaPro en cinco microservicios.**
 
@@ -1507,8 +1537,6 @@ B = 5 unidades backend
 R = 5×
 ```
 
----
-
 ### P2 — Nuevas categorías operacionales
 
 Resultado:
@@ -1525,8 +1553,6 @@ Se identifican categorías adicionales asociadas a:
 - coordinación de contratos;
 - potencial seguridad entre procesos.
 
----
-
 ### P3 — Aumento de un orden de magnitud del costo total
 
 Resultado:
@@ -1537,8 +1563,6 @@ NO DEMOSTRADO
 
 No existen unidades económicas o de esfuerzo suficientes.
 
----
-
 ### P4 — Necesidad actual de distribución física
 
 Resultado:
@@ -1548,8 +1572,6 @@ NO OBSERVADA CON LA EVIDENCIA ACTUAL
 ```
 
 No existe un experimento que demuestre que la separación física sea necesaria para resolver los problemas medidos.
-
----
 
 ### Resultado consolidado
 
@@ -1652,13 +1674,15 @@ NO OBSERVADA
 
 ## 35. Implicación para ADR-004
 
-Este documento no toma todavía la decisión arquitectónica formal.
+La Actividad 1 no toma por sí sola la decisión arquitectónica formal.
 
-El ADR-004 deberá responder:
+Su resultado funciona como entrada para la re-decisión posterior.
+
+La pregunta trasladada al ADR-004 fue:
 
 > ¿Debe RachaPro conservar el monolito modular actual o asumir en este momento una distribución física mediante cinco microservicios?
 
-La decisión deberá considerar conjuntamente:
+La decisión debía considerar conjuntamente:
 
 - evidencia experimental;
 - costo relativo;
@@ -1676,15 +1700,37 @@ El valor:
 5×
 ```
 
-no será utilizado como argumento único para decidir.
+no se utiliza como argumento único para decidir.
+
+### Estado posterior
+
+La re-decisión fue documentada posteriormente en:
+
+```text
+docs/adr/0004-redecision-distribucion.md
+```
+
+Commit de registro de ADR-004:
+
+```text
+ca61951
+```
+
+Mensaje:
+
+```text
+S12 A2: registrar propuesta de redecision ADR-004
+```
+
+La propuesta de decisión registrada es mantener el monolito modular como arquitectura de distribución actual, condicionando una futura re-decisión a nueva evidencia.
 
 ---
 
 ## 36. Relación con la evaluación crítica de microservicios
 
-La actividad posterior de Semana 12 deberá utilizar esta estimación para analizar si una propuesta de microservicios introduce complejidad que no está justificada por la evidencia.
+La Actividad 4 de Semana 12 utilizó esta estimación para evaluar si una propuesta de microservicios introducía complejidad no justificada por la evidencia.
 
-La evaluación deberá evitar dos posiciones extremas:
+La evaluación evitó dos posiciones extremas:
 
 ```text
 microservicios siempre son mejores
@@ -1696,26 +1742,84 @@ y:
 microservicios siempre son innecesarios
 ```
 
-La pregunta será:
+La pregunta utilizada fue:
 
 > ¿Qué complejidad introduce la distribución y qué necesidad concreta de RachaPro compensa esa complejidad?
+
+### Estado posterior
+
+La auditoría crítica quedó registrada en:
+
+```text
+docs/semana12/uso-ia/auditoria-microservicios.md
+```
+
+Commit:
+
+```text
+8ebb2f4
+```
+
+Mensaje:
+
+```text
+S12 A4: registrar auditoria critica de propuesta IA
+```
+
+La conclusión de A4 mantiene que la arquitectura distribuida es técnicamente viable, pero que la migración completa no está justificada actualmente por la evidencia disponible.
 
 ---
 
 ## 37. Relación con la fitness function
 
-La evidencia de este documento también servirá para seleccionar la fitness function de Semana 12.
+La evidencia de este documento también sirvió como entrada para seleccionar la fitness function de Semana 12.
 
-La nueva fitness function deberá incluir explícitamente:
+La fitness function debía incluir explícitamente:
 
 - regla;
 - unidad o condición evaluada;
 - umbral;
 - condición exacta que rompe el CI.
 
-La definición deberá ser coherente con la arquitectura que resulte seleccionada en ADR-004.
-
 Las reglas ArchUnit existentes constituyen antecedentes, pero no sustituyen automáticamente la nueva definición requerida para Semana 12.
+
+### Estado posterior
+
+La definición quedó documentada en:
+
+```text
+docs/semana12/fitness-function.md
+```
+
+Commit:
+
+```text
+2d40393
+```
+
+Mensaje:
+
+```text
+S12 A3: definir fitness function de fronteras modulares
+```
+
+La métrica definida es:
+
+```text
+V = número de pares únicos de clases origen-destino
+    que representan dependencias intermodulares prohibidas
+```
+
+con:
+
+```text
+V = 0  -> PASS
+V >= 1 -> FAIL
+```
+
+La definición metodológica de la fitness function está completada para Semana 12.
+
+La implementación de la nueva regla en ArchUnit, certificación del baseline, ensayo controlado `PASS -> FAIL -> PASS` y validación específica en GitHub Actions permanecen como trabajo ejecutable posterior.
 
 ---
 
@@ -1751,11 +1855,26 @@ M_después = 3 014 ms
 reducción = 69,94 %
 ```
 
-con la aclaración de que el experimento de timeout no compara monolito frente a microservicios.
+con la aclaración de que el experimento de timeout:
 
-### Conclusión provisional
+- corresponde al cliente Android;
+- no compara monolito frente a microservicios;
+- no demuestra mayor disponibilidad del servidor.
+
+También deberá conservarse la limitación de la campaña de crecimiento:
+
+> se observó degradación relativa de latencia desde 50 VUs según el criterio preregistrado, pero no se identificó causalmente qué componente o recurso la produjo.
+
+### Conclusión defendible
 
 No existe actualmente evidencia experimental suficiente para considerar obligatoria una migración completa hacia cinco microservicios.
+
+### Estado
+
+```text
+ACTIVIDAD 5:
+PENDIENTE — ENSAYO Y DEFENSA DEL COMITÉ 2
+```
 
 ---
 
@@ -1767,6 +1886,7 @@ No existe actualmente evidencia experimental suficiente para considerar obligato
 docs/adr/0001-decision-estilo.md
 docs/adr/0002-aislamiento-persistencia.md
 docs/adr/0003-integracion-eventos-internos.md
+docs/adr/0004-redecision-distribucion.md
 ```
 
 ### Antecedente de costos
@@ -1778,6 +1898,7 @@ docs/semana8/riesgos-tradeoffs-costos.md
 ### Evidencia de Semana 11
 
 ```text
+experimentos/semana11-crecimiento-post-activities/00-preregistro.md
 experimentos/semana11-crecimiento-post-activities/resultados-crecimiento.md
 experimentos/semana11-crecimiento-post-activities/matrices-fallos-resiliencia.md
 experimentos/semana11-crecimiento-post-activities/prerregistro-spike-timeout.md
@@ -1809,6 +1930,16 @@ backend/src/test/kotlin/com/example/rachapro/backend/architecture/ModularArchite
 .github/workflows/backend-architecture.yml
 ```
 
+### Documentos posteriores de Semana 12
+
+```text
+docs/adr/0004-redecision-distribucion.md
+docs/semana12/fitness-function.md
+docs/semana12/uso-ia/prompt-original.md
+docs/semana12/uso-ia/respuesta-original.md
+docs/semana12/uso-ia/auditoria-microservicios.md
+```
+
 ### Rama de trabajo
 
 ```text
@@ -1825,7 +1956,7 @@ La rama de trabajo fue creada a partir de:
 master
 ```
 
-con `master` actualizado hasta el merge de Semana 11:
+con `master` actualizado hasta el cierre de Semana 11 en:
 
 ```text
 6fcf860
@@ -1837,9 +1968,85 @@ correspondiente a:
 Merge pull request #63 from alejandro4198/exp/semana11-timeout3-intervencion
 ```
 
-El hash del commit correspondiente a esta primera versión del documento no se anticipa.
+### Registro de la Actividad 1
 
-Debe registrarse únicamente después de que Git genere el commit.
+Commit:
+
+```text
+99ed270
+```
+
+Mensaje:
+
+```text
+S12 A1: registrar estimacion relativa de distribucion
+```
+
+Este commit registró la primera versión consolidada de:
+
+```text
+docs/semana12/costos-relativos-distribucion.md
+```
+
+### Actividad 2
+
+Commit:
+
+```text
+ca61951
+```
+
+Mensaje:
+
+```text
+S12 A2: registrar propuesta de redecision ADR-004
+```
+
+### Actividad 3
+
+Commit:
+
+```text
+2d40393
+```
+
+Mensaje:
+
+```text
+S12 A3: definir fitness function de fronteras modulares
+```
+
+### Actividad 4 — evidencia de IA
+
+Commits:
+
+```text
+645702a
+72448c5
+```
+
+correspondientes a:
+
+```text
+preservación inicial de evidencia de IA
+completitud y trazabilidad del prompt original
+```
+
+### Actividad 4 — auditoría crítica
+
+Commit:
+
+```text
+8ebb2f4
+```
+
+Mensaje:
+
+```text
+S12 A4: registrar auditoria critica de propuesta IA
+```
+
+Una actualización documental posterior de este archivo no modifica el significado histórico de los commits anteriores.
 
 ---
 
@@ -1854,7 +2061,7 @@ ESTIMAR EL COSTO RELATIVO DE LAS ALTERNATIVAS DE DISTRIBUCIÓN
 ### Estado
 
 ```text
-PRIMERA VERSIÓN CONSOLIDADA
+ACTIVIDAD 1 COMPLETADA
 ```
 
 ### Alternativas
@@ -1893,6 +2100,23 @@ CONSTRUIDA
 5× unidades backend desplegables
 ```
 
+Esta relación corresponde exclusivamente a:
+
+```text
+1 unidad backend desplegable
+vs.
+5 unidades backend desplegables
+```
+
+No significa:
+
+```text
+5× costo económico
+5× esfuerzo
+5× mantenimiento
+5× complejidad total
+```
+
 ### Costos monetarios
 
 ```text
@@ -1917,32 +2141,98 @@ IDENTIFICADAS
 DOCUMENTADAS
 ```
 
-### Evaluación provisional
+### Evaluación de costos
 
 ```text
-REGISTRADA
+COMPLETADA
+```
+
+### Registro Git de A1
+
+```text
+99ed270
+S12 A1: registrar estimacion relativa de distribucion
 ```
 
 ### Decisión arquitectónica formal
 
 ```text
-PENDIENTE — ADR-004
+DOCUMENTADA EN ADR-004
+```
+
+Referencia:
+
+```text
+docs/adr/0004-redecision-distribucion.md
+```
+
+Commit:
+
+```text
+ca61951
 ```
 
 ### Fitness function de Semana 12
 
 ```text
-PENDIENTE
+DEFINIDA Y DOCUMENTADA
 ```
+
+Referencia:
+
+```text
+docs/semana12/fitness-function.md
+```
+
+Commit:
+
+```text
+2d40393
+```
+
+La definición metodológica está completa para Semana 12.
+
+La implementación y validación ejecutable de la nueva regla permanecen como trabajo posterior y no deben confundirse con el alcance completado de A3.
 
 ### Evaluación crítica de microservicios
 
 ```text
-PENDIENTE
+COMPLETADA Y REGISTRADA
+```
+
+Referencia:
+
+```text
+docs/semana12/uso-ia/auditoria-microservicios.md
+```
+
+Commit de registro:
+
+```text
+8ebb2f4
 ```
 
 ### Defensa del Comité 2
 
 ```text
+PENDIENTE — ACTIVIDAD 5
+```
+
+### Estado global relacionado
+
+```text
+A1 — COSTOS RELATIVOS:
+COMPLETADA
+
+A2 — ADR-004:
+DOCUMENTADA
+
+A3 — FITNESS FUNCTION:
+DEFINIDA Y DOCUMENTADA
+
+A4 — AUDITORÍA CRÍTICA DE IA:
+COMPLETADA Y REGISTRADA
+
+A5 — DEFENSA DEL COMITÉ 2:
 PENDIENTE
 ```

@@ -4,7 +4,7 @@
 
 Este documento define la fitness function arquitectónica correspondiente a la Actividad 3 de Semana 12.
 
-La fitness function tiene como propósito proteger una propiedad central de la arquitectura ratificada en ADR-004:
+La fitness function tiene como propósito proteger una propiedad central de la arquitectura documentada en ADR-004:
 
 > Las capacidades funcionales del monolito modular deben conservar fronteras explícitas y solo pueden depender de la API pública de otra capacidad.
 
@@ -1992,6 +1992,20 @@ La definición documental se considera completa porque ya se encuentran especifi
 
 La implementación no se considera completada hasta que exista evidencia ejecutable.
 
+Por tanto, debe distinguirse:
+
+```text
+ACTIVIDAD 3 — DEFINICIÓN:
+COMPLETADA
+```
+
+de:
+
+```text
+IMPLEMENTACIÓN Y VALIDACIÓN EJECUTABLE:
+PENDIENTES
+```
+
 ---
 
 ## 61. Plan de evidencia futura
@@ -2066,6 +2080,12 @@ docs/adr/0004-redecision-distribucion.md
 docs/semana12/costos-relativos-distribucion.md
 ```
 
+### Auditoría crítica de IA
+
+```text
+docs/semana12/uso-ia/auditoria-microservicios.md
+```
+
 ---
 
 ## 63. Trazabilidad de implementación existente
@@ -2088,25 +2108,105 @@ backend/src/test/kotlin/com/example/rachapro/backend/architecture/ModularArchite
 ./gradlew test --tests "com.example.rachapro.backend.architecture.ModularArchitectureTest" --no-daemon
 ```
 
+La existencia de esta suite y workflow demuestra que RachaPro ya dispone de un mecanismo de verificación arquitectónica.
+
+No demuestra todavía que la nueva regla definida en este documento haya sido incorporada y validada.
+
 ---
 
-## 64. Trazabilidad Git previa
+## 64. Trazabilidad Git
 
-Documento de costos de Semana 12:
+### Actividad 1 — Costos relativos
+
+Commit:
 
 ```text
 99ed270
 ```
 
-ADR-004:
+Mensaje:
+
+```text
+S12 A1: registrar estimacion relativa de distribucion
+```
+
+Documento:
+
+```text
+docs/semana12/costos-relativos-distribucion.md
+```
+
+---
+
+### Actividad 2 — ADR-004
+
+Commit:
 
 ```text
 ca61951
 ```
 
-La definición de esta fitness function será registrada mediante un commit posterior.
+Mensaje:
 
+```text
+S12 A2: registrar propuesta de redecision ADR-004
+```
+
+Documento:
+
+```text
+docs/adr/0004-redecision-distribucion.md
+```
+
+---
+
+### Actividad 3 — Fitness function
+
+Commit:
+
+```text
+2d40393
+```
+
+Mensaje:
+
+```text
+S12 A3: definir fitness function de fronteras modulares
+```
+
+Este commit registró la definición documental de la fitness function.
+
+Por tanto, ya no corresponde indicar:
+
+```text
+La definición de esta fitness function será registrada mediante un commit posterior.
+```
+
+ni:
+
+```text
 El hash exacto no se anticipa.
+```
+
+porque el commit ya fue creado y publicado.
+
+---
+
+### Actividad 4 — Auditoría crítica de IA
+
+La auditoría crítica quedó registrada posteriormente en:
+
+```text
+8ebb2f4
+```
+
+con el mensaje:
+
+```text
+S12 A4: registrar auditoria critica de propuesta IA
+```
+
+Este hecho no modifica el alcance de A3, pero forma parte del estado posterior de Semana 12.
 
 ---
 
@@ -2116,6 +2216,12 @@ El hash exacto no se anticipa.
 SEMANA 12
 ACTIVIDAD 3
 DEFINIR FITNESS FUNCTION
+```
+
+### Estado de la Actividad 3
+
+```text
+COMPLETADA EN EL ALCANCE DEFINIDO PARA SEMANA 12
 ```
 
 ### Propiedad
@@ -2169,12 +2275,15 @@ V = número de pares únicos de clases origen-destino
 prohibido
 ```
 
-### Baseline
+### Baseline esperado
 
 ```text
 V = 0 esperado
-PENDIENTE DE CERTIFICACIÓN MEDIANTE ARCHUNIT
 ```
+
+Este valor corresponde al baseline esperado según la inspección estructural realizada.
+
+No se presenta como baseline certificado mediante la nueva regla ArchUnit.
 
 ### Umbral
 
@@ -2220,13 +2329,60 @@ CON DEPENDENCIA ENTRE CAPACIDADES DIFERENTES
 CUYO DESTINO NO PERTENEZCA A .api..
 ```
 
-### Implementación de la nueva regla
+### Alcance completado en Semana 12
+
+```text
+PROPIEDAD:
+DEFINIDA
+
+REGLA:
+DEFINIDA
+
+UNIDAD:
+DEFINIDA
+
+MÉTRICA:
+DEFINIDA
+
+BASELINE ESPERADO:
+DEFINIDO
+
+UMBRAL:
+DEFINIDO
+
+CONDICIÓN DE ÉXITO:
+DEFINIDA
+
+CONDICIÓN DE FALLO:
+DEFINIDA
+
+INSTRUMENTO:
+DEFINIDO
+
+RELACIÓN CON CI:
+DEFINIDA
+
+CONDICIÓN QUE ROMPERÁ EL CI:
+DEFINIDA
+
+PLAN DE VALIDACIÓN:
+DEFINIDO
+```
+
+### Registro Git de la Actividad 3
+
+```text
+2d40393
+S12 A3: definir fitness function de fronteras modulares
+```
+
+### Implementación de la nueva regla ArchUnit
 
 ```text
 PENDIENTE
 ```
 
-### Baseline certificado
+### Baseline certificado mediante la nueva regla
 
 ```text
 PENDIENTE
@@ -2238,14 +2394,84 @@ PENDIENTE
 PENDIENTE
 ```
 
-### Validación en GitHub Actions
+### Validación específica en GitHub Actions
 
 ```text
 PENDIENTE
 ```
 
+### Interpretación de los pendientes
+
+Los elementos pendientes corresponden exclusivamente a:
+
+```text
+IMPLEMENTACIÓN EJECUTABLE
++
+VALIDACIÓN EXPERIMENTAL POSTERIOR
+```
+
+No representan una falta en el entregable documental de la Actividad 3 de Semana 12.
+
+El alcance solicitado para esta actividad quedó cubierto mediante la definición de:
+
+- propiedad arquitectónica;
+- capacidades evaluadas;
+- exclusión explícita de `shared`;
+- superficie pública;
+- regla;
+- unidad exacta de conteo;
+- métrica `V`;
+- baseline esperado;
+- umbral;
+- condición de éxito;
+- condición de fallo;
+- instrumento;
+- relación con CI;
+- condición exacta que deberá producir el fallo;
+- plan de implementación;
+- plan de validación.
+
 ### Estado documental
 
 ```text
-DEFINICIÓN COMPLETA PARA SEMANA 12
+ACTIVIDAD 3:
+COMPLETADA EN EL ALCANCE DEFINIDO PARA SEMANA 12
+
+DEFINICIÓN DOCUMENTAL:
+COMPLETA
+
+REGISTRO GIT:
+2d40393
+
+IMPLEMENTACIÓN DE LA NUEVA REGLA ARCHUNIT:
+PENDIENTE
+
+CERTIFICACIÓN DEL BASELINE:
+PENDIENTE
+
+ENSAYO PASS -> FAIL -> PASS:
+PENDIENTE
+
+VALIDACIÓN ESPECÍFICA EN GITHUB ACTIONS:
+PENDIENTE
 ```
+
+La distinción metodológica final es:
+
+```text
+DEFINIR LA FITNESS FUNCTION
+=
+ACTIVIDAD 3 COMPLETADA
+```
+
+mientras que:
+
+```text
+IMPLEMENTARLA Y VALIDARLA EJECUTABLEMENTE
+=
+TRABAJO POSTERIOR
+```
+
+Por tanto, la presencia de estados `PENDIENTE` asociados a ArchUnit y GitHub Actions no significa que la Actividad 3 esté incompleta.
+
+Significa que la **definición requerida para Semana 12 está cerrada**, mientras su instrumentación y validación experimental permanecen explícitamente separadas para una etapa posterior.
