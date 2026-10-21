@@ -389,7 +389,7 @@ Android mostró:
 
 Falso éxito observado:
 
-`NO`
+`NO OBSERVADO`
 
 Resultado funcional observado:
 
@@ -768,7 +768,7 @@ Android mostró:
 
 Falso éxito observado:
 
-`NO`
+`NO OBSERVADO`
 
 ---
 
@@ -1108,7 +1108,7 @@ Android mostró:
 
 Falso éxito observado:
 
-`NO`
+`NO OBSERVADO`
 
 ---
 
@@ -2129,7 +2129,7 @@ Android mostró:
 
 Falso éxito observado:
 
-`NO`
+`NO OBSERVADO`
 
 ---
 
@@ -3030,10 +3030,6 @@ Estado:
 Commit de prerregistro:
 
 `94dcc32`
-
-Commit BASE-R1:
-
-`b02c239`
 
 Commit provisional BASE-R2:
 
