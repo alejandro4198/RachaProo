@@ -2,7 +2,7 @@
 
 ## 1. Contexto y Principios de Evaluación
 
-Se evalúan de forma metodológica e independiente 5 tácticas de resiliencia en el cliente Android Retrofit para mitigar los efectos de la indisponibilidad temporal del backend (escenario F-01) y la degradación bajo concurrencia.
+Se evalúan de forma conceptual y metodológica 4 tácticas de resiliencia en el cliente Android Retrofit para mitigar los efectos de la indisponibilidad temporal del backend (escenario F-01) y la degradación bajo concurrencia.
 
 ---
 
@@ -14,33 +14,31 @@ Se evalúan de forma metodológica e independiente 5 tácticas de resiliencia en
   - Si un reintento automático ocurre tras un timeout de red donde el backend sí procesó la solicitud original, se crearía una **actividad duplicada en la base de datos**.
 
 - **Conclusión de Seguridad**:
-  `RETRY AUTOMÁTICO EN POST: NO SEGURO SIN CONTROL ADICIONAL` (Solo seguro para lecturas idempotentes `GET /api/activities`).
+  `RETRY AUTOMÁTICO EN POST: NO SEGURO SIN CONTROL DE IDEMPOTENCIA` (Solo seguro para lecturas idempotentes `GET /api/activities`).
 
 ---
 
 ## 3. Táctica 2: Circuit Breaker
 
-- **Propósito**: Detener el envío de peticiones hacia el backend cuando detecta una tasa de fallos consecutiva (p. ej., 5 errores de conexión seguidos), entrando en estado `OPEN`.
-- **Métricas Evaluadas**:
-  - **Tiempo hasta fallo**: Inmediato ($< 1\text{ ms}$) mientras el circuito esté `OPEN`, evitando esperar el `connectTimeout = 3s` de Retrofit.
-  - **Solicitudes evitadas**: Se evitan $100\%$ de las llamadas de red inútiles durante la indisponibilidad (escenario F-01).
-  - **Recuperación**: Pasa a estado `HALF-OPEN` tras un tiempo de enfriamiento (p. ej., 15s) para probar la salud del backend.
-- **Conclusión**: Táctica de resiliencia altamente efectiva para evitar la saturación del cliente durante cortes del servidor.
+- **Propósito Propuesto**: Detener el envío de peticiones hacia el backend cuando detecte fallos consecutivos de red, pasando a estado `OPEN`.
+- **Evaluación Conceptual**:
+  - **Comportamiento `OPEN`**: Fallo inmediato sin agotar el `connectTimeout = 3s` de Retrofit.
+  - **Solicitudes evitadas**: Evita desperdiciar recursos del cliente durante la indisponibilidad (escenario F-01).
+- **Conclusión**: `PROPUESTO` como mecanismo de protección en el cliente.
 
 ---
 
 ## 4. Táctica 3: Bulkhead (Aislamiento de Recursos)
 
-- **Propósito**: Limitar el número de peticiones concurrentes salientes en el cliente Android (p. ej., máximo 5 llamadas activas en el pool de OkHttp).
-- **Evaluación**: El cliente Android OkHttp ya limita por defecto las conexiones concurrentes por host (`maxRequestsPerHost = 5`).
-- **Conclusión**: El aislamiento ya está garantizado por la pila OkHttp; no requiere complejidad adicional.
+- **Propósito**: Limitar el número de peticiones concurrentes salientes en OkHttp.
+- **Evaluación**: OkHttp limita por defecto la concurrencia a nivel de host.
+- **Conclusión**: `NO JUSTIFICADO ACTUALMENTE` como desarrollo adicional por existir manejo nativo en la pila OkHttp.
 
 ---
 
-## 5. Táctica 4: Fallback con Persistencia Local (Room)
+## 5. Táctica 4: Fallback en Cliente
 
-- **Propósito**: Mantener la operatividad de la UI mediante lectura del almacenamiento local (Room / DataStore) cuando el backend no responde.
 - **Garantía de Consistencia**:
-  - En lecturas (`GET`): Se presenta el último estado conocido guardado en la base de datos local Room.
-  - En escrituras (`POST`): No se simula éxito remoto ficticio; se marca la actividad como `PENDING_SYNC` en Room para sincronización posterior cuando se restaure la conectividad.
-- **Conclusión**: Táctica recomendada para preservar la consistencia y la experiencia de usuario sin inventar datos.
+  - **Lecturas (`GET`)**: Muestra del último estado guardado en Room (`IMPLEMENTADO` en la app Android).
+  - **Escrituras (`POST`)**: No se simula éxito remoto falso. La sincronización local diferida mediante cola en Room se clasifica como `PROPUESTO` hasta su implementación y prueba formal.
+- **Conclusión**: Se mantiene la UI informando al usuario del fallo sin alterar la consistencia remota.
