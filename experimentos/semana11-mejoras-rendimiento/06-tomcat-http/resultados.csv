@@ -1,0 +1,4 @@
+﻿"run","p95_ms","throughput_req_s","requests","error_rate","active_requests_avg","active_requests_max","jvm_threads_max","status"
+"R1","111,61","47,2","14664","0","0","0","24","VALIDA"
+"R2","1134,3","1,97","452","0","0","0","172","VALIDA"
+"R3","296,23","45,44","14353","0","0","0","24","VALIDA"
