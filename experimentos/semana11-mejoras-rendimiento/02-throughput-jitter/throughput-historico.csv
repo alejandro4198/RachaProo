@@ -1,0 +1,2 @@
+VU,run,source,http_reqs,start_time,end_time,duration_seconds,throughput_req_s,status
+1000,R1,experimentos\semana11-crecimiento-post-activities\evidencia\oficial\S11-VU1000-R1\muestras.json,32452,2026-10-15T15:35:52.9969995-05:00,2026-10-15T15:36:53.0208355-05:00,60.023836,540.651884,WARMUP

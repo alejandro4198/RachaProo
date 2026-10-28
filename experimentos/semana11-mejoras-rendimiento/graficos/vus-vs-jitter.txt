@@ -1,0 +1,1 @@
+JITTER: ANÁLISIS SECUNDARIO POST HOC - calculado solo si existen R2,R3,R4 para todos los niveles; no verificado completamente desde muestras.json
