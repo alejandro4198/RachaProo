@@ -2,9 +2,9 @@ param(
     [string]$OutputDir,
     [int]$IntervalSeconds = 5,
     [int]$DurationSeconds = 120,
-    [string]$ContainerName = "rachapro-postgres-s11",
-    [string]$DbName = "rachapro_perf_s11",
-    [string]$DbUser = "postgres"
+    [string]$ContainerName = "rachapro-postgres",
+    [string]$DbName = "rachapro_db",
+    [string]$DbUser = "rachapro_user"
 )
 
 $ErrorActionPreference = "SilentlyContinue"
@@ -20,7 +20,6 @@ $outFile = Join-Path $OutputDir ("postgres-capture-{0}.csv" -f (Get-Date -Format
 $end = (Get-Date).AddSeconds($DurationSeconds)
 while ((Get-Date) -lt $end) {
     $ts = (Get-Date).ToString("o")
-    # pg_stat_activity
     try {
         $sql1 = "SELECT count(*) as active FROM pg_stat_activity WHERE state = 'active';"
         $res1 = docker exec -i $ContainerName psql -U $DbUser -d $DbName -t -A -c $sql1 2>&1
