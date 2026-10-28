@@ -2,44 +2,45 @@
 
 ## 1. Identificación y Resumen
 
-Este documento registra los resultados de las 18 corridas experimentales ejecutadas variando el parámetro `maximumPoolSize` en niveles de 10, 20 y 30, bajo cargas de 50 VUs y 250 VUs sobre `POST /api/activities`.
+Este documento registra los resultados consolidados de las corridas experimentales ejecutadas variando el parámetro `maximumPoolSize` (niveles 10, 20 y 30) bajo cargas de 50 VUs y 250 VUs sobre `POST /api/activities`. Las corridas R1 se trataron como calentamiento y se excluyeron del cálculo representativo (se usó la media aritmética entre R2 y R3: $\text{Resumen} = \frac{R_2 + R_3}{2}$).
 
 ---
 
-## 2. Consolidado de Resultados Experimentales
+## 2. Consolidado de Resultados (Excluyendo Warmup R1)
 
-| Pool Size | VUs | Run | Tipo | P95 (ms) | Throughput (req/s) | Hikari Active Max | Hikari Pending Max |
-| :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **10** | **50** | VU50-R1 | WARMUP | 327.21 | 21.04 | 10 | 15 |
-| **10** | **50** | VU50-R2 | MEDICIÓNS | 284.61 | 20.04 | 10 | 21 |
-| **10** | **50** | VU50-R3 | MEDICIÓN | 224.76 | 20.76 | 10 | 33 |
-| **10** | **250** | VU250-R1 | WARMUP | 1847.73 | 1.28 | 1 | 0 |
-| **10** | **250** | VU250-R2 | MEDICIÓN | 327.28 | 34.10 | 1 | 0 |
-| **10** | **250** | VU250-R3 | MEDICIÓN | 1653.66 | 1.38 | 1 | 0 |
-| **20** | **50** | VU50-R1 | WARMUP | 158.69 | 20.93 | 20 | 3 |
-| **20** | **50** | VU50-R2 | MEDICIÓN | 198.96 | 21.50 | 20 | 16 |
-| **20** | **50** | VU50-R3 | MEDICIÓN | 175.96 | 21.24 | 20 | 27 |
-| **20** | **250** | VU250-R1 | WARMUP | 1536.61 | 1.29 | 0 | 0 |
-| **20** | **250** | VU250-R2 | MEDICIÓN | 375.81 | 32.11 | 1 | 0 |
-| **20** | **250** | VU250-R3 | MEDICIÓN | 1274.41 | 1.79 | 1 | 0 |
-| **30** | **50** | VU50-R1 | WARMUP | 84.06 | 26.04 | 17 | 0 |
-| **30** | **50** | VU50-R2 | MEDICIÓN | 72.40 | 25.97 | 20 | 0 |
-| **30** | **50** | VU50-R3 | MEDICIÓN | 145.04 | 25.13 | 30 | 15 |
-| **30** | **250** | VU250-R1 | WARMUP | 1187.34 | 1.90 | 1 | 0 |
-| **30** | **250** | VU250-R2 | MEDICIÓN | 444.14 | 44.75 | 1 | 0 |
-| **30** | **500** | VU250-R3 | MEDICIÓN | 1158.83 | 1.94 | 1 | 0 |
+| Pool Size | VUs | Run R2 P95 (ms) | Run R3 P95 (ms) | Resumen P95 (ms) | Resumen Throughput (req/s) | Hikari Pending Max (R2/R3) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **10** | **50** | 284.61 | 224.76 | **254.69** | **20.40** | 21 / 33 |
+| **20** | **50** | 198.96 | 175.96 | **187.46** | **21.37** | 16 / 27 |
+| **30** | **50** | 72.40 | 145.04 | **108.72** | **25.55** | 0 / 15 |
+| **10** | **250** | 327.28 | 1653.66 | **990.47** | **17.74** | 0 / 0 |
+| **20** | **250** | 375.81 | 1274.41 | **825.11** | **16.95** | 0 / 0 |
+| **30** | **250** | 444.14 | 1158.83 | **801.49** | **23.35** | 0 / 0 |
 
 ---
 
-## 3. Análisis Causal
+## 3. Análisis de Mejora Relativa a 50 VUs
 
-1. **A 50 VUs**: Al incrementar el tamaño del pool de 10 a 30, la latencia P95 mejora sustancialmente (de ~224–327 ms en Pool 10 a ~72–145 ms en Pool 30) y las conexiones pendientes (`pending`) se reducen o eliminan en R1/R2, demostrando que la escasez de conexiones del pool original de 10 contribuía a la congestión.
-2. **A 250 VUs**: La variabilidad temporal y el comportamiento del pool evidencian que, si bien la ampliación del pool reduce la contención local a niveles moderados de concurrencia, en 250 VUs intervienen factores adicionales de encolamiento de red y conector HTTP que impiden una mitigación lineal total.
+- **Pool 10 → Pool 20**:
+  - Reducción de P95: $\sim 26.3\%$ ($254.69\text{ ms} \rightarrow 187.46\text{ ms}$).
+  - Mejora de Throughput: $\sim 4.8\%$ ($20.40 \rightarrow 21.37\text{ req/s}$).
+- **Pool 20 → Pool 30**:
+  - Reducción de P95: $\sim 42.0\%$ ($187.46\text{ ms} \rightarrow 108.72\text{ ms}$).
+  - Mejora de Throughput: $\sim 19.6\%$ ($21.37 \rightarrow 25.55\text{ req/s}$).
+- **Pool 10 → Pool 30 (Impacto Total)**:
+  - Reducción de P95: $\sim 57.3\%$ ($254.69\text{ ms} \rightarrow 108.72\text{ ms}$).
+  - Mejora de Throughput: $\sim 25.2\%$ ($20.40 \rightarrow 25.55\text{ req/s}$).
 
 ---
 
-## 4. Conclusión Causal
+## 4. Análisis a 250 VUs (Variabilidad y Segundo Factor)
 
-`CAUSA CONTRIBUYENTE DEMOSTRADA: POOL SIZE DE HIKARICP`
+A 250 VUs, la discrepancia entre R2 y R3 (p. ej., P95 de 327.28 ms en R2 vs. 1653.66 ms en R3) demuestra una alta variabilidad temporal que no se explica exclusivamente por el tamaño del pool Hikari (cuyas conexiones pendientes se mantuvieron en 0). Esto confirma que a 250 VUs opera un **segundo factor o cuello de botella independiente** (asociado a colas de red, conector Tomcat o concurrencia del cliente k6).
 
-**Dictamen**: Ampliar `maximumPoolSize` de HikariCP a 20 o 30 reduce las esperas en cola (`pending`) y mejora el P95 a 50 VUs, confirmando que el pool por defecto de 10 conexiones constituía un cuello de botella contributivo bajo concurrencia moderada.
+---
+
+## 5. Conclusiones Metodológicas
+
+1. **HikariCP**: `CAUSA CONTRIBUYENTE DEMOSTRADA A 50 VUs` (Se demostró empíricamente que expandir el pool mitiga la congestión de conexiones pendientes y reduce el P95).
+2. **Pool 30**: `MEJOR CONFIGURACIÓN OBSERVADA ENTRE 10/20/30` (Ofrece el mejor compromiso experimental para 50 VUs, sin representar una optimización universal definitiva).
+3. **250 VUs**: `SEGUNDO FACTOR / CAUSA AÚN NO AISLADA` (La variabilidad en alta carga requiere análisis adicional de colas de red/Tomcat).

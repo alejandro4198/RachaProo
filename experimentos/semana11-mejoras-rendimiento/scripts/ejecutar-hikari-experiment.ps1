@@ -26,16 +26,24 @@ foreach ($pool in $pools) {
     Write-Host "INICIANDO EXPERIMENTO CON POOL SIZE: $pool"
     Write-Host "=========================================="
 
-    # 1. Stop existing backend
-    Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 3
+    # 1. Stop existing backend listening on port 8080 precisely
+    $conn = Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue
+    if ($conn) {
+        $pidToStop = $conn.OwningProcess
+        Write-Host "Deteniendo proceso backend PID $pidToStop en puerto 8080..."
+        Stop-Process -Id $pidToStop -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 3
+    }
 
     # 2. Start backend with new pool size
     $env:JAVA_HOME = "C:\Program Files\Android\Android Studio1\jbr"
     $env:Path = "$env:JAVA_HOME\bin;$env:Path"
     $env:RACHAPRO_DB_URL = "jdbc:postgresql://127.0.0.1:5433/rachapro_perf_s11"
     $env:RACHAPRO_DB_USER = "rachapro_user_s11"
-    $env:RACHAPRO_DB_PASSWORD = "123456789"
+    $env:RACHAPRO_DB_PASSWORD = $env:RACHAPRO_DB_PASSWORD # loaded from session environment
+    if (-not $env:RACHAPRO_DB_PASSWORD) {
+        $env:RACHAPRO_DB_PASSWORD = "123456789" # fallback to experiment env default if not set
+    }
     $env:RACHAPRO_HIKARI_MAX_POOL_SIZE = "$pool"
 
     $jwtLine = Get-Content (Join-Path $raizRepo "backend\.env") | Where-Object { $_ -match '^RACHAPRO_JWT_SECRET=' }
@@ -120,11 +128,11 @@ foreach ($pool in $pools) {
         }
     }
 
-    # Stop backend after pool campaign
-    if ($backendJob -and -not $backendJob.HasExited) {
-        Stop-Process -Id $backendJob.Id -Force -ErrorAction SilentlyContinue
+    # Stop backend after pool campaign using precise port 8080 lookup
+    $connStop = Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue
+    if ($connStop) {
+        Stop-Process -Id $connStop.OwningProcess -Force -ErrorAction SilentlyContinue
     }
-    Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
     Start-Sleep -Seconds 5
 }
 
