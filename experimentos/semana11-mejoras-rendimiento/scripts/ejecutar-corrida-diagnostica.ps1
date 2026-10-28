@@ -18,7 +18,7 @@ $ErrorActionPreference = "Stop"
 
 $raizRepo = (Resolve-Path (Join-Path $PSScriptRoot "..\..\..")).Path
 $expRaiz = Join-Path $PSScriptRoot ".."
-$evidBase = Join-Path $expRaiz "01-diagnostico-concurrencia\evidencia"
+$evidBase = Join-Path $expRaiz "01-diagnostico-concurrencia\evidencia-instrumentada"
 $k6Script = Join-Path $raizRepo "experimentos\semana11-crecimiento-post-activities\scripts\crecimiento-post-activities.js"
 $restaurar = Join-Path $raizRepo "experimentos\semana11-crecimiento-post-activities\scripts\restaurar-semilla.ps1"
 $capHost = Join-Path $PSScriptRoot "capturar-host.ps1"
@@ -36,8 +36,8 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
 $inicio = (Get-Date).ToString("o")
 $commit = (git -C $raizRepo rev-parse HEAD).Trim()
-$javaVer = (java -version 2>&1 | Select-Object -First 1).ToString()
-$k6Ver = (k6 version 2>&1 | Select-Object -First 1).ToString()
+try { $javaVer = (java -version 2>&1 | Select-Object -First 1).ToString() } catch { $javaVer = $env:JAVA_HOME }
+try { $k6Ver = (k6 version 2>&1 | Select-Object -First 1).ToString() } catch { $k6Ver = "unknown" }
 
 # start captures
 $hostOut = Join-Path $outDir "host.csv"
@@ -68,7 +68,7 @@ $k6Json = Join-Path $outDir "muestras.json"
 $k6Summary = Join-Path $outDir "resumen.json"
 
 $codigoSalida = -1
-if ($Run -ne 1 -and $LoadTestPassword) {
+if ($LoadTestPassword) {
     $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($LoadTestPassword)
     try {
         $env:TEST_PASSWORD = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
