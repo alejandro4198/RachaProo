@@ -3,7 +3,7 @@
 - **Estatus**: `PROPUESTO`
 - **Fecha**: 2026-10-27
 - **Autores**: Equipo RachaPro (Propuesta Técnica)
-- **Decisores**: Pendiente de revisión por el Comité de Arquitectura
+- **Decisión**: `PROPUESTA DEL EQUIPO — pendiente de validación`
 - **Estado de Decisiones Previas**: `VEREDICTO DEL COMITÉ 2: PENDIENTE POR APLAZAMIENTO` (Manteniendo el Monolito Modular como arquitectura base operativa).
 
 ---

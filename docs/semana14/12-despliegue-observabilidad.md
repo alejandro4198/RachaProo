@@ -202,4 +202,4 @@ La propuesta conceptual de despliegue y observabilidad no introduce dependencias
 
 ## 18. Estado del Entregable
 
-`PROPUESTA COMPLETADA Y VERIFICADA`
+`PROPUESTA DOCUMENTADA`

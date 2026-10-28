@@ -1,4 +1,4 @@
-# Módulo 7 — Semana 13: Modelo de Amenazas y Seguridad Integral RachaPro
+git diff --check# Módulo 7 — Semana 13: Modelo de Amenazas y Seguridad Integral RachaPro
 
 ## 1. Objetivo
 
@@ -171,4 +171,4 @@ Criterio cualitativo utilizado:
 
 ## 17. Estado del Entregable
 
-`COMPLETADO Y VERIFICADO`
+`COMPLETADO — ANÁLISIS ESTÁTICO`
