@@ -2,18 +2,14 @@
 
 ## 1. Objetivo
 
-Demostrar de forma ejecutable la efectividad de la Fitness Function en ArchUnit (`ModularArchitectureTest.kt`) y su ejecución en la integración continua (GitHub Actions), garantizando la propiedad arquitectónica del Monolito Modular:
+Demostrar de forma ejecutable la efectividad de las reglas de arquitectura **EXISTENTES** en ArchUnit (`ModularArchitectureTest.kt`) y su ejecución en la integración continua (GitHub Actions), sometiendo la suite actual a la secuencia `PASS → FAIL → PASS` para validar la protección del Monolito Modular:
 > Ninguna capacidad funcional o módulo compartido puede depender directamente de las implementaciones internas de otra capacidad; el acoplamiento está restringido exclusivamente a las APIs públicas (`.api..`).
 
-## 2. Regla Métrica Evaluada
-
-Se evalúa la métrica $V$, definida como el número de pares de clases que violan las fronteras modulares:
-- **Estado PASS**: $V = 0$ (Cero violaciones detectadas, compilación exitosa).
-- **Estado FAIL**: $V \ge 1$ (Al menos una violación detectada, compilación abortada con error).
+Nota: Las reglas de ArchUnit probadas ya existían previamente en `ModularArchitectureTest.kt`; no se modificó ni creó código nuevo en el archivo de prueba.
 
 ---
 
-## 3. Procedimiento de Prueba Realizado
+## 2. Procedimiento de Prueba Realizado
 
 ### Paso 1: Ejecución Estado Limpio (PASS Inicial)
 - **Comando**:
@@ -22,7 +18,7 @@ Se evalúa la métrica $V$, definida como el número de pares de clases que viol
   cd backend
   .\gradlew.bat test --tests "com.example.rachapro.backend.architecture.ModularArchitectureTest" --no-daemon
   ```
-- **Resultado**: `BUILD SUCCESSFUL` ($V = 0$, 9 pruebas de ArchUnit aprobadas).
+- **Resultado**: `BUILD SUCCESSFUL` (0 violaciones, 9 pruebas de ArchUnit aprobadas exitosamente).
 - **Evidencia**: [`evidencia/pass-before.txt`](file:///C:/Users/Lenovo/AndroidStudioProjects/RachaPro/experimentos/semana14-fitness-function/evidencia/pass-before.txt)
 
 ### Paso 2: Inyección de Violación Modular Controlada (FAIL)
@@ -37,8 +33,8 @@ Se evalúa la métrica $V$, definida como el número de pares de clases que viol
   cd backend
   .\gradlew.bat test --tests "com.example.rachapro.backend.architecture.ModularArchitectureTest" --no-daemon
   ```
-- **Resultado**: `BUILD FAILED` ($V = 3$ violaciones detectadas por ArchUnit).
-  - Reglas violadas:
+- **Resultado**: `BUILD FAILED` (se detectaron fallos en 3 reglas de ArchUnit al introducir la dependencia prohibida).
+  - Reglas de ArchUnit que fallaron:
     1. `shared does not depend on business modules` FAILED
     2. `activities internals are isolated` FAILED
     3. `modules are free of dependency cycles` FAILED
@@ -52,11 +48,11 @@ Se evalúa la métrica $V$, definida como el número de pares de clases que viol
   cd backend
   .\gradlew.bat test --tests "com.example.rachapro.backend.architecture.ModularArchitectureTest" --no-daemon
   ```
-- **Resultado**: `BUILD SUCCESSFUL` ($V = 0$, 9/9 pruebas pasadas exitosamente).
+- **Resultado**: `BUILD SUCCESSFUL` (9/9 pruebas de ArchUnit pasadas exitosamente).
 - **Evidencia**: [`evidencia/pass-after.txt`](file:///C:/Users/Lenovo/AndroidStudioProjects/RachaPro/experimentos/semana14-fitness-function/evidencia/pass-after.txt)
 
 ---
 
-## 4. Trazabilidad en CI/CD
+## 3. Trazabilidad en CI/CD
 
-El workflow de GitHub Actions [`backend-architecture.yml`](file:///C:/Users/Lenovo/AndroidStudioProjects/RachaPro/.github/workflows/backend-architecture.yml) ejecuta de forma automatizada este mismo comando en cada Push y Pull Request sobre `master`. Si cualquier desarrollador introduce una dependencia directa entre módulos en el futuro, la suite fallará automáticamente en el runner de CI ($V \ge 1$), bloqueando el merge del PR.
+El workflow existente de GitHub Actions [`backend-architecture.yml`](file:///C:/Users/Lenovo/AndroidStudioProjects/RachaPro/.github/workflows/backend-architecture.yml) ejecuta de forma automatizada este mismo comando en cada Push y Pull Request sobre `master`. Si cualquier desarrollador introduce una dependencia directa prohibida entre módulos en el futuro, la suite fallará automáticamente en el runner de CI, bloqueando el merge del PR.

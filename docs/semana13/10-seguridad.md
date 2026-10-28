@@ -2,7 +2,7 @@
 
 ## 1. Objetivo
 
-Realizar el análisis integral de seguridad y modelado de amenazas sobre la arquitectura real de RachaPro (Android + Spring Boot Monolito Modular + PostgreSQL), evaluando el sistema frente al estándar OWASP Top 10, definiendo límites de confianza, identificando controles existentes y faltantes, y documentando el riesgo residual del sistema.
+Realizar el análisis integral de seguridad y modelado de amenazas sobre la arquitectura real de RachaPro (Android + Spring Boot Monolito Modular + PostgreSQL), evaluando el sistema frente al estándar OWASP Top 10, definiendo límites de confianza, identificando controles existentes y propuestos, y documentando el riesgo residual del sistema.
 
 ---
 
@@ -57,50 +57,50 @@ Se identifican 4 fronteras de confianza inter-componente:
 [ Base de Datos PostgreSQL (JDBC Driver) ]
 ```
 
-| Frontera | Activo en Tránsito | Entrada | Amenaza Principal | Control Existente | Control Faltante |
+| Frontera | Activo en Tránsito | Entrada | Amenaza Principal | Control Existente | Control Propuesto / Faltante |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **TB1 (Usuario → Android)** | Formulario Login / Token | Interfaz de Usuario | Intercepción de pantalla / Keylogging | Teclado OS estándar | Pinning o comprobación de integridad |
-| **TB2 (Android → Backend)** | JWT Bearer, Credenciales | HTTP Requests / REST API | Eavesdropping / Man-in-the-Middle (MitM) | `connectTimeout = 3s` | TLS/HTTPS y SSL Pinning (`usesCleartextTraffic="false"`) |
-| **TB3 (Backend → DB)** | Consultas SQL / Parámetros | JDBC Driver PostgreSQL | Exposición de credenciales DB / SQLi | Spring Data JPA (Prepared Statements) | Cifrado en reposo y conexiones TLS en JDBC |
-| **TB4 (CI/CD / Pipeline)** | Código Fuente / Artifacts | GitHub Actions Runner | Inyección de dependencias / Fuga de Secretos | ArchUnit / runner aislado | Escaneo SAST/Dependency Check |
+| **TB1 (Usuario → Android)** | Formulario Login / Token | Interfaz de Usuario | Intercepción de pantalla / Keylogging | Teclado OS estándar | Validaciones de integridad local |
+| **TB2 (Android → Backend)** | JWT Bearer, Credenciales | HTTP Requests / REST API | Eavesdropping / Man-in-the-Middle (MitM) | `connectTimeout = 3s` | Migración a TLS/HTTPS y `usesCleartextTraffic="false"` |
+| **TB3 (Backend → DB)** | Consultas SQL / Parámetros | JDBC Driver PostgreSQL | Exposición de credenciales DB / SQLi | Spring Data JPA (Prepared Statements) | Conexiones cifradas JDBC en producción |
+| **TB4 (CI/CD / Pipeline)** | Código Fuente / Artifacts | GitHub Actions Runner | Inyección de dependencias / Fuga de Secretos | ArchUnit / runner aislado | Escaneo de vulnerabilidades en dependencias |
 
 ---
 
 ## 6. Método de Análisis
 
 Se aplicó el framework cualitativo de modelado de amenazas y auditoría de seguridad:
-1. **Inspección Código Fuente y Configuración**: Revisión exhaustiva de controladores, `SecurityConfig`, `JwtService`, `PasswordHasher`, `AndroidManifest.xml` y `RetrofitClient.kt`.
+1. **Inspección Código Fuente y Configuración**: Revisión de controladores, `SecurityConfig`, `JwtService`, `PasswordHasher`, `AndroidManifest.xml` y `RetrofitClient.kt`.
 2. **Contrastación OWASP Top 10 (v2021)**: Evaluación ítem por ítem clasificando la aplicabilidad según evidencia verificada.
-3. **Ponderación Cualitativa de Riesgo**: Matriz de riesgo combinando **Impacto** (Alto, Medio, Bajo) y **Factibilidad** (Alta, Media, Baja), descartando amenazas teóricas o no aplicables a RachaPro.
+3. **Ponderación Cualitativa de Riesgo**: Matriz de riesgo combinando **Impacto** (Alto, Medio, Bajo) y **Factibilidad** (Alta, Media, Baja), descartando amenazas no relacionadas con RachaPro.
 
 ---
 
 ## 7. OWASP Top 10 Contrastado contra RachaPro
 
-| OWASP Category | Estado | Evidencia en RachaPro | Riesgo Observado | Control Existente | Acción / Control Faltante |
+| OWASP Category | Estado | Evidencia en RachaPro | Riesgo Observado | Control Existente | Acción / Control Propuesto |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **A01:2021 - Broken Access Control** | `APLICA PARCIALMENTE` | `SecurityConfig.kt` aísla endpoints públicos (`/api/users`, `/api/auth/login`) y exige JWT en `/api/**`. En controladores como `ActivityController`, las operaciones se filtran por el `userId` extraído del JWT. | **MEDIO**: Si un controlador no valida pertenencia de recurso al `userId` del JWT, podría ocurrir BOLA/IDOR. | Exigencia global de JWT y verificación en controladores. | Pruebas unitarias de autorización IDOR/BOLA explícitas por endpoint. |
-| **A02:2021 - Cryptographic Failures** | `APLICA` | Android usa `android:usesCleartextTraffic="true"` y Retrofit apunta a `http://192.168.1.20:8080/`. En backend se usa PBKDF2 para contraseñas y HS256 para JWT. | **ALTO**: Tráfico HTTP en texto plano vulnerable a sniffing en la red local/Wi-Fi. | PBKDF2 (210k iteraciones), JWT firmados HS256. | Migración obligatoria a HTTPS/TLS en cliente y servidor. |
-| **A03:2021 - Injection** | `NO APLICA` | Todos los módulos usan Spring Data JPA Repositories con mapeo objeto-relacional y consultas parametrizadas. | **BAJO**: Prevenido por diseño a nivel de framework ORM. | JPA Prepared Statements en repositorios Spring Data. | Mantener prohibición de consultas SQL nativas concatenadas. |
-| **A04:2021 - Insecure Design** | `APLICA PARCIALMENTE` | Arquitectura Monolito Modular bien delimitada con ArchUnit (`ModularArchitectureTest.kt`). Sin embargo, el token JWT no soporta lista de revocación (blacklisting) antes de su expiración (1 hora). | **MEDIO**: Un token robado sigue siendo válido hasta expirar. | Firma simétrica HS256 y expiración a 1 hora. | Implementación opcional de lista de revocación o tokens de vida más corta. |
-| **A05:2021 - Security Misconfiguration** | `APLICA PARCIALMENTE` | `/actuator/health` expuesto con `show-details=always`. `application.properties` no expone contraseñas hardcoded sino variables de entorno. | **BAJO**: Exposición leve de detalles de salud en Actuator. | Carga de secretos mediante variables de entorno (`RACHAPRO_DB_*`). | Restringir `show-details` en Actuator para entornos no locales. |
-| **A06:2021 - Vulnerable/Outdated Components** | `NO VERIFICADO` | Proyecto sobre Java 25 y Spring Boot 3.4.x / Kotlin 2.1.0. | **BAJO**: Dependencias modernas de ecosistema Spring Boot. | Uso de versiones recientes en Gradle. | Integrar motor de auditoría de dependencias (OWASP Dependency-Check) en CI. |
-| **A07:2021 - Identification & Auth Failures** | `APLICA PARCIALMENTE` | Login valida usuario/hash con `PasswordHasher.verify` en tiempo constante (`MessageDigest.isEqual`). No hay política de bloqueo ante intentos fallidos reiterados (rate limiting). | **MEDIO**: Vulnerable a ataques de fuerza bruta en `/api/auth/login`. | PBKDF2 (210k iteraciones), timing-attack resistant. | Rate-limiting o Bucket4j/Resilience4j en `/api/auth/login`. |
-| **A08:2021 - Software & Data Integrity Failures** | `NO APLICA` | Pipelines CI construyen directamente artefactos verificados desde GitHub Actions. | **BAJO**: Sin carga de código dinámico ni deserialización insegura. | Gradle Wrapper oficial en CI/CD. | Mantener hashes de wrappers verificados. |
-| **A09:2021 - Security Logging & Failures** | `APLICA PARCIALMENTE` | `GlobalExceptionHandler.kt` sanitiza respuestas para `IllegalArgumentException` y `ConflictException`. `HttpLoggingInterceptor` en Android usa nivel `BASIC`. | **BAJO**: Logs sanitizados sin volcado de credenciales/JWT. | Exceptions formateadas en `ApiError` estructurado. | Configurar registro estructurado de auditoría para eventos de login/fallos. |
-| **A10:2021 - Server-Side Request Forgery (SSRF)** | `NO APLICA` | El backend no realiza peticiones HTTP salientes basadas en URLs provistas por el usuario. | **NINGUNO**: Sin vectores de llamada saliente dinámica. | N/A | N/A |
+| **A01:2021 - Broken Access Control** | `APLICA PARCIALMENTE` | `SecurityConfig.kt` aísla endpoints públicos (`/api/users`, `/api/auth/login`) y exige JWT en `/api/**`. En controladores como `ActivityController`, las operaciones se filtran por el `userId` del JWT. | **MEDIO**: Riesgo de BOLA/IDOR si un controlador omitiera validar la pertenencia del recurso. | Exigencia global de JWT y verificación en controladores. | Pruebas unitarias de autorización IDOR/BOLA explícitas. |
+| **A02:2021 - Cryptographic Failures** | `APLICA` | Android usa `android:usesCleartextTraffic="true"` y Retrofit apunta a `http://192.168.1.20:8080/`. En backend se usa PBKDF2 y HS256. | **ALTO**: Tráfico HTTP en texto plano susceptible de intercepción en red local. | PBKDF2 (210k iteraciones), JWT firmados HS256. | Configuración propuesta de HTTPS/TLS en cliente y servidor. |
+| **A03:2021 - Injection** | `APLICA PARCIALMENTE` | Uso de Spring Data JPA Repositories con mapeo objeto-relacional y consultas parametrizadas. | **BAJO**: Mitigado a nivel de ORM JPA; requiere mantener vigilancia sobre consultas nativas. | JPA Prepared Statements en repositorios Spring Data. | Prohibición estricta de SQL dinámico concatenado. |
+| **A04:2021 - Insecure Design** | `APLICA PARCIALMENTE` | Monolito Modular delimitado con ArchUnit (`ModularArchitectureTest.kt`). Token JWT no soporta lista de revocación inmediata. | **MEDIO**: Un token comprometido permanece válido durante su tiempo de expiración (1 hora). | Firma HS256 y expiración a 1 hora. | Reducción propuesta de TTL del token e integración de listas de revocación. |
+| **A05:2021 - Security Misconfiguration** | `APLICA PARCIALMENTE` | `/actuator/health` expuesto con `show-details=always`. `application.properties` carga credenciales mediante variables de entorno. | **BAJO**: Exposición leve de detalles de salud en Actuator. | Secretos cargados vía variables de entorno (`RACHAPRO_DB_*`). | Restringir `show-details` en entornos no locales. |
+| **A06:2021 - Vulnerable/Outdated Components** | `NO VERIFICADO` | Uso de Java 25, Spring Boot 3.4.x y Kotlin 2.1.0 en Gradle. | **PENDIENTE**: Requiere escaneo automatizado de dependencias. | Uso de versiones recientes en Gradle. | Integrar motor de escaneo de dependencias en CI. |
+| **A07:2021 - Identification & Auth Failures** | `APLICA PARCIALMENTE` | Login valida usuario/hash con `PasswordHasher.verify` en tiempo constante (`MessageDigest.isEqual`). Sin rate limiting verificado en `/api/auth/login`. | **MEDIO**: Posibilidad de intentos repetidos sobre el endpoint de login. | PBKDF2 (210k iteraciones), comparación resistente a timing-attacks. | Rate-limiting propuesto para `/api/auth/login`. |
+| **A08:2021 - Software & Data Integrity Failures** | `NO VERIFICADO` | Construcción de artefactos desde GitHub Actions usando Gradle Wrapper. | **PENDIENTE**: Sin verificación explícita de firmas de artefactos de terceros. | Gradle Wrapper oficial en CI. | Verificación de firmas y checksums de dependencias. |
+| **A09:2021 - Security Logging & Failures** | `APLICA PARCIALMENTE` | `GlobalExceptionHandler.kt` sanitiza respuestas para `IllegalArgumentException` y `ConflictException`. `HttpLoggingInterceptor` en Android usa nivel `BASIC`. | **BAJO**: Logs de HTTP no vuelcan credenciales ni JWTs. | Payloads `ApiError` estandarizados. | Configurar registro de auditoría estructurada para eventos de autenticación. |
+| **A10:2021 - Server-Side Request Forgery (SSRF)** | `NO VERIFICADO` | No se observan peticiones HTTP salientes dinámicas en los controladores actuales. | **PENDIENTE**: Sin evidencia de llamadas HTTP salientes, pero no auditado dinámicamente. | Control de peticiones restringidas al dominio local. | Validación de dominios en caso de integrar servicios salientes futuros. |
 
 ---
 
 ## 8. Matriz de Amenazas
 
-| ID | Amenaza | Activo Afectado | Vector de Ataque | Evidencia en Código | Impacto | Factibilidad | Prioridad | Control Existente | Control Faltante / Mitigación | Riesgo Residual |
+| ID | Amenaza | Activo Afectado | Vector de Ataque | Evidencia en Código | Impacto | Factibilidad | Prioridad | Control Existente | Control Propuesto / Mitigación | Riesgo Residual |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AM-01** | Sniffing de tráfico JWT / Credenciales | ACT-01, ACT-02 | Intercepción Man-in-the-Middle en la red local/Wi-Fi | `android:usesCleartextTraffic="true"`, `BASE_URL="http://..."` | ALTO | ALTA | **ALTA** | Interceptor de autenticación Bearer | Deshabilitar cleartext, habilitar HTTPS/TLS | **MITIGADO EN PROD / ABIERTO EN DEV** |
-| **AM-02** | Fuerza bruta sobre autenticación | ACT-01 | Peticiones HTTP POST ilimitadas a `/api/auth/login` | `AuthController.kt` sin anotaciones de Rate Limit | MEDIO | ALTA | **MEDIA** | Hashing lento PBKDF2 (210k iter) | Rate Limiting (ej. 5 intentos/min por IP) | **ACEPTADO EN DEV** |
-| **AM-03** | Reutilización de JWT robado (Falta de revocación) | ACT-02 | Copia de cabecera `Authorization: Bearer <token>` | `JwtService.kt` genera tokens con vida de 3600s | MEDIO | MEDIA | **MEDIA** | Expiración automática a 60 min | Reducción de TTL a 15 min + Refresh Tokens | **ACEPTADO** |
-| **AM-04** | Enumeración de usuarios por respuestas diferenciadas | ACT-01 | Consultas repetidas a `/api/users` o `/api/auth/login` | `AuthService.kt` retorna `null` tanto para usuario no encontrado como clave errónea | BAJO | MEDIA | **BAJA** | Respuesta idéntica HTTP 401 en login | Mantenimiento de mensajes genéricos | **MITIGADO** |
-| **AM-05** | Fuga de secreto JWT por inclusión en repositorio | ACT-03 | Extracción de `RACHAPRO_JWT_SECRET` del control de código | `JwtConfig.kt` lee secreto de `@Value("${RACHAPRO_JWT_SECRET}")` | CRÍTICO | BAJA | **BAJA** | Inyección de variable de entorno | Validación en startup de longitud mínima (32 bytes) | **MITIGADO** |
+| **AM-01** | Sniffing de tráfico JWT / Credenciales | ACT-01, ACT-02 | Intercepción en red local/Wi-Fi por HTTP claro | `android:usesCleartextTraffic="true"`, `BASE_URL="http://..."` | ALTO | ALTA | **ALTA** | Interceptor Bearer token | Deshabilitar cleartext y desplegar HTTPS/TLS | **ABIERTO EN ENTORNO DE DEV** |
+| **AM-02** | Fuerza bruta sobre autenticación | ACT-01 | Peticiones HTTP POST ilimitadas a `/api/auth/login` | `AuthController.kt` sin rate limiting | MEDIO | ALTA | **MEDIA** | Hashing PBKDF2 (210k iteraciones) | Rate Limiting propuesto en puerta de entrada | **ACEPTADO EN DEV** |
+| **AM-03** | Reutilización de JWT robado | ACT-02 | Copia de cabecera `Authorization: Bearer <token>` | `JwtService.kt` con TTL de 3600s sin revocación | MEDIO | MEDIA | **MEDIA** | Expiración a 60 min | Reducción de TTL e implementación de revocación | **ACEPTADO** |
+| **AM-04** | Enumeración de usuarios por respuestas | ACT-01 | Peticiones a `/api/auth/login` con emails arbitrarios | `AuthService.kt` retorna `null` para usuario no hallado o clave inválida | BAJO | MEDIA | **BAJA** | Respuesta idéntica HTTP 401 en login | Mantenimiento de respuestas no diferenciadas | **MITIGADO** |
+| **AM-05** | Fuga de secreto JWT en repositorio | ACT-03 | Extracción de clave de firma desde código fuente | `JwtConfig.kt` usa `@Value("${RACHAPRO_JWT_SECRET}")` | CRÍTICO | BAJA | **BAJA** | Carga exclusiva vía variable de entorno | Validación en inicio de longitud mínima | **MITIGADO** |
 
 ---
 
@@ -118,30 +118,30 @@ Criterio cualitativo utilizado:
 1. **Spring Security Stateless JWT**: `SecurityConfig.kt` configura `SessionCreationPolicy.STATELESS` y valida tokens en cada petición HTTP protegida.
 2. **PBKDF2 Password Hashing**: `PasswordHasher.kt` utiliza 210.000 iteraciones con salt individual de 16 bytes y comparación de hashes con `MessageDigest.isEqual`.
 3. **Gestión de Secretos Externa**: `application.properties` y `JwtConfig.kt` leen credenciales y claves de firma exclusivamente desde variables de entorno.
-4. **Prevención de SQL Injection**: Uso estricto de Spring Data JPA Repositories y JPQL parametrizado.
+4. **Protección contra SQL Injection**: Uso de Spring Data JPA Repositories y JPQL parametrizado.
 5. **Sanitización de Errores**: `GlobalExceptionHandler.kt` intercepta excepciones y devuelve payloads `ApiError` estandarizados sin stack traces.
 
 ---
 
-## 11. Controles Faltantes
+## 11. Controles Propuestos / Faltantes
 
-1. **Encriptación en Tránsito (HTTPS/TLS)**: Configuración de certificado SSL/TLS en servidor y deshabilitación de `usesCleartextTraffic` en Android.
-2. **Rate Limiting**: Control de frecuencia de peticiones en la ruta `/api/auth/login`.
-3. **Security Headers Web**: Cabeceras HSTS, X-Content-Type-Options y CSP en respuestas HTTP de Spring Boot.
+1. **Encriptación en Tránsito (HTTPS/TLS)**: Configuración propuesta de certificado SSL/TLS en servidor y deshabilitación de `usesCleartextTraffic` en Android.
+2. **Rate Limiting**: Control propuesto de frecuencia de peticiones en la ruta `/api/auth/login`.
+3. **Security Headers Web**: Cabeceras HSTS, X-Content-Type-Options y CSP propuestas para respuestas HTTP de Spring Boot.
 
 ---
 
 ## 12. Riesgo Residual
 
-- **Riesgo en Desarrollo/Local**: **MEDIO-ALTO** debido al uso explícito de HTTP Cleartext en Android para pruebas locales (`192.168.1.20:8080`).
-- **Riesgo en Producción (con TLS habilitado)**: **BAJO**, soportado por autenticación robusta PBKDF2/JWT, aislamiento modular verificado en ArchUnit y manejo de secretos por entorno.
+- **Riesgo en Entorno Actual de Desarrollo**: **MEDIO-ALTO** debido al uso explícito de HTTP Cleartext en Android para pruebas locales (`192.168.1.20:8080`).
+- **Riesgo en Producción (Sujeto al despliegue de TLS y controles propuestos)**: **PENDIENTE DE EVALUACIÓN FINAL EN ENTORNO PROD**.
 
 ---
 
-## 13. Amenazas Descartadas / No Verificadas
+## 13. Amenazas Parcialmente Mitigadas / No Verificadas
 
-- **Descartada - SQL Injection**: No aplica por el uso exclusivo de ORM JPA parametrizado sin SQL dinámico concatenado.
-- **Descartada - SSRF**: No aplica por ausencia de funcionalidades de llamada HTTP saliente desde el backend.
+- **Parcialmente Mitigada - SQL Injection**: Uso de ORM JPA parametrizado en repositorios; requiere vigilancia sobre posibles consultas nativas futuras.
+- **No Verificada - SSRF**: Sin evidencia de peticiones salientes dinámicas en los controladores inspeccionados, pero pendiente de análisis dinámico.
 - **No Verificada - Seguridad en Almacenamiento Android (DataStore/Room)**: Pendiente de auditoría sobre cifrado local (EncryptedSharedPreferences/SQLCipher).
 
 ---
@@ -158,7 +158,7 @@ Criterio cualitativo utilizado:
 
 ## 15. Limitaciones
 
-- El análisis se realizó por inspección estática de código y configuración. No se ejecutaron escaneos dinámicos (DAST con OWASP ZAP) ni pruebas de penetración contra un entorno desplegado con tráfico HTTPS real.
+- El análisis se realizó por inspección estática de código y configuración. No se ejecutaron escaneos dinámicos (DAST) ni pruebas de penetración en un entorno desplegado con TLS.
 
 ---
 
