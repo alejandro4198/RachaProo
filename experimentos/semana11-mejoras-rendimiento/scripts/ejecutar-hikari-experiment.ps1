@@ -42,7 +42,7 @@ foreach ($pool in $pools) {
     $env:RACHAPRO_DB_USER = "rachapro_user_s11"
     $env:RACHAPRO_DB_PASSWORD = $env:RACHAPRO_DB_PASSWORD # loaded from session environment
     if (-not $env:RACHAPRO_DB_PASSWORD) {
-        $env:RACHAPRO_DB_PASSWORD = "123456789" # fallback to experiment env default if not set
+        throw "RACHAPRO_DB_PASSWORD no está configurada."
     }
     $env:RACHAPRO_HIKARI_MAX_POOL_SIZE = "$pool"
 
