@@ -1,39 +1,32 @@
-# Análisis de Hilos JVM — Spike 250 VUs (06-tomcat-http)
+# Análisis de Hilos JVM y Diagnóstico Causal — Semana 11
 
-## 1. Objetivo y Contexto
+## 1. Objetivo y Resumen
 
-Este documento detalla el análisis de los estados y comportamiento de hilos de la JVM (`jvm.threads.live` y `jvm.threads.states.*`) observado durante las corridas de alta concurrencia (250 VUs, Pool Hikari 30) en RachaPro.
+Este documento consolida el análisis de hilos JVM e identidades de solicitudes durante las pruebas de rendimiento con 250 VUs y Pool Hikari = 30.
 
 ---
 
 ## 2. Hallazgos Empíricos
 
-- **Baseline (Perfil Rápido - R1, R3, R4, R6)**:
-  - Threads Live Max: **24**
-  - Runnable Max: **9–10**
-  - Waiting Max: **10–11**
-  - Timed-Waiting Max: **5**
-  - Blocked Max: **0**
+1. **Estado de Hilos en la JVM**:
+   - `jvm.threads.states.blocked`: **0** en todas las corridas (descarte de contención de monitores sincronizados en Java).
+   - `jvm.threads.live`: Mantiene un baseline de 24 hilos durante la ejecución del escenario principal de actividades.
 
-- **Spike de Hilos (Perfil Lento - R2, R5)**:
-  - Threads Live Max: **172–176**
-  - Runnable Max: **9**
-  - Waiting Max: **145–150**
-  - Timed-Waiting Max: **12**
-  - Blocked Max: **0**
+2. **Diagnóstico de la Ejecución R8**:
+   - R8 no constituyó un fallo de rendimiento en el endpoint `POST /api/activities`.
+   - La ejecución finalizó a los 121.64s durante la fase `setup()` de k6 procesando peticiones `POST /api/auth/login`.
+
+3. **Capacidad del Endpoint `POST /api/activities` (R7 y R9)**:
+   - Con `setup()` completado, el backend procesó exitosamente **13,901 actividades en R7** (P95 = 152.01 ms) y **13,499 actividades en R9** (P95 = 327.29 ms) con 0 peticiones pendientes en Hikari Pool = 30.
 
 ---
 
-## 3. Análisis de Causalidad
+## 3. Matriz Causal Consolidada
 
-1. **Ausencia de Contención de Monitores (`BLOCKED = 0`)**: Se descarta de forma concluyente que el cuello de botella se deba a bloqueos clásicos de sincronización Java (`synchronized` o monitores bloqueados).
-2. **Dominancia de Hilos en Espera (`WAITING`)**: El aumento repentino de ~150 hilos en estado `WAITING` explica la congestión observada en `http_req_waiting`. Esto apunta a encolamiento en pools de ejecución, futures o espera de I/O en red/servidor bajo carga masiva.
-3. **Estabilidad de CPU y Hikari**: El proceso backend opera con un uso de CPU moderado (~24-27%) y un pool Hikari con 0 peticiones pendientes (`pending = 0`), confirmando que la limitación no radica en el pool de base de datos ni en el cómputo de la CPU.
-
----
-
-## 4. Conclusiones
-
-- **Proliferación de Hilos JVM (`WAITING`)**: `DEMOSTRADA` (Salto reproducible de 24 a 176 hilos).
-- **Tomcat / Pipeline HTTP**: `INDICIO FUERTE` (Correlación directa entre hilos en espera y latencia de red).
-- **Locks y CPU**: `DESCARTADO CON EVIDENCIA`.
+| Componente / Hipótesis | Estado | Evidencia |
+| :--- | :--- | :--- |
+| **Setup Incompleto en k6 (R8)** | `DEMOSTRADO` | 0 peticiones a `POST /api/activities` en R8. |
+| **Capacidad de `POST /api/activities`** | `DEMOSTRADO` | R7 y R9 procesan >13,400 actividades a >227 req/s durante el escenario objetivo. |
+| **HikariCP Pool = 30** | `DEMOSTRADO ESTABLE` | 0 peticiones pendientes (`pending = 0`) a 250 VUs. |
+| **Bloqueos Java (`BLOCKED`)** | `EVIDENCIA EN CONTRA` | `jvm.threads.states.blocked = 0` en todas las mediciones. |
+| **CPU del Backend** | `EVIDENCIA EN CONTRA DE SATURACIÓN` | Proceso JVM estable (~24–27% uso CPU). |
