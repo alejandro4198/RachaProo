@@ -103,8 +103,9 @@ foreach ($r in @("R4", "R5", "R6")) {
     Write-Host "Corrida $r completada."
 }
 
-if ($backendJob -and -not $backendJob.HasExited) {
-    Stop-Process -Id $backendJob.Id -Force -ErrorAction SilentlyContinue
+# Stop backend after pool campaign using precise port 8080 lookup
+$connStop = Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue
+if ($connStop) {
+    Stop-Process -Id $connStop.OwningProcess -Force -ErrorAction SilentlyContinue
 }
-Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-Write-Host "SPIKE TOMCAT/HTTP R4-R6 COMPLETADO"
+Start-Sleep -Seconds 5
