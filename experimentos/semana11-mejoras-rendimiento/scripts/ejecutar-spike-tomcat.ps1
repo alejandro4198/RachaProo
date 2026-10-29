@@ -39,7 +39,7 @@ $env:RACHAPRO_JWT_SECRET = ($jwtLine -split '=', 2)[1].Trim()
 
 $backendJob = Start-Process powershell -ArgumentList "-Command", "cd '$raizRepo\backend'; `$env:JAVA_HOME='$env:JAVA_HOME'; `$env:RACHAPRO_DB_URL='$env:RACHAPRO_DB_URL'; `$env:RACHAPRO_DB_USER='$env:RACHAPRO_DB_USER'; `$env:RACHAPRO_DB_PASSWORD='$env:RACHAPRO_DB_PASSWORD'; `$env:RACHAPRO_HIKARI_MAX_POOL_SIZE='$env:RACHAPRO_HIKARI_MAX_POOL_SIZE'; `$env:RACHAPRO_JWT_SECRET='$env:RACHAPRO_JWT_SECRET'; .\gradlew.bat bootRun --no-daemon" -WindowStyle Hidden -PassThru
 
-Write-Host "Esperando inicio del backend (Pool 30 para Spike Tomcat 250 VUs)..."
+Write-Host "Esperando inicio del backend (Pool 30 para Spike Tomcat R4-R6 250 VUs)..."
 $up = $false
 for ($i = 0; $i -le 30; $i++) {
     Start-Sleep -Seconds 5
@@ -58,7 +58,7 @@ for ($i = 0; $i -le 30; $i++) {
 
 if (-not $up) { throw "Backend no inició para el spike tomcat." }
 
-foreach ($r in @("R1", "R2", "R3")) {
+foreach ($r in @("R4", "R5", "R6")) {
     $outDir = Join-Path $spikeRaiz $r
     if (Test-Path $outDir) {
         Write-Host "Omitiendo $r (ya existe)"
@@ -107,4 +107,4 @@ if ($backendJob -and -not $backendJob.HasExited) {
     Stop-Process -Id $backendJob.Id -Force -ErrorAction SilentlyContinue
 }
 Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-Write-Host "SPIKE TOMCAT/HTTP COMPLETADO"
+Write-Host "SPIKE TOMCAT/HTTP R4-R6 COMPLETADO"
