@@ -50,7 +50,7 @@ foreach ($pool in $pools) {
     $env:RACHAPRO_JWT_SECRET = ($jwtLine -split '=', 2)[1].Trim()
 
     # Start backend process in background
-    $backendJob = Start-Process powershell -ArgumentList "-Command", "cd '$raizRepo\backend'; `$env:JAVA_HOME='$env:JAVA_HOME'; `$env:RACHAPRO_DB_URL='$env:RACHAPRO_DB_URL'; `$env:RACHAPRO_DB_USER='$env:RACHAPRO_DB_USER'; `$env:RACHAPRO_DB_PASSWORD='$env:RACHAPRO_DB_PASSWORD'; `$env:RACHAPRO_HIKARI_MAX_POOL_SIZE='$env:RACHAPRO_HIKARI_MAX_POOL_SIZE'; `$env:RACHAPRO_JWT_SECRET='$env:RACHAPRO_JWT_SECRET'; .\gradlew.bat bootRun --no-daemon" -WindowStyle Hidden -PassThru
+    $backendJob = Start-Process powershell -ArgumentList "-Command", "Set-Location '$raizRepo\backend'; .\gradlew.bat bootRun --no-daemon" -WindowStyle Hidden -PassThru
 
     # Wait for Actuator to be UP and hikaricp.connections.max to match pool size
     Write-Host "Esperando inicio del backend (Pool $pool)..."
