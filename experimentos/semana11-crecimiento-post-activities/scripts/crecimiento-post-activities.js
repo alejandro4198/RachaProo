@@ -122,6 +122,10 @@ function construirIdentidades(vus) {
             high: 1,
             low: 0
         },
+        2: {
+            high: 1,
+            low: 1
+        },
         10: {
             high: 2,
             low: 8
@@ -217,20 +221,61 @@ export function setup() {
 
     const correos = construirIdentidades(vus);
 
-    const identidades = correos.map((email) => {
-        const token = autenticar(
-            baseUrl,
-            email,
-            password
-        );
+    // Batch 1: Batch login for all identities concurrently
+    const loginReqs = correos.map((email) => ({
+        method: "POST",
+        url: `${baseUrl}/api/auth/login`,
+        body: JSON.stringify({ email, password }),
+        params: {
+            headers: { "Content-Type": "application/json" },
+            tags: { name: "SETUP login" }
+        }
+    }));
 
-        const categoryId = obtenerCategoria(
-            baseUrl,
-            token
-        );
+    const loginResponses = http.batch(loginReqs);
+
+    // Batch 2: Batch category retrieval for all logged-in tokens
+    const categoryReqs = loginResponses.map((res, i) => {
+        if (res.status !== 200) {
+            fail(`Login setup fallido para ${correos[i]}: HTTP ${res.status}`);
+        }
+        let token = null;
+        try {
+            token = res.json("token");
+        } catch (_) {
+            fail("Login no devolvió JSON válido");
+        }
+        if (!token) fail("Token nulo en setup");
 
         return {
-            token,
+            method: "GET",
+            url: `${baseUrl}/api/categories`,
+            params: {
+                headers: { Authorization: `Bearer ${token}` },
+                tags: { name: "SETUP categories" }
+            },
+            token
+        };
+    });
+
+    const categoryResponses = http.batch(categoryReqs);
+
+    const identidades = categoryResponses.map((res, i) => {
+        if (res.status !== 200) {
+            fail(`Categorias setup fallido: HTTP ${res.status}`);
+        }
+        let categories = null;
+        try {
+            categories = res.json();
+        } catch (_) {
+            fail("Categorias no devolvió JSON válido");
+        }
+        if (!Array.isArray(categories) || categories.length < 1) {
+            fail("Se esperaba al menos una categoria activa");
+        }
+        const categoryId = categories[0].id;
+        return {
+            token: categoryReqs[i].token,
             categoryId
         };
     });

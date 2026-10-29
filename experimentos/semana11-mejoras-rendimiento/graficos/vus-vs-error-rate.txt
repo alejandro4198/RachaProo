@@ -1,0 +1,1 @@
+ERROR RATE: 100% éxito / 0% 5xx según A1-resultados-crecimiento.md; sin verificación desde todas las muestras.json
