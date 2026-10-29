@@ -37,7 +37,7 @@ $env:RACHAPRO_HIKARI_MAX_POOL_SIZE = "30"
 $jwtLine = Get-Content (Join-Path $raizRepo "backend\.env") | Where-Object { $_ -match '^RACHAPRO_JWT_SECRET=' }
 $env:RACHAPRO_JWT_SECRET = ($jwtLine -split '=', 2)[1].Trim()
 
-$backendJob = Start-Process powershell -ArgumentList "-Command", "cd '$raizRepo\backend'; `$env:JAVA_HOME='$env:JAVA_HOME'; `$env:RACHAPRO_DB_URL='$env:RACHAPRO_DB_URL'; `$env:RACHAPRO_DB_USER='$env:RACHAPRO_DB_USER'; `$env:RACHAPRO_DB_PASSWORD='$env:RACHAPRO_DB_PASSWORD'; `$env:RACHAPRO_HIKARI_MAX_POOL_SIZE='$env:RACHAPRO_HIKARI_MAX_POOL_SIZE'; `$env:RACHAPRO_JWT_SECRET='$env:RACHAPRO_JWT_SECRET'; .\gradlew.bat bootRun --no-daemon" -WindowStyle Hidden -PassThru
+$backendJob = Start-Process powershell -ArgumentList "-Command", "Set-Location '$raizRepo\backend'; .\gradlew.bat bootRun --no-daemon" -WindowStyle Hidden -PassThru
 
 Write-Host "Esperando inicio del backend (Pool 30 para Spike 250 VUs)..."
 $up = $false
