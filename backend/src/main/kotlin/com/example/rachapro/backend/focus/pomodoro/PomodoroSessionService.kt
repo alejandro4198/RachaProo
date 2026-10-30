@@ -152,6 +152,10 @@ class PomodoroSessionService(
             .findByIdAndUserId(sessionId, userId)
             ?: return null
 
+        if (session.status == "COMPLETED") {
+            return session.toResponse()
+        }
+
         require(session.status in setOf("RUNNING", "PAUSED")) {
             "Solo se puede completar una sesion RUNNING o PAUSED"
         }
