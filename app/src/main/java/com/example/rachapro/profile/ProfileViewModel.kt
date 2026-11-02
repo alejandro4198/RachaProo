@@ -21,10 +21,12 @@ import com.example.rachapro.domain.AchievementCheckInput
 import com.example.rachapro.domain.AchievementEngine
 import com.example.rachapro.domain.StreakCalculator
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -286,130 +288,185 @@ class ProfileViewModel(
                         return@launch
                     }
 
-                    combine(
-                        userPreferencesManager
-                            .observeUserPreferences(
-                                userId = userId
-                            ),
+                    coroutineScope {
+                        launch {
+                            combine(
+                                userPreferencesManager
+                                    .observeUserPreferences(
+                                        userId = userId
+                                    ),
 
-                        achievementRepository
-                            .observeAchievements(
-                                userId = userId
-                            ),
+                                achievementRepository
+                                    .observeAchievements(
+                                        userId = userId
+                                    ),
 
-                        activityRepository
-                            .observeCompletedActivitiesCount(
-                                userId = userId
-                            ),
+                                activityRepository
+                                    .observeCompletedActivitiesCount(
+                                        userId = userId
+                                    ),
 
-                        pomodoroRepository
-                            .observeCompletedFocusCount(
-                                userId = userId
-                            ),
+                                pomodoroRepository
+                                    .observeCompletedFocusCount(
+                                        userId = userId
+                                    ),
 
-                        combine(
-                            activityRepository
-                                .observeCompletedDays(
-                                    userId = userId
-                                ),
+                                combine(
+                                    activityRepository
+                                        .observeCompletedDays(
+                                            userId = userId
+                                        ),
 
-                            pomodoroRepository
-                                .observeCompletedFocusDays(
-                                    userId = userId
+                                    pomodoroRepository
+                                        .observeCompletedFocusDays(
+                                            userId = userId
+                                        )
+                                ) { activityDays, pomodoroDays ->
+
+                                    activityDays to pomodoroDays
+                                }
+                            ) {
+                                    preferences,
+                                    achievements,
+                                    completedActivities,
+                                    completedPomodoros,
+                                    daysPair ->
+
+                                val activityDays = daysPair.first
+                                val pomodoroDays = daysPair.second
+
+                                val todayEpochDay =
+                                    LocalDate.now().toEpochDay()
+
+                                val streak =
+                                    StreakCalculator.calculate(
+                                        completedDays =
+                                            (activityDays + pomodoroDays)
+                                                .distinct(),
+                                        todayEpochDay = todayEpochDay
+                                    )
+
+                                ProfileData(
+                                    preferences = preferences,
+                                    achievements = achievements,
+                                    completedActivities = completedActivities,
+                                    completedPomodoros = completedPomodoros,
+                                    currentStreakDays = streak.current
                                 )
-                        ) { activityDays, pomodoroDays ->
 
-                            activityDays to pomodoroDays
+                            }.collect { profileData ->
+
+                                val state =
+                                    ProfileUiState.Success(
+                                        userId = user.id,
+                                        fullName = user.fullName,
+                                        email = user.email,
+                                        semester = user.semester,
+                                        profileDraftName = user.fullName,
+                                        profileDraftSemester = user.semester,
+                                        savedPreferences =
+                                            profileData.preferences,
+                                        pomodoroDraft =
+                                            profileData.preferences.pomodoro,
+                                        notificationsEnabled =
+                                            profileData.preferences.notificationsEnabled,
+                                        achievements =
+                                            profileData.achievements,
+                                        allAchievementTypes =
+                                            AchievementEngine.allTypes
+                                    )
+
+                                val current =
+                                    _uiState.value
+
+                                if (
+                                    current is ProfileUiState.Success &&
+                                    current.userId == state.userId &&
+                                    _saveState.value !is ProfileSaveState.Saving
+                                ) {
+
+                                    _uiState.value =
+                                        state.copy(
+                                            pomodoroDraft =
+                                                current.pomodoroDraft,
+                                            notificationsEnabled =
+                                                current.notificationsEnabled,
+                                            profileDraftName =
+                                                current.profileDraftName,
+                                            profileDraftSemester =
+                                                current.profileDraftSemester
+                                        )
+
+                                } else if (
+                                    _saveState.value !is ProfileSaveState.Saving
+                                ) {
+
+                                    _uiState.value = state
+                                }
+                            }
                         }
-                    ) {
-                            preferences,
-                            achievements,
-                            completedActivities,
-                            completedPomodoros,
-                            daysPair ->
 
-                        val activityDays = daysPair.first
-                        val pomodoroDays = daysPair.second
+                        launch {
+                            combine(
+                                activityRepository
+                                    .observeCompletedActivitiesCount(
+                                        userId = userId
+                                    ),
 
-                        val todayEpochDay =
-                            LocalDate.now().toEpochDay()
+                                pomodoroRepository
+                                    .observeCompletedFocusCount(
+                                        userId = userId
+                                    ),
 
-                        val streak =
-                            StreakCalculator.calculate(
-                                completedDays =
-                                    (activityDays + pomodoroDays)
-                                        .distinct(),
-                                todayEpochDay = todayEpochDay
-                            )
+                                combine(
+                                    activityRepository
+                                        .observeCompletedDays(
+                                            userId = userId
+                                        ),
 
-                        ProfileData(
-                            preferences = preferences,
-                            achievements = achievements,
-                            completedActivities = completedActivities,
-                            completedPomodoros = completedPomodoros,
-                            currentStreakDays = streak.current
-                        )
+                                    pomodoroRepository
+                                        .observeCompletedFocusDays(
+                                            userId = userId
+                                        )
+                                ) { activityDays, pomodoroDays ->
 
-                    }.collect { profileData ->
+                                    activityDays to pomodoroDays
+                                }
+                            ) {
+                                    completedActivities,
+                                    completedPomodoros,
+                                    daysPair ->
 
-                        achievementRepository.syncAchievements(
-                            userId = userId,
-                            input = AchievementCheckInput(
-                                completedActivitiesCount =
-                                    profileData.completedActivities,
-                                completedFocusPomodorosCount =
-                                    profileData.completedPomodoros,
-                                currentStreakDays =
-                                    profileData.currentStreakDays
-                            )
-                        )
+                                val activityDays = daysPair.first
+                                val pomodoroDays = daysPair.second
 
-                        val state =
-                            ProfileUiState.Success(
-                                userId = user.id,
-                                fullName = user.fullName,
-                                email = user.email,
-                                semester = user.semester,
-                                profileDraftName = user.fullName,
-                                profileDraftSemester = user.semester,
-                                savedPreferences =
-                                    profileData.preferences,
-                                pomodoroDraft =
-                                    profileData.preferences.pomodoro,
-                                notificationsEnabled =
-                                    profileData.preferences.notificationsEnabled,
-                                achievements =
-                                    profileData.achievements,
-                                allAchievementTypes =
-                                    AchievementEngine.allTypes
-                            )
+                                val todayEpochDay =
+                                    LocalDate.now().toEpochDay()
 
-                        val current =
-                            _uiState.value
+                                val streak =
+                                    StreakCalculator.calculate(
+                                        completedDays =
+                                            (activityDays + pomodoroDays)
+                                                .distinct(),
+                                        todayEpochDay = todayEpochDay
+                                    )
 
-                        if (
-                            current is ProfileUiState.Success &&
-                            current.userId == state.userId &&
-                            _saveState.value !is ProfileSaveState.Saving
-                        ) {
-
-                            _uiState.value =
-                                state.copy(
-                                    pomodoroDraft =
-                                        current.pomodoroDraft,
-                                    notificationsEnabled =
-                                        current.notificationsEnabled,
-                                    profileDraftName =
-                                        current.profileDraftName,
-                                    profileDraftSemester =
-                                        current.profileDraftSemester
+                                AchievementCheckInput(
+                                    completedActivitiesCount =
+                                        completedActivities,
+                                    completedFocusPomodorosCount =
+                                        completedPomodoros,
+                                    currentStreakDays =
+                                        streak.current
                                 )
-
-                        } else if (
-                            _saveState.value !is ProfileSaveState.Saving
-                        ) {
-
-                            _uiState.value = state
+                            }
+                                .distinctUntilChanged()
+                                .collect { input ->
+                                    achievementRepository.syncAchievements(
+                                        userId = userId,
+                                        input = input
+                                    )
+                                }
                         }
                     }
 
