@@ -7,16 +7,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.FilterChip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,12 +30,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rachapro.data.local.entity.ActivityEntity
 import com.example.rachapro.data.local.entity.ActivityStatus
+import com.example.rachapro.ui.components.RachaCard
+import com.example.rachapro.ui.components.RachaSectionHeader
+import com.example.rachapro.ui.components.RachaStatusBadge
+import com.example.rachapro.ui.components.StatusBadgeType
+import com.example.rachapro.ui.theme.RachaIndigo
+import com.example.rachapro.ui.theme.RachaOnSurfaceMuted
+import com.example.rachapro.ui.theme.RachaSuccess
+import com.example.rachapro.ui.theme.RachaWarning
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -76,110 +90,131 @@ fun CalendarActivitiesContent(
         activitiesByDate[selectedLocalDate.toEpochDay()]
             ?: emptyList()
 
-    Column(
-        modifier = modifier.fillMaxSize()
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(
+            start = 20.dp,
+            end = 20.dp,
+            top = 4.dp,
+            bottom = 96.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        item {
 
-            FilterChip(
-                selected = false,
-                onClick = {
-                    visibleMonth =
-                        month.minusMonths(1).toString()
-                },
-                label = { Text("◀") }
-            )
+            RachaCard(contentPadding = 12.dp) {
 
-            Text(
-                text = month.format(
+                Column {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        IconButton(
+                            onClick = {
+                                visibleMonth = month.minusMonths(1).toString()
+                            },
+                            modifier = Modifier.size(44.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = "Mes anterior",
+                                tint = RachaIndigo
+                            )
+                        }
+
+                        Text(
+                            text = month.format(
+                                DateTimeFormatter.ofPattern(
+                                    "MMMM yyyy",
+                                    SpanishLocale
+                                )
+                            ).replaceFirstChar {
+                                it.titlecase(SpanishLocale)
+                            },
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                        IconButton(
+                            onClick = {
+                                visibleMonth = month.plusMonths(1).toString()
+                            },
+                            modifier = Modifier.size(44.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Mes siguiente",
+                                tint = RachaIndigo
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    CalendarGrid(
+                        month = month,
+                        selectedDate = selectedLocalDate,
+                        activitiesByDate = activitiesByDate,
+                        onDateSelected = { date ->
+                            selectedDate = date.toString()
+                        }
+                    )
+                }
+            }
+        }
+
+        item {
+            RachaSectionHeader(
+                title = "Actividades del día",
+                supportingText = selectedLocalDate.format(
                     DateTimeFormatter.ofPattern(
-                        "MMMM yyyy",
+                        "EEEE d 'de' MMMM",
                         SpanishLocale
                     )
                 ).replaceFirstChar {
                     it.titlecase(SpanishLocale)
-                },
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-
-            FilterChip(
-                selected = false,
-                onClick = {
-                    visibleMonth =
-                        month.plusMonths(1).toString()
-                },
-                label = { Text("▶") }
+                }
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        CalendarGrid(
-            month = month,
-            selectedDate = selectedLocalDate,
-            activitiesByDate = activitiesByDate,
-            onDateSelected = { date ->
-                selectedDate = date.toString()
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Actividades del ${selectedLocalDate.format(
-                DateTimeFormatter.ofPattern(
-                    "d MMMM yyyy",
-                    SpanishLocale
-                )
-            )}",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
         if (selectedActivities.isEmpty()) {
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-
-                Text(
-                    text =
-                        "No hay actividades para esta fecha.",
-                    modifier = Modifier.padding(16.dp)
-                )
+            item {
+                RachaCard {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "🗓️", fontSize = 28.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Día libre",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "No hay actividades para esta fecha.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = RachaOnSurfaceMuted,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
             }
 
         } else {
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement =
-                    Arrangement.spacedBy(8.dp)
-            ) {
+            items(
+                selectedActivities,
+                key = { it.id }
+            ) { activity ->
 
-                items(
-                    selectedActivities,
-                    key = { it.id }
-                ) { activity ->
-
-                    CalendarActivityCard(
-                        activity = activity
-                    )
-                }
+                CalendarActivityCard(
+                    activity = activity
+                )
             }
         }
     }
@@ -207,12 +242,10 @@ private fun CalendarGrid(
                 SpanishLocale
             ).replaceFirstChar {
                 it.titlecase(SpanishLocale)
-            }
+            }.take(2)
         }
 
-    Column(
-        modifier = Modifier.padding(horizontal = 12.dp)
-    ) {
+    Column {
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -225,7 +258,7 @@ private fun CalendarGrid(
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.SemiBold
+                    color = RachaOnSurfaceMuted
                 )
             }
         }
@@ -249,8 +282,8 @@ private fun CalendarGrid(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatio(1f)
-                            .padding(2.dp),
+                            .height(46.dp)
+                            .padding(1.dp),
                         contentAlignment = Alignment.Center
                     ) {
 
@@ -273,15 +306,13 @@ private fun CalendarGrid(
 
                             val hasOverdue =
                                 dayActivities.any {
-                                    it.status ==
-                                            ActivityStatus.OVERDUE
+                                    it.status == ActivityStatus.OVERDUE
                                 }
 
                             val allCompleted =
                                 hasActivities &&
                                         dayActivities.all {
-                                            it.status ==
-                                                    ActivityStatus.COMPLETED
+                                            it.status == ActivityStatus.COMPLETED
                                         }
 
                             val isSelected =
@@ -292,15 +323,25 @@ private fun CalendarGrid(
 
                             val backgroundColor =
                                 when {
-                                    isSelected ->
-                                        MaterialTheme.colorScheme.primary
-
-                                    isToday ->
-                                        MaterialTheme.colorScheme.primaryContainer
-
-                                    else ->
-                                        MaterialTheme.colorScheme.surface
+                                    isSelected -> RachaIndigo
+                                    isToday -> RachaIndigo.copy(alpha = 0.10f)
+                                    else -> androidx.compose.ui.graphics.Color.Transparent
                                 }
+
+                            val dotColor =
+                                when {
+                                    allCompleted -> RachaSuccess
+                                    hasOverdue -> RachaWarning
+                                    else -> RachaIndigo
+                                }
+
+                            val dayLabel =
+                                date.format(
+                                    DateTimeFormatter.ofPattern(
+                                        "EEEE d 'de' MMMM",
+                                        SpanishLocale
+                                    )
+                                )
 
                             Column(
                                 modifier = Modifier
@@ -309,11 +350,12 @@ private fun CalendarGrid(
                                     .background(backgroundColor)
                                     .clickable {
                                         onDateSelected(date)
+                                    }
+                                    .semantics {
+                                        contentDescription = dayLabel
                                     },
-                                horizontalAlignment =
-                                    Alignment.CenterHorizontally,
-                                verticalArrangement =
-                                    Arrangement.Center
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
                             ) {
 
                                 Text(
@@ -335,20 +377,18 @@ private fun CalendarGrid(
 
                                 if (hasActivities) {
 
-                                    Text(
-                                        text =
-                                            when {
-                                                allCompleted -> "✓"
-                                                hasOverdue -> "!"
-                                                else -> "•"
-                                            },
-                                        fontSize = 10.sp,
-                                        color =
-                                            if (isSelected) {
-                                                MaterialTheme.colorScheme.onPrimary
-                                            } else {
-                                                MaterialTheme.colorScheme.primary
-                                            }
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(top = 2.dp)
+                                            .size(5.dp)
+                                            .background(
+                                                color = if (isSelected) {
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                } else {
+                                                    dotColor
+                                                },
+                                                shape = CircleShape
+                                            )
                                     )
                                 }
                             }
@@ -365,54 +405,70 @@ private fun CalendarActivityCard(
     activity: ActivityEntity
 ) {
 
+    val badgeType =
+        when (activity.status) {
+            ActivityStatus.COMPLETED -> StatusBadgeType.Success
+            ActivityStatus.OVERDUE -> StatusBadgeType.Warning
+            else -> StatusBadgeType.Pending
+        }
+
     val statusLabel =
         when (activity.status) {
-
-            ActivityStatus.COMPLETED ->
-                "Completada"
-
-            ActivityStatus.OVERDUE ->
-                "Vencida"
-
-            else ->
-                "Pendiente"
+            ActivityStatus.COMPLETED -> "Completada"
+            ActivityStatus.OVERDUE -> "Vencida"
+            else -> "Pendiente"
         }
 
-    val statusEmoji =
-        when (activity.status) {
+    RachaCard {
 
-            ActivityStatus.COMPLETED -> "✅"
-            ActivityStatus.OVERDUE -> "⚠️"
-            else -> "⏳"
-        }
+        Column {
 
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+                Text(
+                    text = activity.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
 
-            Text(
-                text = "$statusEmoji ${activity.title}",
-                fontWeight = FontWeight.Bold
-            )
+                RachaStatusBadge(
+                    text = statusLabel,
+                    type = badgeType
+                )
+            }
 
             if (activity.description.isNotBlank()) {
 
                 Text(
                     text = activity.description,
-                    modifier = Modifier.padding(top = 4.dp),
-                    style = MaterialTheme.typography.bodySmall
+                    modifier = Modifier.padding(top = 6.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = RachaOnSurfaceMuted,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
-            Text(
-                text = statusLabel,
-                modifier = Modifier.padding(top = 8.dp),
-                fontWeight = FontWeight.Medium
-            )
+            val timeText = activity.dueTimeMinutes?.let { minutes ->
+                String.format("%02d:%02d", minutes / 60, minutes % 60)
+            }
+
+            if (timeText != null) {
+
+                Text(
+                    text = "🕒 $timeText",
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = RachaOnSurfaceMuted
+                )
+            }
         }
     }
 }
