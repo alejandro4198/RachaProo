@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.example.rachapro.backend.identity.user.dto.UpdateUserRequest
+import jakarta.validation.Valid
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.PatchMapping
@@ -21,7 +22,7 @@ class UserController(
 
     @PostMapping
     fun create(
-        @RequestBody request: CreateUserRequest
+        @Valid @RequestBody request: CreateUserRequest
     ): ResponseEntity<UserResponse> {
         val user = userService.create(request)
 
