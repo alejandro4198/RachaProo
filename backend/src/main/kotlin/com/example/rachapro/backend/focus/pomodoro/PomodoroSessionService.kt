@@ -36,6 +36,10 @@ class PomodoroSessionService(
             "La duracion debe ser mayor que cero"
         }
 
+        require(!pomodoroSessionRepository.existsByUserIdAndStatusIn(userId, setOf("RUNNING", "PAUSED"))) {
+            "Ya existe una sesion de Pomodoro activa para este usuario"
+        }
+
         if (request.activityId != null) {
             require(
                 activityLookup.existsActiveActivityForUser(

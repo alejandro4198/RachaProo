@@ -104,9 +104,13 @@ class ActivitiesViewModel(
             _clockTick.value + 1L
     }
 
+    private var refreshJob: Job? = null
+
     fun refreshStatuses() {
 
-        viewModelScope.launch {
+        refreshJob?.cancel()
+
+        refreshJob = viewModelScope.launch {
 
             when (
                 activityRepository

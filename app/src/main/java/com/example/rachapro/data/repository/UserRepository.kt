@@ -53,7 +53,10 @@ class UserRepository(
 
             user
 
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            if (e is HttpException && (e.code() == 401 || e.code() == 403)) {
+                throw e
+            }
 
             userDao.getUserById(
                 userId = userId

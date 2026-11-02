@@ -9,11 +9,13 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.1.20:8080/"
+    private const val DEFAULT_BASE_URL = "http://10.0.2.2:8080/"
 
     fun create(
-        sessionManager: SessionManager
+        sessionManager: SessionManager,
+        baseUrl: String = DEFAULT_BASE_URL
     ): ApiService {
+        val normalizedUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
 
         val loggingInterceptor =
             HttpLoggingInterceptor().apply {
@@ -33,7 +35,7 @@ object RetrofitClient {
                 .build()
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(normalizedUrl)
             .client(httpClient)
             .addConverterFactory(
                 GsonConverterFactory.create()

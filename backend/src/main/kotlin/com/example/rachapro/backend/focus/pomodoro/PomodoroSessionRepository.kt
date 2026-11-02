@@ -12,4 +12,9 @@ interface PomodoroSessionRepository : JpaRepository<PomodoroSessionEntity, Long>
         id: Long,
         userId: Long
     ): PomodoroSessionEntity?
+
+    fun existsByUserIdAndStatusIn(
+        userId: Long,
+        statuses: Collection<String>
+    ): Boolean
 }

@@ -173,6 +173,10 @@ class ActivityService(
             .findByIdAndUserIdAndIsDeletedFalse(activityId, userId)
             ?: return null
 
+        if (activity.status == "COMPLETED") {
+            return activity.toResponse()
+        }
+
         val now = System.currentTimeMillis()
 
         activity.status = "COMPLETED"
