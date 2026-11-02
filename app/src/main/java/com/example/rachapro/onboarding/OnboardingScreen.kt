@@ -1,5 +1,12 @@
 package com.example.rachapro.onboarding
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,16 +31,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.rachapro.ui.components.RachaBrandGradient
+import com.example.rachapro.ui.components.RachaBrandMark
+import com.example.rachapro.ui.components.RachaCard
+import com.example.rachapro.ui.components.RachaPrimaryButton
+import com.example.rachapro.ui.components.RachaSecondaryButton
+import com.example.rachapro.ui.components.RachaSoftGradient
+import com.example.rachapro.ui.theme.RachaIndigo
+import com.example.rachapro.ui.theme.RachaOnSurfaceMuted
+import com.example.rachapro.ui.theme.RachaSurface
 
 private data class OnboardingPage(
     val icon: String,
+    val eyebrow: String,
     val title: String,
     val description: String
 )
@@ -43,16 +55,19 @@ private data class OnboardingPage(
 private val onboardingPages = listOf(
     OnboardingPage(
         icon = "✓",
+        eyebrow = "Organización",
         title = "Organiza tus actividades",
         description = "Crea y gestiona todas tus tareas académicas en un solo lugar. Prioriza lo importante."
     ),
     OnboardingPage(
         icon = "◎",
+        eyebrow = "Enfoque",
         title = "Estudia con enfoque",
         description = "Usa la técnica Pomodoro para mantener tu concentración y mejorar tu productividad."
     ),
     OnboardingPage(
         icon = "↗",
+        eyebrow = "Constancia",
         title = "Construye tu racha",
         description = "Mantén el ritmo día a día. Gana puntos, desbloquea logros y alcanza tus metas."
     )
@@ -69,174 +84,197 @@ fun OnboardingScreen(
 
     val page = onboardingPages[currentPage]
 
-    val purple = Color(0xFF6847FF)
-    val blue = Color(0xFF5280FF)
-    val background = Color(0xFFF8F9FD)
-    val primaryText = Color(0xFF171B26)
-    val secondaryText = Color(0xFF7A8194)
-    val borderColor = Color(0xFFE1E4EC)
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(background)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 24.dp)
     ) {
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .background(RachaSoftGradient)
+        )
+
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Spacer(modifier = Modifier.height(130.dp))
-
-            Box(
-                modifier = Modifier
-                    .size(128.dp)
-                    .shadow(
-                        elevation = 10.dp,
-                        shape = RoundedCornerShape(22.dp)
-                    )
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                purple,
-                                blue
-                            )
-                        ),
-                        shape = RoundedCornerShape(22.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-
-                Text(
-                    text = page.icon,
-                    color = Color.White,
-                    fontSize = 56.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            Text(
-                text = page.title,
-                color = primaryText,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            Text(
-                text = page.description,
-                color = secondaryText,
-                fontSize = 18.sp,
-                lineHeight = 28.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(46.dp))
-
-            PageIndicator(
-                currentPage = currentPage,
-                purple = purple,
-                inactiveColor = borderColor
-            )
-        }
-
-        if (currentPage == 0) {
-
-            Button(
-                onClick = {
-                    currentPage++
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp)
-                    .align(Alignment.BottomCenter),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = purple,
-                    contentColor = Color.White
-                )
-            ) {
-
-                Text(
-                    text = "Siguiente",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
-        } else {
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                RachaBrandMark(size = 40.dp)
+                Spacer(modifier = Modifier.size(10.dp))
+                Text(
+                    text = "RachaPro",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "${currentPage + 1} de ${onboardingPages.size}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = RachaOnSurfaceMuted
+                )
+            }
 
-                OutlinedButton(
-                    onClick = {
-                        currentPage--
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(58.dp),
-                    shape = RoundedCornerShape(16.dp)
+            Spacer(modifier = Modifier.weight(1f))
+
+            AnimatedContent(
+                targetState = currentPage,
+                transitionSpec = {
+                    val direction = if (targetState > initialState) 1 else -1
+                    (fadeIn(tween(300)) + slideInHorizontally(
+                        initialOffsetX = { direction * it / 6 },
+                        animationSpec = tween(300)
+                    )) togetherWith (fadeOut(tween(180)) + slideOutHorizontally(
+                        targetOffsetX = { -direction * it / 6 },
+                        animationSpec = tween(180)
+                    ))
+                },
+                label = "onboardingPage"
+            ) { index ->
+
+                val current = onboardingPages[index]
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Text(
-                        text = "‹  Atrás",
-                        color = secondaryText,
-                        fontSize = 16.sp
-                    )
-                }
+                    Box(
+                        modifier = Modifier
+                            .size(132.dp)
+                            .clip(RoundedCornerShape(40.dp))
+                            .background(RachaBrandGradient),
+                        contentAlignment = Alignment.Center
+                    ) {
 
-                Button(
-                    onClick = {
-                        if (currentPage < onboardingPages.lastIndex) {
-                            currentPage++
-                        } else {
-                            onNext()
-                        }
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(58.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = purple,
-                        contentColor = Color.White
-                    )
-                ) {
+                        Text(
+                            text = current.icon,
+                            color = RachaSurface,
+                            fontSize = 56.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(RachaIndigo.copy(alpha = 0.10f))
+                            .padding(horizontal = 12.dp, vertical = 5.dp)
+                    ) {
+                        Text(
+                            text = current.eyebrow.uppercase(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = RachaIndigo,
+                            letterSpacing = 1.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = if (currentPage == onboardingPages.lastIndex) {
-                            "Empezar"
-                        } else {
-                            "Siguiente"
-                        },
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        text = current.title,
+                        style = MaterialTheme.typography.headlineLarge,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = current.description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = RachaOnSurfaceMuted,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            PageIndicator(currentPage = currentPage)
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            RachaCard(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentPadding = 16.dp
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+
+                    if (currentPage == 0) {
+
+                        RachaPrimaryButton(
+                            text = "Siguiente",
+                            onClick = {
+                                currentPage++
+                            }
+                        )
+
+                    } else {
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+
+                            RachaSecondaryButton(
+                                text = "Atrás",
+                                onClick = {
+                                    currentPage--
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            RachaPrimaryButton(
+                                text = if (currentPage == onboardingPages.lastIndex) {
+                                    "Empezar"
+                                } else {
+                                    "Siguiente"
+                                },
+                                onClick = {
+                                    if (currentPage < onboardingPages.lastIndex) {
+                                        currentPage++
+                                    } else {
+                                        onNext()
+                                    }
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        text = "Tu progreso académico, en un solo ritmo.",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = RachaOnSurfaceMuted,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
 
 @Composable
 private fun PageIndicator(
-    currentPage: Int,
-    purple: Color,
-    inactiveColor: Color
+    currentPage: Int
 ) {
 
     Row(
@@ -244,18 +282,18 @@ private fun PageIndicator(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        repeat(3) { index ->
+        repeat(onboardingPages.size) { index ->
 
             if (index == currentPage) {
 
                 Box(
                     modifier = Modifier
                         .size(
-                            width = 32.dp,
+                            width = 30.dp,
                             height = 8.dp
                         )
                         .background(
-                            color = purple,
+                            color = RachaIndigo,
                             shape = RoundedCornerShape(50)
                         )
                 )
@@ -266,7 +304,7 @@ private fun PageIndicator(
                     modifier = Modifier
                         .size(8.dp)
                         .background(
-                            color = inactiveColor,
+                            color = MaterialTheme.colorScheme.outline,
                             shape = CircleShape
                         )
                 )

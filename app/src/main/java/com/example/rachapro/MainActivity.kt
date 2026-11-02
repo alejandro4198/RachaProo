@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rachapro.navigation.RachaProNavHost
+import com.example.rachapro.ui.theme.RachaIndigo
 import com.example.rachapro.ui.theme.RachaProTheme
 
 class MainActivity : ComponentActivity() {
@@ -53,8 +54,8 @@ fun WelcomeScreen(
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFF6747FF),
-            Color(0xFF4F86FF)
+            RachaIndigo,
+            RachaIndigo.copy(alpha = 0.8f)
         )
     )
 
@@ -125,7 +126,7 @@ fun WelcomeScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
-                    contentColor = Color(0xFF6747FF)
+                    contentColor = RachaIndigo
                 )
             ) {
 
