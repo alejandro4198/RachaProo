@@ -116,4 +116,21 @@ class GlobalExceptionHandler {
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(error)
     }
+
+    @ExceptionHandler(Exception::class)
+    fun handleGeneric(
+        exception: Exception
+    ): ResponseEntity<ApiError> {
+        logger.error("Error interno del servidor no controlado", exception)
+
+        val error = ApiError(
+            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            error = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase,
+            message = "Error interno del servidor"
+        )
+
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(error)
+    }
 }

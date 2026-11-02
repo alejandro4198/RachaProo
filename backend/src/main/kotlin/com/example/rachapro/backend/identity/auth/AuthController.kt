@@ -18,18 +18,31 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/auth")
 class AuthController(
     private val authService: AuthService,
-    private val userService: UserService
+    private val userService: UserService,
+    private val loginRateLimiter: LoginRateLimiter
 ) {
 
     @PostMapping("/login")
     fun login(
         @RequestBody request: LoginRequest
     ): ResponseEntity<LoginResponse> {
+        val emailKey = request.email.trim().lowercase()
+
+        if (!loginRateLimiter.isAllowed(emailKey)) {
+            return ResponseEntity
+                .status(HttpStatus.TOO_MANY_REQUESTS)
+                .build()
+        }
+
         val response = authService.login(request)
-            ?: return ResponseEntity
+        if (response == null) {
+            loginRateLimiter.recordFailure(emailKey)
+            return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .build()
+        }
 
+        loginRateLimiter.recordSuccess(emailKey)
         return ResponseEntity.ok(response)
     }
 

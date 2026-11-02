@@ -85,6 +85,14 @@ class ReminderService(
             .findByIdAndUserId(reminderId, userId)
             ?: return null
 
+        if (reminder.status == "DELIVERED") {
+            return reminder.toResponse()
+        }
+
+        require(reminder.status != "CANCELLED") {
+            "No se puede entregar un recordatorio cancelado"
+        }
+
         val now = System.currentTimeMillis()
 
         reminder.status = "DELIVERED"
@@ -105,6 +113,14 @@ class ReminderService(
         val reminder = reminderRepository
             .findByIdAndUserId(reminderId, userId)
             ?: return null
+
+        if (reminder.status == "CANCELLED") {
+            return reminder.toResponse()
+        }
+
+        require(reminder.status != "DELIVERED") {
+            "No se puede cancelar un recordatorio ya entregado"
+        }
 
         val now = System.currentTimeMillis()
 
